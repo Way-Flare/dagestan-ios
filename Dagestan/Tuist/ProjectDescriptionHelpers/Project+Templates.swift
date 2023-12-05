@@ -8,13 +8,18 @@ import ProjectDescription
 extension Project {
     /// Helper function to create the Project for this ExampleApp
     public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
-        var targets = makeAppTargets(name: name,
-                                     platform: platform,
-                                     dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
+        var targets = makeAppTargets(
+            name: name,
+            platform: platform,
+            dependencies: additionalTargets.map { TargetDependency.target(name: $0) }
+        )
         targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
-        return Project(name: name,
-                       organizationName: "tuist.io",
-                       targets: targets)
+
+        return Project(
+            name: name,
+            organizationName: "tuist.io",
+            targets: targets
+        )
     }
     
     // MARK: - Private
