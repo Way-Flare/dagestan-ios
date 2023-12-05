@@ -1,6 +1,6 @@
 import Foundation
 
-open class BaseMviViewModel<StateType: MVIStatable>: StateHolderable, MVIInteractionable {
+open class BaseMVIViewModel<StateType: MVIStatable>: StateHolderable, MVIInteractionable {
     private let queue = DispatchQueue(label: "viewModelQueue", attributes: .concurrent)
 
     public func reduce(call: @escaping (StateType) -> StateType) {
