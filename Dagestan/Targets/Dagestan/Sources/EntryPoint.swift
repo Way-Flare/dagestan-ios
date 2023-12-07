@@ -1,13 +1,5 @@
-//
-//  EntryPoint.swift
-//  Dagestan
-//
-//  Created by Abdulaev Ramazan on 16.10.2023.
-//  Copyright © 2023 tuist.io. All rights reserved.
-//
-
-import Foundation
 import SwiftUI
+import DagestanKit
 
 @main
 struct EntryPoint: App {
