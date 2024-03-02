@@ -140,9 +140,6 @@
     "CollectionsView" : {
 
     },
-    "MapView" : {
-
-    },
     "tab.item.favorites" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -193,6 +190,9 @@
           }
         }
       }
+    },
+    "Смотровая" : {
+
     }
   },
   "version" : "1.0"

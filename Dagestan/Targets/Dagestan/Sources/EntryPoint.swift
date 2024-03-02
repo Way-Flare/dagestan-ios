@@ -13,13 +13,14 @@ struct EntryPoint: App {
 
 struct ContentView: View {
     @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var mapViewModel = MapViewModel()
 
     var body: some View {
         let _ = Self._printChanges()
 
         NavigationStack {
             TabView {
-                Text("MapView")
+                MapUI(viewModel: mapViewModel)
                     .tabItem { Label("tab.item.map", systemImage: "map") }
 
                 Text("CollectionsView")

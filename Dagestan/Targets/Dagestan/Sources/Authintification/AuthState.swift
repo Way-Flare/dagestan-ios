@@ -1,4 +1,3 @@
-import SwiftUI
 import DagestanKit
 
 struct AuthState: MVIStatable {
