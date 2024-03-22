@@ -17,7 +17,7 @@ extension Project {
 
         return Project(
             name: name,
-            organizationName: "tuist.io",
+            organizationName: "\(orgName).com",
             targets: targets
         )
     }
@@ -30,7 +30,7 @@ extension Project {
             name: name,
             destinations: destinations,
             product: .framework,
-            bundleId: "io.tuist.\(name)",
+            bundleId: "com.\(orgName).\(name)",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Sources/**"],
@@ -41,7 +41,7 @@ extension Project {
             name: "\(name)Tests",
             destinations: destinations,
             product: .unitTests,
-            bundleId: "io.tuist.\(name)Tests",
+            bundleId: "com.\(orgName).\(name)Tests",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
@@ -64,7 +64,7 @@ extension Project {
             name: name,
             destinations: destinations,
             product: .app,
-            bundleId: "io.tuist.\(name)",
+            bundleId: "com.\(orgName).\(name)",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
@@ -76,7 +76,7 @@ extension Project {
             name: "\(name)Tests",
             destinations: destinations,
             product: .unitTests,
-            bundleId: "io.tuist.\(name)Tests",
+            bundleId: "com.\(orgName).\(name)Tests",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
@@ -86,3 +86,5 @@ extension Project {
         return [mainTarget, testTarget]
     }
 }
+
+private let orgName = "WayFlare"
