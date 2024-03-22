@@ -7,13 +7,13 @@ import ProjectDescription
 
 extension Project {
     /// Helper function to create the Project for this ExampleApp
-    public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
+    public static func app(name: String, destinations: Destinations, additionalTargets: [String]) -> Project {
         var targets = makeAppTargets(
             name: name,
-            platform: platform,
+            destinations: destinations,
             dependencies: additionalTargets.map { TargetDependency.target(name: $0) }
         )
-        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
+        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, destinations: destinations) })
 
         return Project(
             name: name,
@@ -25,32 +25,24 @@ extension Project {
     // MARK: - Private
     
     /// Helper function to create a framework target and an associated unit test target
-    private static func makeFrameworkTargets(name: String, platform: Platform) -> [Target] {
-        let sources = Target(
+    private static func makeFrameworkTargets(name: String, destinations: Destinations) -> [Target] {
+        let sources = Target.target(
             name: name,
-            platform: platform,
+            destinations: destinations,
             product: .framework,
             bundleId: "io.tuist.\(name)",
-            deploymentTarget: .iOS(
-                targetVersion: "16.0",
-                devices: .iphone,
-                supportsMacDesignedForIOS: true
-            ),
+            deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Sources/**"],
             resources: [],
             dependencies: []
         )
-        let tests = Target(
+        let tests = Target.target(
             name: "\(name)Tests",
-            platform: platform,
+            destinations: destinations,
             product: .unitTests,
             bundleId: "io.tuist.\(name)Tests",
-            deploymentTarget: .iOS(
-                targetVersion: "16.0",
-                devices: .iphone,
-                supportsMacDesignedForIOS: true
-            ),
+            deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
             resources: [],
@@ -60,8 +52,7 @@ extension Project {
     }
     
     /// Helper function to create the application target and the unit test target.
-    private static func makeAppTargets(name: String, platform: Platform, dependencies: [TargetDependency]) -> [Target] {
-        let platform: Platform = platform
+    private static func makeAppTargets(name: String, destinations: Destinations, dependencies: [TargetDependency]) -> [Target] {
         let infoPlist: [String: Plist.Value] = [
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
@@ -69,32 +60,24 @@ extension Project {
             "UILaunchStoryboardName": "LaunchScreen"
         ]
         
-        let mainTarget = Target(
+        let mainTarget = Target.target(
             name: name,
-            platform: platform,
+            destinations: destinations,
             product: .app,
             bundleId: "io.tuist.\(name)",
-            deploymentTarget: .iOS(
-                targetVersion: "16.0",
-                devices: .iphone,
-                supportsMacDesignedForIOS: true
-            ),
+            deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
             dependencies: dependencies
         )
         
-        let testTarget = Target(
+        let testTarget = Target.target(
             name: "\(name)Tests",
-            platform: platform,
+            destinations: destinations,
             product: .unitTests,
             bundleId: "io.tuist.\(name)Tests",
-            deploymentTarget: .iOS(
-                targetVersion: "16.0",
-                devices: .iphone,
-                supportsMacDesignedForIOS: true
-            ),
+            deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
             dependencies: [
