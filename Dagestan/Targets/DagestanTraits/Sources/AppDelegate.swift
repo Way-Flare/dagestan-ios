@@ -15,8 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         viewController.view.backgroundColor = .white
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
-        
-        DagestanKit.hello()
 
         return true
     }
