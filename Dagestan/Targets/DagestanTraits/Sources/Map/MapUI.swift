@@ -22,20 +22,20 @@ struct MapUI: View {
 private extension MapUI {
     func makeMapAnnotation(text: String) -> some View {
         ZStack {
-            VStack(spacing: 0) {
-                RoundedRectangle(cornerRadius: 10)
+            VStack(spacing: Grid.pt0) {
+                RoundedRectangle(cornerRadius: Grid.pt10)
                     .fill(.thinMaterial)
-                    .frame(minHeight: 46)
+                    .frame(minHeight: Grid.pt46)
                 Triangle()
                     .fill(.thinMaterial)
-                    .frame(width: 20, height: 10)
+                    .frame(width: Grid.pt20, height: Grid.pt10)
             }
-            HStack(spacing: 8) {
+            HStack(spacing: Grid.pt8) {
                 Image(systemName: "mountain.2.circle")
                     .foregroundColor(.green)
                     .imageScale(.large)
                 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: Grid.pt0) {
                     Text(text)
                         .foregroundStyle(.primary)
                         .bold()
