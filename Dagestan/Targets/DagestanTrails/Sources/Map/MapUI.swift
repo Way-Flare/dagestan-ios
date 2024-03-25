@@ -3,39 +3,29 @@ import MapKit
 import DagestanKit
 
 struct MapUI: View {
-    @ObservedObject private var viewModel: MapViewModel
-
-    init(viewModel: MapViewModel) {
-        self.viewModel = viewModel
-    }
-
+    @ObservedObject var viewModel: MapViewModel
+    
     var body: some View {
-        ZStack {
-
-            Map(coordinateRegion: $viewModel.region, annotationItems: viewModel.landmarks) { landmark in
-                MapAnnotation(coordinate: landmark.coordinate) {
-                    makeMapAnnotation(text: landmark.name)
-                        .onTapGesture {
-                            viewModel.setMapLocation(location: landmark)
-                        }
-                }
+        Map(coordinateRegion: $viewModel.region, annotationItems: viewModel.landmarks) { landmark in
+            MapAnnotation(coordinate: landmark.coordinate) {
+                makeMapAnnotation(text: landmark.name)
+                    .onTapGesture {
+                        viewModel.setMapLocation(location: landmark)
+                    }
             }
-
         }
         .ignoresSafeArea()
     }
-
 }
 
 // MARK: - UI Elements
 private extension MapUI {
-
     func makeMapAnnotation(text: String) -> some View {
-        ZStack() {
+        ZStack {
             VStack(spacing: 0) {
-                RoundedRectangle(cornerRadius: 10) // Задаем радиус скругления
-                    .fill(.thinMaterial) // Указываем белый цвет фона
-                    .frame(minHeight: 46) // Устанавливаем размеры прямоугольника
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(.thinMaterial)
+                    .frame(minHeight: 46)
                 Triangle()
                     .fill(.thinMaterial)
                     .frame(width: 20, height: 10)
@@ -44,7 +34,7 @@ private extension MapUI {
                 Image(systemName: "mountain.2.circle")
                     .foregroundColor(.green)
                     .imageScale(.large)
-
+                
                 VStack(alignment: .leading, spacing: 0) {
                     Text(text)
                         .foregroundStyle(.primary)
@@ -52,24 +42,22 @@ private extension MapUI {
                     Text("Смотровая")
                         .foregroundStyle(.secondary)
                         .font(.subheadline)
-
                 }
             }
             .offset(x: -15, y: -5)
         }
-
     }
 }
 
 struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-
-        path.move(to: CGPoint(x: rect.midX, y: rect.maxY)) // Вершина внизу
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY)) // Левая верхняя точка
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY)) // Правая верхняя точка
-        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY)) // Возвращаемся к вершине
-
+        
+        path.move(to: CGPoint(x: rect.midX, y: rect.maxY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
+        
         return path
     }
 }

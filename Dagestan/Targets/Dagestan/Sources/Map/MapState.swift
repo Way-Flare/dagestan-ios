@@ -29,7 +29,6 @@ struct Route {
 
 // MARK: - CLLocationCoordinate2D
 
-
 extension CLLocationCoordinate2D: Equatable {
     public static func == (
         lhs: CLLocationCoordinate2D,

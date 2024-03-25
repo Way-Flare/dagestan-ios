@@ -16,7 +16,7 @@ struct ContentView: View {
     @StateObject private var mapViewModel = MapViewModel()
 
     var body: some View {
-        let _ = Self._printChanges()
+        _ = Self._printChanges()
 
         NavigationStack {
             TabView {

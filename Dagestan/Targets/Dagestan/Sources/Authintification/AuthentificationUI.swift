@@ -5,7 +5,7 @@ import DagestanUI
 struct AuthenticationUI<ViewModel: StateHolderable & AuthInteractionable>: View
 where ViewModel.StateType == AuthState {
     @ObservedObject var viewModel: ViewModel
-    @State var isRegistering: Bool = false {
+    @State var isRegistering = false {
         didSet {
             viewModel.onChangeAuthStateTap(isRegistering)
         }
@@ -71,9 +71,7 @@ where ViewModel.StateType == AuthState {
             .padding([.leading, .trailing, .bottom], 28)
         }
         .onLifecycle(mviInteraction: viewModel)
-
     }
-
 }
 
 // MARK: - TextFields
@@ -86,7 +84,7 @@ extension AuthenticationUI {
             viewModel.onSignUnTap()
         } label: {
             HStack {
-                Text(isRegistering ? "auth.signUp": "auth.signIn")
+                Text(isRegistering ? "auth.signUp" : "auth.signIn")
                     .padding(.horizontal, 20)
                     .padding(.vertical, 16)
                     .frame(maxWidth: .infinity)
@@ -106,7 +104,7 @@ extension AuthenticationUI {
             }
         } label: {
             HStack {
-                Text(isRegistering ? "auth.logging": "auth.registering")
+                Text(isRegistering ? "auth.logging" : "auth.registering")
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
                     .frame(maxWidth: .infinity)

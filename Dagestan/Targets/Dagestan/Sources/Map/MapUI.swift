@@ -2,8 +2,7 @@ import SwiftUI
 import MapKit
 import DagestanKit
 
-struct MapUI<ViewModel: StateHolderable & MapInteractionable>: View
-where ViewModel.StateType == MapState {
+struct MapUI<ViewModel: StateHolderable & MapInteractionable> {
     @ObservedObject var viewModel: ViewModel
 
     @State private var region = MKCoordinateRegion(
@@ -19,21 +18,17 @@ where ViewModel.StateType == MapState {
                         makeMapAnnotation(text: location.name)
                     }
                 }
-
             }
         }
-        .onLifecycle(mviInteraction: viewModel)
-        .ignoresSafeArea()
-
+        .onLifecycle(mviInteraction: viewModel) 
     }
-
 }
 
 // MARK: - UI Elements
 extension MapUI {
 
     func makeMapAnnotation(text: String) -> some View {
-        ZStack() {
+        ZStack {
             VStack(spacing: 0) {
                 RoundedRectangle(cornerRadius: 10) // Задаем радиус скругления
                     .fill(.thinMaterial) // Указываем белый цвет фона
