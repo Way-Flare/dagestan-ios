@@ -140,9 +140,6 @@
     "CollectionsView" : {
 
     },
-    "MapView" : {
-
-    },
     "tab.item.favorites" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -193,6 +190,26 @@
           }
         }
       }
+    },
+    "tab.item.routes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Routes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Маршруты"
+          }
+        }
+      }
+    },
+    "Смотровая" : {
+
     }
   },
   "version" : "1.0"
