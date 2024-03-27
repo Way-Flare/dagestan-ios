@@ -137,7 +137,13 @@
         }
       }
     },
-    "CollectionsView" : {
+    "Favorite" : {
+
+    },
+    "Profile" : {
+
+    },
+    "Route" : {
 
     },
     "tab.item.favorites" : {

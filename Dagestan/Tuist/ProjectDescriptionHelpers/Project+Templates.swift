@@ -37,18 +37,8 @@ extension Project {
             resources: [],
             dependencies: []
         )
-        let tests = Target.target(
-            name: "\(name)Tests",
-            destinations: destinations,
-            product: .unitTests,
-            bundleId: "com.\(orgName).\(name)Tests",
-            deploymentTargets: .iOS("16.0"),
-            infoPlist: .default,
-            sources: ["Targets/\(name)/Tests/**"],
-            resources: [],
-            dependencies: [.target(name: name)]
-        )
-        return [sources, tests]
+
+        return [sources]
     }
     
     /// Helper function to create the application target and the unit test target.
