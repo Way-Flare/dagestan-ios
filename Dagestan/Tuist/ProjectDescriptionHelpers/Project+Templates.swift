@@ -37,22 +37,24 @@ extension Project {
             resources: [],
             dependencies: []
         )
-        let tests = Target.target(
-            name: "\(name)Tests",
-            destinations: destinations,
-            product: .unitTests,
-            bundleId: "com.\(orgName).\(name)Tests",
-            deploymentTargets: .iOS("16.0"),
-            infoPlist: .default,
-            sources: ["Targets/\(name)/Tests/**"],
-            resources: [],
-            dependencies: [.target(name: name)]
-        )
-        return [sources, tests]
+
+        return [sources]
     }
     
     /// Helper function to create the application target and the unit test target.
     private static func makeAppTargets(name: String, destinations: Destinations, dependencies: [TargetDependency]) -> [Target] {
+        let swiftlintScript = """
+                                   if [[ "$(uname -m)" == "arm64" ]]; then
+                                       export PATH="/opt/homebrew/bin:$PATH"
+                                   fi
+                                   
+                                   if which swiftlint >/dev/null; then
+                                   swiftlint --config ".swiftlint.yml"
+                                   else
+                                       echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+                                   fi
+                                   """
+        
         let infoPlist: [String: Plist.Value] = [
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
@@ -69,6 +71,9 @@ extension Project {
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
+            scripts: [
+                .pre(script: swiftlintScript, name: "swiftlint")
+            ],
             dependencies: dependencies
         )
         
