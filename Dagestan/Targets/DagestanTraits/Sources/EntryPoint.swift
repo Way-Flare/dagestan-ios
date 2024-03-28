@@ -18,30 +18,46 @@ struct ContentView: View {
         let _ = Self._printChanges()
         
         NavigationStack {
-            TabView {
-                MapUI(viewModel: mapViewModel)
+            contentView
+                .tint(.red)
+                .onAppear {
+                    setupTabBar()
+                }
+        }
+    }
+    
+    private var contentView: some View {
+        TabView {
+            ForEach(TabItem.allCases, id: \.self) { tab in
+                tabItemView(for: tab)
                     .tabItem {
                         Label(
-                            NSLocalizedString( "tab.item.map", comment: ""),
-                            systemImage: "map.fill"
-                        )
-                    }
-                
-                Text("CollectionsView")
-                    .tabItem {
-                        Label(
-                            NSLocalizedString("tab.item.favorites", comment: ""),
-                            systemImage: "star.fill"
+                            NSLocalizedString(tab.title, comment: ""),
+                            systemImage: tab.icon
                         )
                     }
             }
-            .tint(.red)
         }
-        .toolbarBackground(.indigo, for: .tabBar)
-
     }
 }
 
-#Preview {
-    ContentView()
+private extension ContentView {
+    func setupTabBar() {
+        let appearance = UITabBarAppearance()
+        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
+        appearance.backgroundColor = UIColor(Color.white.opacity(0.1))
+        
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
+    @ViewBuilder
+    func tabItemView(for item: TabItem) -> some View {
+        switch item {
+        case .map: MapUI(viewModel: mapViewModel)
+        case .favorite: Text("Favorite")
+        case .profile: Text("Profile")
+        case .route: Text("Route")
+        }
+    }
 }
