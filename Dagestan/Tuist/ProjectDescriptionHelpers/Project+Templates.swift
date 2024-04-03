@@ -8,16 +8,27 @@ import ProjectDescription
 extension Project {
     /// Helper function to create the Project for this ExampleApp
     public static func app(name: String, destinations: Destinations, additionalTargets: [String]) -> Project {
+        let packages: [ProjectDescription.Package] = [
+            .remote(
+                url: "https://github.com/mapbox/mapbox-maps-ios.git",
+                requirement: .upToNextMajor(from: "11.2.0")
+            )
+        ]
+        let packageDependencies: [TargetDependency] = [
+            .package(product: "MapboxMaps")
+        ]
+
         var targets = makeAppTargets(
             name: name,
             destinations: destinations,
-            dependencies: additionalTargets.map { TargetDependency.target(name: $0) }
+            dependencies: additionalTargets.map { TargetDependency.target(name: $0) } + packageDependencies
         )
         targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, destinations: destinations) })
 
         return Project(
             name: name,
             organizationName: "\(orgName).com",
+            packages: packages,
             targets: targets
         )
     }
@@ -59,7 +70,8 @@ extension Project {
             "CFBundleShortVersionString": "1.0",
             "CFBundleVersion": "1",
             "UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen"
+            "UILaunchStoryboardName": "LaunchScreen",
+            "MBXAccessToken": "pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"
         ]
         
         let mainTarget = Target.target(
@@ -71,9 +83,7 @@ extension Project {
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
-            scripts: [
-                .pre(script: swiftlintScript, name: "swiftlint")
-            ],
+            scripts: [.pre(script: swiftlintScript, name: "SwiftLint")],
             dependencies: dependencies
         )
         
@@ -85,9 +95,8 @@ extension Project {
             deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
-            dependencies: [
-                .target(name: "\(name)")
-            ])
+            dependencies: [.target(name: name)]
+        )
         return [mainTarget, testTarget]
     }
 }
