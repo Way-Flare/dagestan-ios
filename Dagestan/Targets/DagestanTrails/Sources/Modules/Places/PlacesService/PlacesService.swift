@@ -34,6 +34,6 @@ final class PlacesService: PlacesServiceProtocol {
         } catch {
             throw error
         }
-
     }
+
 }
