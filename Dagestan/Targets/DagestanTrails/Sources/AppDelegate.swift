@@ -1,5 +1,4 @@
 import UIKit
-import DagestanKit
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

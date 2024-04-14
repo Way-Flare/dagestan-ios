@@ -1,5 +1,4 @@
 import SwiftUI
-import DagestanKit
 
 @main
 struct EntryPoint: App {

@@ -4,7 +4,7 @@ import DagestanKit
 
 struct MapUI: View {
     @ObservedObject var viewModel: MapViewModel
-    
+
     var body: some View {
         Map(coordinateRegion: $viewModel.region, annotationItems: viewModel.landmarks) { landmark in
             MapAnnotation(coordinate: landmark.coordinate) {

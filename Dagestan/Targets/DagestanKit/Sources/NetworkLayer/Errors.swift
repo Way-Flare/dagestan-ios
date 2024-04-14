@@ -1,25 +1,25 @@
 //
-//  RequestError.swift
+//  Errors.swift
 //  DagestanTrails
 //
-//  Created by Рассказов Глеб on 12.04.2024.
+//  Created by Abdulaev Ramazan on 14.04.2024.
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
 import Foundation
 
-enum RequestError: Error {
-    case decode
+public enum RequestError: Error {
+    case failedDecode
     case invalidURL
     case noResponse
     case unauthorized
     case unexpectedStatusCode
-    case serverError(String)
+    case serverError(ServerError)
     case unknown
-    
+
     var message: String {
         switch self {
-        case .decode:
+        case .failedDecode:
             return "Decode error"
         case .invalidURL:
             return "invalid URL"
@@ -29,4 +29,9 @@ enum RequestError: Error {
             return "Unknown error"
         }
     }
+}
+
+public struct ServerError: Decodable {
+    let code: String
+    let message: String
 }
