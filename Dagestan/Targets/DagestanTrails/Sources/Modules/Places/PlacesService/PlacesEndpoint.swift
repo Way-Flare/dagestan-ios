@@ -24,8 +24,6 @@ extension PlacesEndpoint: ApiEndpoint {
 
     var method: DagestanKit.Method { return .get }
 
-    var version: Version { return .v1 }
-
     var headers: Headers? {
         return nil
     }
@@ -41,10 +39,6 @@ extension PlacesEndpoint: ApiEndpoint {
     var body: Parameters? {
         return nil
     }
-}
-
-struct PlacesResponse: Decodable {
-    
 }
 
 struct Place: Decodable {

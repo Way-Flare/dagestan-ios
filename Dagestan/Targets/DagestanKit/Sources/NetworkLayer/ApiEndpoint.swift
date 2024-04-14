@@ -47,4 +47,8 @@ public extension ApiEndpoint {
         return baseURL.appendingPathComponent(commonPath, isDirectory: false)
     }
 
+    var version: Version {
+        return .v1
+    }
+
 }

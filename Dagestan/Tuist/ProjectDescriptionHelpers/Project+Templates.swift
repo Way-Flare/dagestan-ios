@@ -67,13 +67,17 @@ extension Project {
                                    """
         
         let infoPlist: [String: Plist.Value] = [
-            "CFBundleShortVersionString": "1.0",
-            "CFBundleVersion": "1",
+            "CFBundleShortVersionString": .string("1.0"),
+            "CFBundleVersion": .string("1"),
             "UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen",
-            "MBXAccessToken": "pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"
+            "UILaunchStoryboardName": .string("LaunchScreen"),
+            "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
+            // TODO: Будет удалено после DAGESTAN-63
+            "NSAppTransportSecurity": .dictionary([
+                "NSAllowsArbitraryLoads": .boolean(true)
+            ])
         ]
-        
+
         let mainTarget = Target.target(
             name: name,
             destinations: destinations,

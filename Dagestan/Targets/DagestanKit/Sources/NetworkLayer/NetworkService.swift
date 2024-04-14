@@ -89,6 +89,8 @@ public final class DTNetworkService: NetworkServiceProtocol {
             }
         }
 
+        // TODO: Constants.headers + enpoint.headers, когда добавим post запросы
+
         urlRequest.timeoutInterval = 5.0
         urlRequest.httpMethod = endpoint.method.rawValue
         urlRequest.allHTTPHeaderFields = endpoint.headers
