@@ -16,19 +16,19 @@ enum TabItem: Int, CaseIterable {
     
     var title: String {
         switch self {
-        case .map: return "tab.item.favorites"
-        case .favorite: return "tab.item.favorites"
-        case .profile: return "tab.item.favorites"
-        case .route: return "tab.item.favorites"
+            case .map: return "tab.item.favorites"
+            case .favorite: return "tab.item.favorites"
+            case .profile: return "tab.item.favorites"
+            case .route: return "tab.item.favorites"
         }
     }
     
     var icon: String {
         switch self {
-        case .map: return "map.fill"
-        case .favorite: return "star.fill"
-        case .profile: return "person.fill"
-        case .route: return "location.fill"
+            case .map: return "map.fill"
+            case .favorite: return "star.fill"
+            case .profile: return "person.fill"
+            case .route: return "location.fill"
         }
     }
 }
