@@ -50,5 +50,17 @@ public extension ApiEndpoint {
     var version: Version {
         return .v1
     }
+   
+    var service: String {
+        return ""
+    }
+
+    var query: Parameters? {
+        return nil
+    }
+
+    var body: Parameters? {
+        return nil
+    }
 
 }

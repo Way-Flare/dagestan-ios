@@ -28,17 +28,6 @@ extension PlacesEndpoint: ApiEndpoint {
         return nil
     }
 
-    var service: String {
-        return ""
-    }
-
-    var query: Parameters? {
-        return nil
-    }
-
-    var body: Parameters? {
-        return nil
-    }
 }
 
 struct Place: Decodable {
