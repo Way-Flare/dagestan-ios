@@ -15,8 +15,6 @@ struct ContentView: View {
     @StateObject private var mapViewModel = MapViewModel()
     
     var body: some View {
-        let _ = Self._printChanges()
-        
         NavigationStack {
             contentView
                 .tint(.red)
@@ -54,7 +52,7 @@ private extension ContentView {
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-        case .map: MapUI(viewModel: mapViewModel)
+        case .map: MapUIBox()
         case .favorite: Text("Favorite")
         case .profile: Text("Profile")
         case .route: Text("Route")
