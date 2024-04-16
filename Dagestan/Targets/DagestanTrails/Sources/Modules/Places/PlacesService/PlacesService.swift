@@ -14,26 +14,26 @@ protocol PlacesServiceProtocol {
 }
 
 final class PlacesService: PlacesServiceProtocol {
-
+    
     private let networkService: NetworkServiceProtocol
-
+    
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
     }
-
+    
     func getAllPlaces() async throws -> [Place] {
         let endpoint = PlacesEndpoint.allPlaces
-
+        
         do {
             let places = try await networkService.execute(
                 endpoint,
                 expecting: [Place].self
             )
-
+            
             return places
         } catch {
             throw error
         }
     }
-
+    
 }

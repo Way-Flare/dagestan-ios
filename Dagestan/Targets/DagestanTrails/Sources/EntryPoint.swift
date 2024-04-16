@@ -53,10 +53,10 @@ private extension ContentView {
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-        case .map: MapUIBox()
-        case .favorite: Text("Favorite")
-        case .profile: Text("Profile")
-        case .route: Text("Route")
+            case .map: MapUIBox()
+            case .favorite: Text("Favorite")
+            case .profile: Text("Profile")
+            case .route: Text("Route")
         }
     }
 }

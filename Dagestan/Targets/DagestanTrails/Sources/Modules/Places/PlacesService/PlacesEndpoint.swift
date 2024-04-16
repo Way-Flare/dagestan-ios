@@ -14,20 +14,20 @@ enum PlacesEndpoint {
 }
 
 extension PlacesEndpoint: ApiEndpoint {
-
+    
     var path: String {
         switch self {
-        case .allPlaces:
-            return "places/all"
+            case .allPlaces:
+                return "places/all"
         }
     }
-
+    
     var method: DagestanKit.Method { return .get }
-
+    
     var headers: Headers? {
         return nil
     }
-
+    
 }
 
 struct Place: Decodable {

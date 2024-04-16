@@ -19,14 +19,14 @@ public enum RequestError: Error {
 
     var message: String {
         switch self {
-        case .failedDecode:
-            return "Decode error"
-        case .invalidURL:
-            return "invalid URL"
-        case .unauthorized:
-            return "Need authorization token"
-        default:
-            return "Unknown error"
+            case .failedDecode:
+                return "Decode error"
+            case .invalidURL:
+                return "invalid URL"
+            case .unauthorized:
+                return "Need authorization token"
+            default:
+                return "Unknown error"
         }
     }
 }

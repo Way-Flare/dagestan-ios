@@ -31,7 +31,7 @@ public enum Version: String {
 }
 
 public extension ApiEndpoint {
-    
+
     private var baseURL: URL {
         // swiftlint:disable:next force_unwrapping
         let url = URL(string: "http://51.250.105.67:8080")!
@@ -50,7 +50,7 @@ public extension ApiEndpoint {
     var version: Version {
         return .v1
     }
-   
+
     var service: String {
         return ""
     }

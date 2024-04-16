@@ -51,17 +51,17 @@ public final class DTNetworkService: NetworkServiceProtocol {
                 throw RequestError.noResponse
             }
             switch httpResponse.statusCode {
-            case 200...299:
-                guard let decodedResponse = try? JSONDecoder().decode(type, from: data) else {
-                    throw RequestError.failedDecode
-                }
+                case 200...299:
+                    guard let decodedResponse = try? JSONDecoder().decode(type, from: data) else {
+                        throw RequestError.failedDecode
+                    }
 
-                return decodedResponse
-            default:
-                guard let decodedError = try? JSONDecoder().decode(ServerError.self, from: data) else {
-                    throw RequestError.unexpectedStatusCode
-                }
-                throw RequestError.serverError(decodedError)
+                    return decodedResponse
+                default:
+                    guard let decodedError = try? JSONDecoder().decode(ServerError.self, from: data) else {
+                        throw RequestError.unexpectedStatusCode
+                    }
+                    throw RequestError.serverError(decodedError)
             }
         } catch {
             throw RequestError.unknown

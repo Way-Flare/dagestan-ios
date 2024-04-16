@@ -13,7 +13,7 @@ enum TabItem: Int, CaseIterable {
     case favorite
     case profile
     case route
-    
+
     var title: String {
         switch self {
             case .map: return "tab.item.favorites"
@@ -22,7 +22,7 @@ enum TabItem: Int, CaseIterable {
             case .route: return "tab.item.favorites"
         }
     }
-    
+
     var icon: String {
         switch self {
             case .map: return "map.fill"
