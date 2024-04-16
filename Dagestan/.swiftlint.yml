@@ -90,4 +90,5 @@ line_length:
   ignores_urls: true
 force_cast: warning
 force_try: warning
-    
+switch_case_alignment:
+  indented_cases: true
