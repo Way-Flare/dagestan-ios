@@ -1,7 +1,9 @@
 import MapKit
 import SwiftUI
+import DagestanKit
 
 final class MapViewModel: ObservableObject {
+    private let service = PlacesService(networkService: DTNetworkService())
     @Published var landmarks: [Location] = []
     @Published var mapLocation: Location {
         didSet {
@@ -27,6 +29,9 @@ final class MapViewModel: ObservableObject {
     }
     
     private func loadLandmarks() {
+        Task {
+            try? await service.getAllPlaces()
+        }
         task?.cancel()
         task = Task {
             let landmarks = await loadLandmarksAsync()
