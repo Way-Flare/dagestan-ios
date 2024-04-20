@@ -1,16 +1,16 @@
+import DagestanKit
 import MapKit
 import SwiftUI
-import DagestanKit
 @_spi(Experimental)
 import MapboxMaps
 
 final class MapViewModel: ObservableObject {
     @Published var viewport: Viewport = .styleDefault
     @Published var landmarks: [Place] = []
-    
+
     private let service: IPlacesService
     private var task: Task<Void, Error>?
-    
+
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками
     init(service: IPlacesService) {
@@ -23,7 +23,7 @@ final class MapViewModel: ObservableObject {
     deinit {
         task?.cancel()
     }
-    
+
     /// Устанвливает с анимацией viewPort с новыми координатами и зумом
     /// - Parameters:
     ///   - coordinate: Координаты
@@ -33,7 +33,7 @@ final class MapViewModel: ObservableObject {
             viewport = .camera(center: coordinate, zoom: zoomLevel)
         }
     }
-    
+
     private func loadLandmarks() {
         Task {
             do {
@@ -71,12 +71,12 @@ extension MapViewModel {
                 "properties": properties
             ]
         }
-        
+
         let geoJSON: [String: Any] = [
             "type": "FeatureCollection",
             "features": features
         ]
-        
+
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: geoJSON)
             return jsonData

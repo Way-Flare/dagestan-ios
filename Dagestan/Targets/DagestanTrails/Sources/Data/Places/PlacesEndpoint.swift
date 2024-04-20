@@ -11,6 +11,7 @@ import DagestanKit
 
 enum PlacesEndpoint {
     case allPlaces
+    case place(id: Int)
 }
 
 extension PlacesEndpoint: ApiEndpoint {
@@ -19,6 +20,8 @@ extension PlacesEndpoint: ApiEndpoint {
         switch self {
             case .allPlaces:
                 return "places/all"
+            case .place(let id):
+                return "places/\(id)"
         }
     }
     
