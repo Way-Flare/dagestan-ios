@@ -75,6 +75,11 @@ extension Project {
             // TODO: Будет удалено после DAGESTAN-63
             "NSAppTransportSecurity": .dictionary([
                 "NSAllowsArbitraryLoads": .boolean(true)
+            ]),
+            "UIAppFonts": .array([
+                .string("Manrope-ExtraBold.ttf"),
+                .string("Manrope-SemiBold.ttf"),
+                .string("Manrope-Regular.ttf"),
             ])
         ]
 
