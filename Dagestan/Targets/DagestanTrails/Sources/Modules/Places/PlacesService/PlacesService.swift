@@ -14,7 +14,6 @@ protocol PlacesServiceProtocol {
 }
 
 final class PlacesService: PlacesServiceProtocol {
-    
     private let networkService: NetworkServiceProtocol
     
     init(networkService: NetworkServiceProtocol) {
@@ -27,13 +26,12 @@ final class PlacesService: PlacesServiceProtocol {
         do {
             let places = try await networkService.execute(
                 endpoint,
-                expecting: [Place].self
+                expecting: [PlaceDTO].self
             )
             
-            return places
+            return places.map { $0.asDomain() }
         } catch {
             throw error
         }
     }
-    
 }

@@ -18,26 +18,24 @@ private enum ItemId {
 }
 
 struct MapUIBox: View {
-    @StateObject private var mapViewModel = MapViewModel()
-    @State private var viewport: Viewport = .idle
+    @ObservedObject var viewModel: MapViewModel
     
     var body: some View {
         MapReader { proxy in
-            Map(viewport: $viewport)
+            Map(viewport: $viewModel.viewport)
                 .mapStyle(.dark)
-                .onStyleLoaded { _ in
-                    setupMap(proxy: proxy)
+                .onStyleLoaded { _ in setupMap(proxy) }
+                .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
+                    handleTap(proxy: proxy, feature: feature, context: context)
                 }
-                .onLayerTapGesture(ItemId.clusterCircle) { _, context in
-                    handleTap(proxy: proxy, context: context)
-                }
+                .onChange(of: viewModel.landmarks) { _ in updateLandmarks(proxy) }
         }
         .ignoresSafeArea()
     }
 }
 
 extension MapUIBox {
-    private func setupMap(proxy: MapProxy) {
+    private func setupMap(_ proxy: MapProxy) {
         guard let map = proxy.map else { return }
         
         do {
@@ -47,16 +45,29 @@ extension MapUIBox {
         }
     }
     
-    private func handleTap(proxy: MapProxy, context: MapContentGestureContext) -> Bool {
-        guard let map = proxy.map else { return false }
-        animatingNewViewPort(map: map, coordinate: context.coordinate)
+    private func handleTap(proxy: MapProxy, feature: QueriedFeature, context: MapContentGestureContext) -> Bool {
+        guard let map = proxy.map,
+              case let .point(clusterCenter) = feature.feature.geometry else { return false }
+        
+        map.getGeoJsonClusterExpansionZoom(forSourceId: ItemId.source, feature: feature.feature) { result in
+            switch result {
+                case let .success(zoom):
+                    viewModel.setupViewport(
+                        coordinate: clusterCenter.coordinates,
+                        zoomLevel: zoom.value as? CGFloat ?? map.cameraState.zoom + 1
+                    )
+                case let .failure(error):
+                    print("An error occurred: \(error.localizedDescription)")
+            }
+        }
         return true
     }
     
-    private func animatingNewViewPort(map: MapboxMap, coordinate: CLLocationCoordinate2D) {
-        let newZoom = map.cameraState.zoom + 1
-        withViewportAnimation(.fly) {
-            viewport = .camera(center: coordinate, zoom: newZoom)
+    private func updateLandmarks(_ proxy: MapProxy) {
+        guard let map = proxy.map, let geoJSONData = viewModel.landmarksAsGeoJSON() else { return }
+        let geoJSON = try? JSONDecoder().decode(GeoJSONObject.self, from: geoJSONData)
+        if let geoJSON = geoJSON {
+            map.updateGeoJSONSource(withId: ItemId.source, geoJSON: geoJSON)
         }
     }
     
@@ -67,11 +78,7 @@ extension MapUIBox {
         
         try map.addImage(resizedImage, id: "place-icon", sdf: true)
         
-        guard let url = Bundle.main.url(forResource: "icons", withExtension: "geojson") else { return }
-        
         var source = GeoJSONSource(id: ItemId.source)
-        source.data = .url(url)
-        
         source.cluster = true
         source.clusterRadius = 50
         

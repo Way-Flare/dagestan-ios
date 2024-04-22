@@ -1,17 +1,26 @@
 import SwiftUI
+import DagestanKit
 
 @main
 struct EntryPoint: App {
+    private let networkService = DTNetworkService()
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(networkService: networkService)
         }
     }
 }
 
 struct ContentView: View {
-    @StateObject private var mapViewModel = MapViewModel()
+    let placesService = PlacesService(networkService: DTNetworkService())
+    @StateObject private var mapViewModel: MapViewModel
+    
+    // сделать бы норм инжект)
+    init(networkService: NetworkServiceProtocol) {
+        let placesService = PlacesService(networkService: networkService)
+        _mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
+    }
     
     var body: some View {
         let _ = Self._printChanges()
@@ -53,7 +62,7 @@ private extension ContentView {
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-            case .map: MapUIBox()
+            case .map: MapUIBox(viewModel: mapViewModel)
             case .favorite: Text("Favorite")
             case .profile: Text("Profile")
             case .route: Text("Route")
