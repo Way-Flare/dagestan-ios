@@ -72,10 +72,6 @@ extension Project {
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
             "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
-            // TODO: Будет удалено после DAGESTAN-63
-            "NSAppTransportSecurity": .dictionary([
-                "NSAllowsArbitraryLoads": .boolean(true)
-            ]),
             "UIAppFonts": .array([
                 .string("Manrope-ExtraBold.ttf"),
                 .string("Manrope-SemiBold.ttf"),

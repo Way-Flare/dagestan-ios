@@ -34,7 +34,7 @@ public extension ApiEndpoint {
 
     private var baseURL: URL {
         // swiftlint:disable:next force_unwrapping
-        let url = URL(string: "http://51.250.105.67:8080")!
+        let url = URL(string: "https://test.dagestan-trails.ru")!
 
         return url
     }
