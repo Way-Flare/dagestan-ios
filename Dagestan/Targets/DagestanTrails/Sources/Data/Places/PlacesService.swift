@@ -9,12 +9,8 @@
 import Foundation
 import DagestanKit
 
-protocol PlacesServiceProtocol {
-    func getAllPlaces() async throws -> [Place]
-}
-
-final class PlacesService: PlacesServiceProtocol {
-    
+/// Сервис для работы с точками/местами
+final class PlacesService: IPlacesService {
     private let networkService: NetworkServiceProtocol
     
     init(networkService: NetworkServiceProtocol) {
@@ -27,13 +23,12 @@ final class PlacesService: PlacesServiceProtocol {
         do {
             let places = try await networkService.execute(
                 endpoint,
-                expecting: [Place].self
+                expecting: [PlaceDTO].self
             )
             
-            return places
+            return places.map { $0.asDomain() }
         } catch {
             throw error
         }
     }
-    
 }

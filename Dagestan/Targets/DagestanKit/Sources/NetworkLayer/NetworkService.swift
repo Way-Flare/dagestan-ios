@@ -46,19 +46,23 @@ public final class DTNetworkService: NetworkServiceProtocol {
 
     private func load<T: Decodable>(_ request: URLRequest, expecting type: T.Type) async throws -> T {
         do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw RequestError.noResponse
             }
             switch httpResponse.statusCode {
                 case 200...299:
-                    guard let decodedResponse = try? JSONDecoder().decode(type, from: data) else {
+                    guard let decodedResponse = try? decoder.decode(type, from: data) else {
                         throw RequestError.failedDecode
                     }
 
                     return decodedResponse
                 default:
-                    guard let decodedError = try? JSONDecoder().decode(ServerError.self, from: data) else {
+                    guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {
                         throw RequestError.unexpectedStatusCode
                     }
                     throw RequestError.serverError(decodedError)

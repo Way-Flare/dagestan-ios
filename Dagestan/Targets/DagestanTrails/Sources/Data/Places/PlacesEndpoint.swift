@@ -6,7 +6,7 @@
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import Foundation
+import CoreLocation
 import DagestanKit
 
 enum PlacesEndpoint {
@@ -27,12 +27,4 @@ extension PlacesEndpoint: ApiEndpoint {
     var headers: Headers? {
         return nil
     }
-    
-}
-
-struct Place: Decodable {
-    let id: Int
-    let longitude: Double
-    let latitude: Double
-    let name: String
 }

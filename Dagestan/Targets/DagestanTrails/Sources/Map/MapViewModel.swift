@@ -1,26 +1,22 @@
 import MapKit
 import SwiftUI
 import DagestanKit
+@_spi(Experimental)
+import MapboxMaps
 
 final class MapViewModel: ObservableObject {
-    private let service = PlacesService(networkService: DTNetworkService())
-    @Published var landmarks: [Location] = []
-    @Published var mapLocation: Location {
-        didSet {
-            updateMapRegion(location: mapLocation)
-        }
-    }
-    @Published var region = MKCoordinateRegion()
+    @Published var viewport: Viewport = .styleDefault
+    @Published var landmarks: [Place] = []
     
+    private let service: IPlacesService
     private var task: Task<Void, Error>?
-    private let mapSpan = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+    
+    /// Инициализатор
+    /// - Parameter service: Сервис для работы с местами/точками
+    init(service: IPlacesService) {
+        self.service = service
+        self.viewport = .styleDefault
 
-    init(
-        name: String = "Сулакский каньон",
-        coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 43.021772, longitude: 46.826379)
-    ) {
-        self.mapLocation = Location(name: name, coordinate: coordinate)
-        self.region = MKCoordinateRegion(center: mapLocation.coordinate, span: mapSpan)
         loadLandmarks()
     }
 
@@ -28,43 +24,65 @@ final class MapViewModel: ObservableObject {
         task?.cancel()
     }
     
+    /// Устанвливает с анимацией viewPort с новыми координатами и зумом
+    /// - Parameters:
+    ///   - coordinate: Координаты
+    ///   - zoomLevel: Уровень зума
+    func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat) {
+        withViewportAnimation(.fly) {
+            viewport = .camera(center: coordinate, zoom: zoomLevel)
+        }
+    }
+    
     private func loadLandmarks() {
         Task {
-            try? await service.getAllPlaces()
-        }
-        task?.cancel()
-        task = Task {
-            let landmarks = await loadLandmarksAsync()
-            await MainActor.run {
-                self.landmarks = landmarks
-                self.mapLocation = landmarks.first ?? self.mapLocation
+            do {
+                let places = try await service.getAllPlaces()
+                await MainActor.run { [weak self] in
+                    self?.landmarks = places
+                }
+            } catch {
+                print("Failed to load landmarks: \(error.localizedDescription)")
             }
         }
     }
-
-    private func loadLandmarksAsync() async -> [Location] {
-        // Симуляция задержки сетевого запроса
-        try? await Task.sleep(nanoseconds: 1_000_000_000) // Задержка в 1 секунды
-
-        // После "задержки" обновляем данные о достопримечательностях
-        let loadedLandmarks = [
-            Location(name: "Гора Базардюзю", coordinate: CLLocationCoordinate2D(latitude: 42.4464, longitude: 46.7933)),
-            Location(name: "Сулакский каньон", coordinate: CLLocationCoordinate2D(latitude: 43.021772, longitude: 46.826379)),
-            Location(name: "Дербентская крепость", coordinate: CLLocationCoordinate2D(latitude: 42.0402, longitude: 48.2908))
-        ]
-
-        return loadedLandmarks
-    }
-
-    private func updateMapRegion(location: Location) {
-        withAnimation(.easeInOut) {
-            region = MKCoordinateRegion(center: location.coordinate, span: mapSpan)
-        }
-    }
-
-    func setMapLocation(location: Location) {
-        mapLocation = location
-    }
 }
 
-let mahachkalaCoordinates = CLLocationCoordinate2D(latitude: 42.98, longitude: 47.50)
+// MARK: - Adapters
+
+extension MapViewModel {
+    /// Конвертирует модели Place в GeoJson для работы с MapBox
+    /// - Returns: Data?
+    func landmarksAsGeoJSON() -> Data? {
+        let features = landmarks.map { landmark -> [String: Any] in
+            let geometry: [String: Any] = [
+                "type": "Point",
+                "coordinates": [landmark.coordinate.longitude, landmark.coordinate.latitude]
+            ]
+            let properties: [String: Any?] = [
+                "id": landmark.id,
+                "name": landmark.name,
+                "description": landmark.shortDescription
+            ]
+
+            return [
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": properties
+            ]
+        }
+        
+        let geoJSON: [String: Any] = [
+            "type": "FeatureCollection",
+            "features": features
+        ]
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: geoJSON)
+            return jsonData
+        } catch {
+            print("Error serializing geoJSON: \(error)")
+            return nil
+        }
+    }
+}
