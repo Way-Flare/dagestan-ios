@@ -8,12 +8,15 @@ final class MapViewModel: ObservableObject {
     @Published var viewport: Viewport = .styleDefault
     @Published var landmarks: [Place] = []
     
-    private let service: PlacesService
+    private let service: IPlacesService
     private var task: Task<Void, Error>?
-
-    init(service: PlacesService) {
+    
+    /// Инициализатор
+    /// - Parameter service: Сервис для работы с местами/точками
+    init(service: IPlacesService) {
         self.service = service
         self.viewport = .styleDefault
+
         loadLandmarks()
     }
 
@@ -21,6 +24,10 @@ final class MapViewModel: ObservableObject {
         task?.cancel()
     }
     
+    /// Устанвливает с анимацией viewPort с новыми координатами и зумом
+    /// - Parameters:
+    ///   - coordinate: Координаты
+    ///   - zoomLevel: Уровень зума
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat) {
         withViewportAnimation(.fly) {
             viewport = .camera(center: coordinate, zoom: zoomLevel)
@@ -41,7 +48,11 @@ final class MapViewModel: ObservableObject {
     }
 }
 
+// MARK: - Adapters
+
 extension MapViewModel {
+    /// Конвертирует модели Place в GeoJson для работы с MapBox
+    /// - Returns: Data?
     func landmarksAsGeoJSON() -> Data? {
         let features = landmarks.map { landmark -> [String: Any] in
             let geometry: [String: Any] = [

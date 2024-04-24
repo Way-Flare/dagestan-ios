@@ -15,12 +15,14 @@ struct PlaceDTO: Decodable {
     let latitude: Double
     let name: String
     let shortDescription: String?
-    let image: ImageDTO?
+    let image: ImageDTO? // TODO: Бэкенд должен будет возвращать массив картинок
     let rating: Double?
     let workTime: String?
     let tags: [TagPlaceDTO]?
     let feedbackCount: Int?
 }
+
+// MARK: - Convert to Domain model
 
 extension PlaceDTO: Domainable {
     typealias DomainType = Place
@@ -33,7 +35,7 @@ extension PlaceDTO: Domainable {
             coordinate: coordinate,
             name: name,
             shortDescription: shortDescription,
-            image: image,
+            image: URL(string: image?.file ?? ""),
             rating: rating,
             workTime: workTime,
             tags: tags?.map { $0.asDomain() },

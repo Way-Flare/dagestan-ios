@@ -9,11 +9,8 @@
 import Foundation
 import DagestanKit
 
-protocol PlacesServiceProtocol {
-    func getAllPlaces() async throws -> [Place]
-}
-
-final class PlacesService: PlacesServiceProtocol {
+/// Сервис для работы с точками/местами
+final class PlacesService: IPlacesService {
     private let networkService: NetworkServiceProtocol
     
     init(networkService: NetworkServiceProtocol) {

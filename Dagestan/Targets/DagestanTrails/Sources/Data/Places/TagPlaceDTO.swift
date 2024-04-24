@@ -13,9 +13,8 @@ public struct TagPlaceDTO: Decodable {
     let name: String
 }
 
+// MARK: - Convert to Domain model
 extension TagPlaceDTO: Domainable {
-    public typealias DomainType = TagPlace
-    
     public func asDomain() -> TagPlace {
         return TagPlace(rawValue: name) ?? .unknown
     }

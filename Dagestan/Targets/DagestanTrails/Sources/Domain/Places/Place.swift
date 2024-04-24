@@ -14,7 +14,7 @@ public struct Place {
     public let coordinate: CLLocationCoordinate2D
     public let name: String
     public let shortDescription: String?
-    public let image: ImageDTO?
+    public let image: URL?
     public let rating: Double?
     public let workTime: String?
     public let tags: [TagPlace]?
