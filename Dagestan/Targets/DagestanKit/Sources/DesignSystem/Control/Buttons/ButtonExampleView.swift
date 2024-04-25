@@ -12,10 +12,6 @@ public struct ButtonExampleView: View {
     @State private var selectedType: WrappedButtonType = .primary
     private let buttonType: ControlMenuItem
     private let image = Image(systemName: "target")
-    
-    private var imageConfigurations: [[ImagePosition]] {
-        [[], [.left], [.right], [.left, .right]]
-    }
         
     public init(buttonType: ControlMenuItem = .button) {
         self.buttonType = buttonType
@@ -141,10 +137,6 @@ extension ButtonExampleView {
                 case .disabled: return .disabled
             }
         }
-    }
-
-    enum ImagePosition: Hashable {
-        case left, right
     }
 }
 
