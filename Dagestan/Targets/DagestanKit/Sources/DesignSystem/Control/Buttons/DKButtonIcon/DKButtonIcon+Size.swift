@@ -1,5 +1,5 @@
 //
-//  Size.swift
+//  DKButtonIcon+Size.swift
 //  DagestanKit
 //
 //  Created by Рассказов Глеб on 25.04.2024.
@@ -9,12 +9,18 @@
 import Foundation
 
 extension DKButtonIcon {
+    /// Перечисление `Size` определяет размеры для пользовательского элемента `DKButtonIcon`.
     enum Size {
+        /// Большой размер.
         case l
+        /// Средний размер.
         case m
+        /// Маленький размер.
         case s
+        /// Очень маленький размер.
         case xs
 
+        /// Радиус скругления углов в зависимости от размера кнопки.
         var cornerRadius: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt12
@@ -23,6 +29,7 @@ extension DKButtonIcon {
             }
         }
         
+        /// Отступы в зависимости от размера кнопки.
         var padding: CGFloat {
             switch self {
                 case .l: return Grid.pt14
@@ -31,6 +38,7 @@ extension DKButtonIcon {
             }
         }
 
+        /// Размер изображения в зависимости от размера кнопки.
         var imageSize: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt20

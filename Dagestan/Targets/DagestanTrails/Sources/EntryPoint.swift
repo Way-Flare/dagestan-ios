@@ -7,7 +7,7 @@ struct EntryPoint: App {
     
     var body: some Scene {
         WindowGroup {
-            ControlMenuView()
+            ContentView(networkService: networkService)
         }
     }
 }

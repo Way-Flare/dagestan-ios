@@ -1,5 +1,5 @@
 //
-//  Size.swift
+//  DKButton+Size.swift
 //  DagestanKit
 //
 //  Created by Рассказов Глеб on 25.04.2024.
@@ -9,12 +9,18 @@
 import Foundation
 
 extension DKButton {
-    enum Size: String {
+    /// Перечисление `Size` определяет размеры для пользовательского элемента `DKButton`.
+    enum Size {
+        /// Большой размер.
         case l
+        /// Средний размер.
         case m
+        /// Маленький размер.
         case s
+        /// Очень маленький размер.
         case xs
 
+        /// Высота кнопки в зависимости от размера кнопки.
         var height: CGFloat {
             switch self {
                 case .l: return Grid.pt52
@@ -24,14 +30,16 @@ extension DKButton {
             }
         }
 
-        var paddings: (vertical: CGFloat, horizontal: CGFloat) {
+        /// Горизонтальные отступы в зависимости от размера кнопки.
+        var horizontalPadding: CGFloat {
             switch self {
-                case .l: return (Grid.pt14, Grid.pt20)
-                case .m, .s: return (Grid.pt10, Grid.pt20)
-                case .xs: return (Grid.pt6, Grid.pt20)
+                case .l: return Grid.pt14
+                case .m, .s: return Grid.pt10
+                case .xs: return Grid.pt6
             }
         }
 
+        /// Радиус скругления углов в зависимости от размера кнопки.
         var cornerRadius: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt12
@@ -39,6 +47,7 @@ extension DKButton {
             }
         }
 
+        /// Размер шрифта в зависимости от размера кнопки.
         var fontSize: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt16
@@ -46,6 +55,7 @@ extension DKButton {
             }
         }
 
+        /// Размер изображения в зависимости от размера кнопки.
         var imageSize: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt20

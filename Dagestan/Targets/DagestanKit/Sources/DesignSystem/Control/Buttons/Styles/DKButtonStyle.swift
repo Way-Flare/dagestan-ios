@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+/// Протокол `DKButtonStyle` определяет стилизацию для различных состояний кнопки.
 protocol DKButtonStyle {
     var `default`: DKButtonAppearance { get }
     var hover: DKButtonAppearance { get }
@@ -15,13 +16,15 @@ protocol DKButtonStyle {
     var disabled: DKButtonAppearance { get }
 }
 
-enum DKButtonState: String {
+/// Перечисление `DKButtonState` определяет возможные состояния кнопки.
+enum DKButtonState {
     case `default`
     case hover
     case active
     case disabled
 }
 
+/// Протокол `DKButtonAppearance` описывает внешний вид кнопки, включая цвета переднего и заднего плана.
 protocol DKButtonAppearance {
     var foregroundColor: Color { get }
     var backgroundColor: Color { get }

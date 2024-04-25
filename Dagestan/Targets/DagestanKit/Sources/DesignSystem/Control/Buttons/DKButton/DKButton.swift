@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+/// `DKButton` - пользовательская структура кнопки для интерфейса.
 struct DKButton: View {
     let title: String
     let size: Size
@@ -37,14 +38,14 @@ struct DKButton: View {
 
     var body: some View {
         Button(action: action ) {
-            contentButton
+            contentView
         }
         .disabled(state == .disabled)
     }
 }
 
 extension DKButton {
-    private var contentButton: some View {
+    private var contentView: some View {
         HStack(spacing: Grid.pt8) {
             leftImage?
                 .resizable()
@@ -57,7 +58,7 @@ extension DKButton {
         }
         .foregroundStyle(stateStyle.foregroundColor)
         .frame(height: size.height)
-        .padding(.horizontal, size.paddings.horizontal)
+        .padding(.horizontal, size.horizontalPadding)
         .background(stateStyle.backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: size.cornerRadius))
     }
@@ -69,18 +70,5 @@ extension DKButton {
             case .active: type.active
             case .disabled: type.disabled
         }
-    }
-}
-
-#Preview {
-    DKButton(
-        title: "Label",
-        size: .s,
-        state: .disabled,
-        type: .primary,
-        leftImage: Image(systemName: "target"),
-        rightImage: Image(systemName: "target")
-    ) {
-        print("You")
     }
 }

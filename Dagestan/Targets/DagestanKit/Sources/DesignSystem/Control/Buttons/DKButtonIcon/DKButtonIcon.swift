@@ -31,14 +31,14 @@ struct DKButtonIcon: View {
 
     var body: some View {
         Button(action: action) {
-            contentButton
+            contentView
         }
         .disabled(state == .disabled)
     }
 }
 
 extension DKButtonIcon {
-    private var contentButton: some View {
+    private var contentView: some View {
         icon
             .resizable()
             .frame(width: size.imageSize, height: size.imageSize)
@@ -55,16 +55,5 @@ extension DKButtonIcon {
             case .active: type.active
             case .disabled: type.disabled
         }
-    }
-}
-
-#Preview {
-    DKButtonIcon(
-        icon: Image(systemName: "target"),
-        size: .l,
-        state: .disabled,
-        type: .primary
-    ) {
-        print("fsa")
     }
 }
