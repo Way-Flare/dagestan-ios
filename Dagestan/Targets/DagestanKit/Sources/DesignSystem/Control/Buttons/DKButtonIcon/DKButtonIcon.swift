@@ -33,6 +33,11 @@ struct DKButtonIcon: View {
         Button(action: action) {
             contentView
         }
+        .buttonVisualStyle(
+            style: type,
+            appearance: stateStyle,
+            cornerRadius: size.cornerRadius
+        )
         .disabled(state == .disabled)
     }
 }
@@ -42,10 +47,7 @@ extension DKButtonIcon {
         icon
             .resizable()
             .frame(width: size.imageSize, height: size.imageSize)
-            .foregroundStyle(stateStyle.foregroundColor)
             .padding(size.padding)
-            .background(stateStyle.backgroundColor)
-            .clipShape(RoundedRectangle(cornerRadius: size.cornerRadius))
     }
 
     private var stateStyle: DKButtonAppearance {
