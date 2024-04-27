@@ -13,5 +13,7 @@ protocol IPlacesService {
     /// Получение всех мест
     /// - Returns: [Place] - массив мест
     func getAllPlaces() async throws -> [Place]
-    func getPlace(id: Int) async throws -> Place
+    /// Получение конкретного места
+    /// - Returns: PlaceDetail - детальное место
+    func getPlace(id: Int) async throws -> PlaceDetail
 }

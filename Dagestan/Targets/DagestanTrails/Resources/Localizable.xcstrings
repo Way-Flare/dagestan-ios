@@ -140,6 +140,9 @@
     "Favorite" : {
 
     },
+    "Loading..." : {
+
+    },
     "Profile" : {
 
     },
@@ -213,6 +216,9 @@
           }
         }
       }
+    },
+    "Unknown" : {
+
     }
   },
   "version" : "1.0"

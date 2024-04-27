@@ -32,13 +32,13 @@ final class PlacesService: IPlacesService {
         }
     }
     
-    func getPlace(id: Int) async throws -> Place {
+    func getPlace(id: Int) async throws -> PlaceDetail {
         let endpoint = PlacesEndpoint.place(id: id)
         
         do {
             let place = try await networkService.execute(
                 endpoint,
-                expecting: PlaceDTO.self
+                expecting: PlaceDetailDTO.self
             )
             
             return place.asDomain()

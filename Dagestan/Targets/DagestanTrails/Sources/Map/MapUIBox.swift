@@ -28,9 +28,16 @@ struct MapUIBox: View {
                 .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
                     handleTap(proxy: proxy, feature: feature, context: context)
                 }
-                .onChange(of: viewModel.landmarks) { _ in updateLandmarks(proxy) }
+                .onLayerTapGesture(ItemId.point) { feature, _ in
+                    viewModel.selectPlace(by: feature.feature)
+                    return true
+                }
+                .onChange(of: viewModel.places) { _ in updatePlaces(proxy) }
         }
         .ignoresSafeArea()
+        .sheet(isPresented: $viewModel.isShowingDetailView) {
+            PlaceView(service: viewModel.service, place: viewModel.selectedPlace) // потом подумаю как можно норм инжект сделать вместо viewModel.service
+        }
     }
 }
 
@@ -63,8 +70,8 @@ extension MapUIBox {
         return true
     }
     
-    private func updateLandmarks(_ proxy: MapProxy) {
-        guard let map = proxy.map, let geoJSONData = viewModel.landmarksAsGeoJSON() else { return }
+    private func updatePlaces(_ proxy: MapProxy) {
+        guard let map = proxy.map, let geoJSONData = viewModel.placesAsGeoJSON() else { return }
         let geoJSON = try? JSONDecoder().decode(GeoJSONObject.self, from: geoJSONData)
         if let geoJSON = geoJSON {
             map.updateGeoJSONSource(withId: ItemId.source, geoJSON: geoJSON)

@@ -20,7 +20,7 @@ extension PlacesEndpoint: ApiEndpoint {
         switch self {
             case .allPlaces:
                 return "places/all"
-            case .place(let id):
+            case let .place(id):
                 return "places/\(id)"
         }
     }
