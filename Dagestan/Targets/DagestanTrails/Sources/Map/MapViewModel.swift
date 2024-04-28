@@ -8,7 +8,6 @@ final class MapViewModel: ObservableObject {
     @Published var viewport: Viewport = .styleDefault
     @Published var places: [Place] = []
     @Published var selectedPlace: Place?
-    @Published var isShowingDetailView = false
 
     let service: IPlacesService
     private var task: Task<Void, Error>?
@@ -37,12 +36,12 @@ final class MapViewModel: ObservableObject {
     }
 
     private func loadPlaces() {
-        Task {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            
             do {
                 let places = try await service.getAllPlaces()
-                await MainActor.run { [weak self] in
-                    self?.places = places
-                }
+                self.places = places
             } catch {
                 print("Failed to load landmarks: \(error.localizedDescription)")
             }
@@ -57,7 +56,6 @@ final class MapViewModel: ObservableObject {
 
         withAnimation {
             selectedPlace = selected
-            isShowingDetailView = true
         }
     }
 }

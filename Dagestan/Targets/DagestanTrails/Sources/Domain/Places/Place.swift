@@ -9,7 +9,7 @@
 import CoreLocation
 import DagestanKit
 
-public struct Place {
+public struct Place: Identifiable {
     public let id: Int
     public let coordinate: CLLocationCoordinate2D
     public let name: String

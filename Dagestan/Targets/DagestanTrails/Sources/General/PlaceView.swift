@@ -10,12 +10,12 @@ import SwiftUI
 
 struct PlaceView: View {
     let service: IPlacesService
-    let place: Place?
+    let place: Place
     @State private var isShowingDetail = false
 
     var body: some View {
         VStack {
-            Text(place?.name ?? "Unknown")
+            Text(place.name)
                 .padding()
                 .background(.indigo)
             Button("View Details") {
@@ -23,9 +23,7 @@ struct PlaceView: View {
             }
         }
         .sheet(isPresented: $isShowingDetail) {
-            if let placeId = place?.id {
-                PlaceDetailView(placeId: placeId, service: service)
-            }
+            PlaceDetailView(placeId: place.id, service: service)
         }
     }
 }

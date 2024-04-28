@@ -35,8 +35,8 @@ struct MapUIBox: View {
                 .onChange(of: viewModel.places) { _ in updatePlaces(proxy) }
         }
         .ignoresSafeArea()
-        .sheet(isPresented: $viewModel.isShowingDetailView) {
-            PlaceView(service: viewModel.service, place: viewModel.selectedPlace) // потом подумаю как можно норм инжект сделать вместо viewModel.service
+        .sheet(item: $viewModel.selectedPlace) {
+            PlaceView(service: viewModel.service, place: $0) // потом подумаю как можно норм инжект сделать вместо viewModel.service
         }
     }
 }

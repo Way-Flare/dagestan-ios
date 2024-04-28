@@ -28,12 +28,12 @@ class PlaceDetailViewModel: ObservableObject {
     }
     
     func loadPlaceDetail() {
-        Task {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            
             do {
                 let place = try await service.getPlace(id: placeId)
-                await MainActor.run { [weak self] in
-                    self?.place = place
-                }
+                self.place = place
             } catch {
                 print("Failed to load place: \(error.localizedDescription)")
             }
