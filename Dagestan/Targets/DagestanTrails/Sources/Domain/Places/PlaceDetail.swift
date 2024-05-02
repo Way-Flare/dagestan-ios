@@ -15,7 +15,7 @@ struct PlaceDetail {
     let tags: [TagPlace]
     let shortDescription: String
     let description: String
-    let images: [ImageDTO]
+    let images: [URL]
     let workTime: String
     let placeFeedbacks: [PlaceFeedback]
     let rating: Int
@@ -27,7 +27,7 @@ struct PlaceDetail {
 extension PlaceDetail {
     struct PlaceFeedback {
         let id: Int
-        let images: [ImageDTO]
+        let images: [URL]
         let user: User
         let stars: Int
         let comment: String
@@ -42,7 +42,7 @@ extension PlaceDetail {
     struct PlaceWay {
         let id: Int
         let info: String
-        let images: [ImageDTO]
+        let images: [URL]
     }
 
     struct Contact {
@@ -55,7 +55,7 @@ extension PlaceDetail {
         let id: Int
         let title: String
         let shortDescription: String
-        let images: [ImageDTO]
+        let images: [URL]
         let rating: Int
     }
 }

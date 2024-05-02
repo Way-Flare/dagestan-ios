@@ -77,7 +77,7 @@ extension PlaceDetailDTO: Domainable {
             tags: tags.map { $0.asDomain() },
             shortDescription: shortDescription,
             description: description,
-            images: images,
+            images: images.compactMap { $0.asDomain() },
             workTime: workTime,
             placeFeedbacks: placeFeedbacks.map { $0.asDomain() },
             rating: rating,
@@ -94,7 +94,7 @@ extension PlaceDetailDTO.PlaceFeedbackDTO: Domainable {
     func asDomain() -> PlaceDetail.PlaceFeedback {
         PlaceDetail.PlaceFeedback(
             id: id,
-            images: images,
+            images: images.compactMap { $0.asDomain() },
             user: user.asDomain(),
             stars: stars,
             comment: comment,
@@ -121,7 +121,7 @@ extension PlaceDetailDTO.PlaceWayDTO: Domainable {
         PlaceDetail.PlaceWay(
             id: id,
             info: info,
-            images: images
+            images: images.compactMap { $0.asDomain() }
         )
     }
 }
@@ -146,7 +146,7 @@ extension PlaceDetailDTO.RouteDTO: Domainable {
             id: id,
             title: title,
             shortDescription: shortDescription,
-            images: images,
+            images: images.compactMap { $0.asDomain() },
             rating: rating
         )
     }

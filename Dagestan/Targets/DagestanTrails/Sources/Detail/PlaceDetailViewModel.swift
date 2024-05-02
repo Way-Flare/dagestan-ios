@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PlaceDetailViewModel: ObservableObject {
+final class PlaceDetailViewModel: ObservableObject {
     @Published var place: PlaceDetail?
     
     private let service: IPlacesService
