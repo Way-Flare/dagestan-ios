@@ -54,11 +54,13 @@ extension DKButton {
         HStack(spacing: Grid.pt8) {
             leftImage?
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: size.imageSize, height: size.imageSize)
             Text(title)
                 .font(.manrope(weight: .semibold, size: size.fontSize))
             rightImage?
                 .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: size.imageSize, height: size.imageSize)
         }
         .frame(height: size.height)

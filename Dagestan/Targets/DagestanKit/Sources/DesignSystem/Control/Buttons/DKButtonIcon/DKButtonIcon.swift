@@ -46,6 +46,7 @@ extension DKButtonIcon {
     private var contentView: some View {
         icon
             .resizable()
+            .aspectRatio(contentMode: .fit)
             .frame(width: size.imageSize, height: size.imageSize)
             .padding(size.padding)
     }
