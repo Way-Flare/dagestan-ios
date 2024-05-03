@@ -9,30 +9,30 @@
 import SwiftUI
 
 struct DKButtonOverlay: DKButtonStyle {
-    var `default`: DKButtonAppearance = DKButtonSecondaryDefault()
-    var hover: DKButtonAppearance = DKButtonSecondaryHover()
-    var active: DKButtonAppearance = DKButtonSecondaryActive()
-    var disabled: DKButtonAppearance = DKButtonSecondaryDisabled()
+    var `default`: DKButtonAppearance = DKButtonOverlayDefault()
+    var hover: DKButtonAppearance = DKButtonOverlayHover()
+    var active: DKButtonAppearance = DKButtonOverlayActive()
+    var disabled: DKButtonAppearance = DKButtonOverlayDisabled()
 }
 
-private struct DKButtonSecondaryDefault: DKButtonAppearance {
-    var foregroundColor: Color = DagestanKitAsset.iconOnAccent.swiftUIColor
-    var backgroundColor: Color = DagestanKitAsset.overlayDefault.swiftUIColor
+private struct DKButtonOverlayDefault: DKButtonAppearance {
+    var foregroundColor: Color = DagestanKitAsset.onAccent.swiftUIColor
+    var backgroundColor: Color = DagestanKitAsset.bgOverlay1.swiftUIColor
 }
 
-private struct DKButtonSecondaryHover: DKButtonAppearance {
-    var foregroundColor: Color = DagestanKitAsset.iconOnAccent.swiftUIColor
-    var backgroundColor: Color = DagestanKitAsset.overlayHover.swiftUIColor
+private struct DKButtonOverlayHover: DKButtonAppearance {
+    var foregroundColor: Color = DagestanKitAsset.onAccent.swiftUIColor
+    var backgroundColor: Color = DagestanKitAsset.bgOverlay2.swiftUIColor
 }
 
-private struct DKButtonSecondaryActive: DKButtonAppearance {
-    var foregroundColor: Color = DagestanKitAsset.iconOnAccent.swiftUIColor
-    var backgroundColor: Color = DagestanKitAsset.overlayActive.swiftUIColor
+private struct DKButtonOverlayActive: DKButtonAppearance {
+    var foregroundColor: Color = DagestanKitAsset.onAccent.swiftUIColor
+    var backgroundColor: Color = DagestanKitAsset.bgOverlay3.swiftUIColor
 }
 
-private struct DKButtonSecondaryDisabled: DKButtonAppearance {
-    var foregroundColor: Color = DagestanKitAsset.iconOnAccent.swiftUIColor
-    var backgroundColor: Color = DagestanKitAsset.overlayDefault.swiftUIColor.opacity(0.5)
+private struct DKButtonOverlayDisabled: DKButtonAppearance {
+    var foregroundColor: Color = DagestanKitAsset.onAccent.swiftUIColor
+    var backgroundColor: Color = DagestanKitAsset.bgOverlay1.swiftUIColor.opacity(0.5)
 }
 
 extension DKButtonStyle where Self == DKButtonOverlay {

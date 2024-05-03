@@ -91,6 +91,7 @@ extension ButtonExampleView {
         case ghost = "Ghost"
         case nature = "Nature"
         case overlay = "Overlay"
+        case favorite = "Favorite"
             
         var buttonType: DKButtonStyle {
             switch self {
@@ -99,6 +100,7 @@ extension ButtonExampleView {
                 case .ghost: return .ghost
                 case .nature: return .nature
                 case .overlay: return .overlay
+                case .favorite: return .favorite
             }
         }
     }
