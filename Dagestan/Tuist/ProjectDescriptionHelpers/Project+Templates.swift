@@ -45,7 +45,7 @@ extension Project {
             deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
             sources: ["Targets/\(name)/Sources/**"],
-            resources: [],
+            resources: ["Targets/\(name)/Resources/**"],
             dependencies: []
         )
 

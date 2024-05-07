@@ -6,20 +6,22 @@
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import Foundation
+import DagestanKit
 
 enum TabItem: Int, CaseIterable {
     case map
+    case route
     case favorite
     case profile
-    case route
+    case dagestankit
 
     var title: String {
         switch self {
-            case .map: return "tab.item.favorites"
-            case .favorite: return "tab.item.favorites"
-            case .profile: return "tab.item.favorites"
-            case .route: return "tab.item.favorites"
+            case .map: return "Карта"
+            case .favorite: return "Избранное"
+            case .profile: return "Профиль"
+            case .route: return "Маршруты"
+            case .dagestankit: return "DagestanKit"
         }
     }
 
@@ -29,6 +31,7 @@ enum TabItem: Int, CaseIterable {
             case .favorite: return "star.fill"
             case .profile: return "person.fill"
             case .route: return "location.fill"
+            case .dagestankit: return "arkit"
         }
     }
 }

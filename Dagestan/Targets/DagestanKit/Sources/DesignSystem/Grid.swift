@@ -16,12 +16,16 @@ public enum Grid {
     public static let pt0: CGFloat = 0.0
     /// 4 поинта
     public static let pt4: CGFloat = 4.0
+    /// 6 поинта
+    public static let pt6: CGFloat = 6.0
     /// 8 поинтов
     public static let pt8: CGFloat = 8.0
     /// 10 поинтов
     public static let pt10: CGFloat = 10.0
     /// 12 поинтов
     public static let pt12: CGFloat = 12.0
+    /// 14 поинтов
+    public static let pt14: CGFloat = 14.0
     /// 16 поинтов
     public static let pt16: CGFloat = 16.0
     /// 20 поинтов

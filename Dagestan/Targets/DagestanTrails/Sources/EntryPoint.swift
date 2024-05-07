@@ -63,9 +63,8 @@ private extension ContentView {
     func tabItemView(for item: TabItem) -> some View {
         switch item {
             case .map: MapUIBox(viewModel: mapViewModel)
-            case .favorite: Text("Favorite")
-            case .profile: Text("Profile")
-            case .route: Text("Route")
+            case .dagestankit: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
+            default: Text(item.title)
         }
     }
 }
