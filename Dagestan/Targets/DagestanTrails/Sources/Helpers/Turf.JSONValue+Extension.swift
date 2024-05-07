@@ -11,19 +11,19 @@ import MapboxMaps
 extension Turf.JSONValue {
     var intValue: Int? {
         switch self {
-        case let .number(num):
-            return Int(num)
-        default:
-            return nil
+            case let .number(num):
+                return Int(num)
+            default:
+                return nil
         }
     }
 
     var stringValue: String? {
         switch self {
-        case let .string(str):
-            return str
-        default:
-            return nil
+            case let .string(str):
+                return str
+            default:
+                return nil
         }
     }
 }
