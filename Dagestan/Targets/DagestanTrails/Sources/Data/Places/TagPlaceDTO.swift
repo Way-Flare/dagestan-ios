@@ -9,8 +9,8 @@
 import DagestanKit
 
 public struct TagPlaceDTO: Decodable {
-    let id: Int
-    let name: String
+    public let id: Int
+    public let name: String
 }
 
 // MARK: - Convert to Domain model

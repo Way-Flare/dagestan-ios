@@ -31,4 +31,19 @@ final class PlacesService: IPlacesService {
             throw error
         }
     }
+    
+    func getPlace(id: Int) async throws -> PlaceDetail {
+        let endpoint = PlacesEndpoint.place(id: id)
+        
+        do {
+            let place = try await networkService.execute(
+                endpoint,
+                expecting: PlaceDetailDTO.self
+            )
+            
+            return place.asDomain()
+        } catch {
+            throw error
+        }
+    }
 }
