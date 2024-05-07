@@ -87,6 +87,7 @@ extension Project {
             deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
+            resources: ["Targets/\(name)/Resources/**"],
             scripts: [.pre(script: swiftlintScript, name: "SwiftLint")],
             dependencies: dependencies
         )
