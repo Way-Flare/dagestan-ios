@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct DKButtonFavorite: DKButtonStyle {
-    var `default`: DKButtonAppearance = DKButtonFavoriteDefault()
-    var hover: DKButtonAppearance = DKButtonFavoriteHover()
-    var active: DKButtonAppearance = DKButtonFavoriteActive()
-    var disabled: DKButtonAppearance = DKButtonFavoriteDisabled()
+public struct DKButtonFavorite: DKButtonStyle {
+    public var `default`: DKButtonAppearance = DKButtonFavoriteDefault()
+    public var hover: DKButtonAppearance = DKButtonFavoriteHover()
+    public var active: DKButtonAppearance = DKButtonFavoriteActive()
+    public var disabled: DKButtonAppearance = DKButtonFavoriteDisabled()
 }
 
 private struct DKButtonFavoriteDefault: DKButtonAppearance {
@@ -35,7 +35,7 @@ private struct DKButtonFavoriteDisabled: DKButtonAppearance {
     var backgroundColor: Color = DagestanKitAsset.bgOverlay3.swiftUIColor
 }
 
-extension DKButtonStyle where Self == DKButtonFavorite {
+public extension DKButtonStyle where Self == DKButtonFavorite {
     static var favorite: DKButtonFavorite {
         DKButtonFavorite()
     }

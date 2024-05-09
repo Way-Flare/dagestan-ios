@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension DKButtonIcon {
+public extension DKButtonIcon {
     /// Перечисление `Size` определяет размеры для пользовательского элемента `DKButtonIcon`.
     enum Size {
         /// Большой размер.

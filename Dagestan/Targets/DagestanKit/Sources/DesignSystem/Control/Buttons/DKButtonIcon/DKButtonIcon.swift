@@ -8,14 +8,14 @@
 
 import SwiftUI
 
-struct DKButtonIcon: View {
-    let icon: Image
-    let size: Size
-    let state: DKButtonState
-    let type: DKButtonStyle
-    let action: (() -> Void)
+public struct DKButtonIcon: View {
+    public let icon: Image
+    public let size: Size
+    public let state: DKButtonState
+    public let type: DKButtonStyle
+    public let action: (() -> Void)
 
-    init(
+    public init(
         icon: Image,
         size: Size,
         state: DKButtonState,
@@ -29,7 +29,7 @@ struct DKButtonIcon: View {
         self.action = action
     }
 
-    var body: some View {
+    public var body: some View {
         Button(action: action) {
             contentView
         }

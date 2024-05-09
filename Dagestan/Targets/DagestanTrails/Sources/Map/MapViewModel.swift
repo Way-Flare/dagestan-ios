@@ -16,7 +16,6 @@ final class MapViewModel: ObservableObject {
     /// - Parameter service: Сервис для работы с местами/точками
     init(service: IPlacesService) {
         self.service = service
-        self.viewport = .styleDefault
 
         loadPlaces()
     }
@@ -33,6 +32,10 @@ final class MapViewModel: ObservableObject {
         withViewportAnimation(.fly) {
             viewport = .camera(center: coordinate, zoom: zoomLevel)
         }
+    }
+    
+    func close() {
+        selectedPlace = nil
     }
 
     private func loadPlaces() {

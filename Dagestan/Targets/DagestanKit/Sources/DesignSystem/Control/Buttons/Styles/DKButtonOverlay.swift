@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct DKButtonOverlay: DKButtonStyle {
-    var `default`: DKButtonAppearance = DKButtonOverlayDefault()
-    var hover: DKButtonAppearance = DKButtonOverlayHover()
-    var active: DKButtonAppearance = DKButtonOverlayActive()
-    var disabled: DKButtonAppearance = DKButtonOverlayDisabled()
+public struct DKButtonOverlay: DKButtonStyle {
+    public var `default`: DKButtonAppearance = DKButtonOverlayDefault()
+    public var hover: DKButtonAppearance = DKButtonOverlayHover()
+    public var active: DKButtonAppearance = DKButtonOverlayActive()
+    public var disabled: DKButtonAppearance = DKButtonOverlayDisabled()
 }
 
 private struct DKButtonOverlayDefault: DKButtonAppearance {
@@ -35,7 +35,7 @@ private struct DKButtonOverlayDisabled: DKButtonAppearance {
     var backgroundColor: Color = DagestanKitAsset.bgOverlay1.swiftUIColor.opacity(0.5)
 }
 
-extension DKButtonStyle where Self == DKButtonOverlay {
+public extension DKButtonStyle where Self == DKButtonOverlay {
     static var overlay: DKButtonOverlay {
         DKButtonOverlay()
     }

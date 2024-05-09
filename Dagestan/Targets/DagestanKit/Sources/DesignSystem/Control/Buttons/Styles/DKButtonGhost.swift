@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct DKButtonGhost: DKButtonStyle {
-    var `default`: DKButtonAppearance = DKButtonGhostDefault()
-    var hover: DKButtonAppearance = DKButtonGhostHover()
-    var active: DKButtonAppearance = DKButtonGhostActive()
-    var disabled: DKButtonAppearance = DKButtonGhostDisabled()
+public struct DKButtonGhost: DKButtonStyle {
+    public var `default`: DKButtonAppearance = DKButtonGhostDefault()
+    public var hover: DKButtonAppearance = DKButtonGhostHover()
+    public var active: DKButtonAppearance = DKButtonGhostActive()
+    public var disabled: DKButtonAppearance = DKButtonGhostDisabled()
 }
 
 private struct DKButtonGhostDefault: DKButtonAppearance {
@@ -35,7 +35,7 @@ private struct DKButtonGhostDisabled: DKButtonAppearance {
     var backgroundColor: Color = .clear
 }
 
-extension DKButtonStyle where Self == DKButtonGhost {
+public extension DKButtonStyle where Self == DKButtonGhost {
     static var ghost: DKButtonGhost {
         DKButtonGhost()
     }

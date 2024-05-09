@@ -22,22 +22,27 @@ struct MapUIBox: View {
     
     var body: some View {
         MapReader { proxy in
-            Map(viewport: $viewModel.viewport)
-                .mapStyle(.dark)
-                .onStyleLoaded { _ in setupMap(proxy) }
-                .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
-                    handleTap(proxy: proxy, feature: feature, context: context)
+            ZStack {
+                Map(viewport: $viewModel.viewport)
+                    .mapStyle(.streets)
+                    .onStyleLoaded { _ in setupMap(proxy) }
+                    .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
+                        handleTap(proxy: proxy, feature: feature, context: context)
+                    }
+                    .onLayerTapGesture(ItemId.point) { feature, _ in
+                        viewModel.selectPlace(by: feature.feature)
+                        return true
+                    }
+                    .onChange(of: viewModel.places) { _ in updatePlaces(proxy) }
+                
+                if viewModel.selectedPlace != nil {
+                    ImagesView(onClose: viewModel.close)
+                        .transition(.move(edge: .bottom))
+                        .animation(.default, value: viewModel.selectedPlace)
                 }
-                .onLayerTapGesture(ItemId.point) { feature, _ in
-                    viewModel.selectPlace(by: feature.feature)
-                    return true
-                }
-                .onChange(of: viewModel.places) { _ in updatePlaces(proxy) }
+            }
         }
         .ignoresSafeArea()
-        .sheet(item: $viewModel.selectedPlace) {
-            PlaceView(service: viewModel.service, place: $0) // потом подумаю как можно норм инжект сделать вместо viewModel.service
-        }
     }
 }
 

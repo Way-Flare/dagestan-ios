@@ -15,7 +15,7 @@ struct PlaceDTO: Decodable {
     let latitude: Double
     let name: String
     let shortDescription: String?
-    let image: ImageDTO? // TODO: Бэкенд должен будет возвращать массив картинок
+    let images: [ImageDTO]
     let rating: Double?
     let workTime: String?
     let tags: [TagPlaceDTO]?
@@ -35,7 +35,7 @@ extension PlaceDTO: Domainable {
             coordinate: coordinate,
             name: name,
             shortDescription: shortDescription,
-            image: URL(string: image?.file ?? ""),
+            images: images.compactMap { $0.asDomain() },
             rating: rating,
             workTime: workTime,
             tags: tags?.map { $0.asDomain() },
