@@ -22,4 +22,16 @@ public extension Font {
     static func manrope(weight: ManropeWeight, size: CGFloat) -> Font {
         return .custom(weight.fontName, size: size)
     }
+    
+    static func manropeRegular(size: CGFloat) -> Font {
+        return .custom("Manrope-Regular", size: size)
+    }
+    
+    static func manropeSemibold(size: CGFloat) -> Font {
+        return .custom("Manrope-SemiBold", size: size)
+    }
+    
+    static func manropeExtrabold(size: CGFloat) -> Font {
+        return .custom("Manrope-ExtraBold", size: size)
+    }
 }

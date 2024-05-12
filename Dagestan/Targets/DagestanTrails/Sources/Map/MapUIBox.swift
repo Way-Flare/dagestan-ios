@@ -35,10 +35,8 @@ struct MapUIBox: View {
                     }
                     .onChange(of: viewModel.places) { _ in updatePlaces(proxy) }
                 
-                if viewModel.selectedPlace != nil {
-                    ImagesView(onClose: viewModel.close)
-                        .transition(.move(edge: .bottom))
-                        .animation(.default, value: viewModel.selectedPlace)
+                if let place = viewModel.selectedPlace {
+                    PlaceView(place: place, onClose: viewModel.close)
                 }
             }
         }
