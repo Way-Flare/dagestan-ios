@@ -12,6 +12,7 @@ struct DKButtonVisualStyle: ButtonStyle {
     let style: DKButtonStyle
     let appearance: DKButtonAppearance
     let cornerRadius: CGFloat
+    let foregroundColor: Color?
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -25,7 +26,7 @@ struct DKButtonVisualStyle: ButtonStyle {
     }
     
     private func configureForegroundColor(isPressed: Bool) -> Color {
-        isPressed ? style.active.foregroundColor : appearance.foregroundColor
+        isPressed ? style.active.foregroundColor : foregroundColor ?? appearance.foregroundColor
     }
 }
 
@@ -33,13 +34,15 @@ extension View {
     func buttonVisualStyle(
         style: DKButtonStyle,
         appearance: DKButtonAppearance,
-        cornerRadius: CGFloat
+        cornerRadius: CGFloat,
+        foregroundColor: Color? = nil
     ) -> some View {
         self.buttonStyle(
             DKButtonVisualStyle(
                 style: style,
                 appearance: appearance,
-                cornerRadius: cornerRadius
+                cornerRadius: cornerRadius,
+                foregroundColor: foregroundColor
             )
         )
     }

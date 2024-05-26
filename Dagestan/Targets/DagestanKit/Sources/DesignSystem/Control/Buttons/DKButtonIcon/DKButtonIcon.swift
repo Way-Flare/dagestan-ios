@@ -8,17 +8,19 @@
 
 import SwiftUI
 
-public struct DKButtonIcon: View {
+public struct DKButtonIcon: View, Buildable {
     public let icon: Image
     public let size: Size
     public let state: DKButtonState
     public let type: DKButtonStyle
     public let action: (() -> Void)
+    
+    private var foregroundColor: Color? = nil
 
     public init(
         icon: Image,
         size: Size,
-        state: DKButtonState,
+        state: DKButtonState = .default,
         type: DKButtonStyle,
         action: @escaping () -> Void
     ) {
@@ -36,10 +38,15 @@ public struct DKButtonIcon: View {
         .buttonVisualStyle(
             style: type,
             appearance: stateStyle,
-            cornerRadius: size.cornerRadius
+            cornerRadius: size.cornerRadius,
+            foregroundColor: foregroundColor
         )
         .disabled(state == .disabled)
     }
+    
+    public func foregroundColor(_ foregroundColor: Color) -> Self {
+         map({ $0.foregroundColor = foregroundColor })
+     }
 }
 
 extension DKButtonIcon {

@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// `DKButton` - пользовательская структура кнопки для интерфейса.
-struct DKButton: View {
+struct DKButton: View, Buildable {
     let title: String
     let size: Size
     let state: DKButtonState
@@ -17,6 +17,8 @@ struct DKButton: View {
     let leftImage: Image?
     let rightImage: Image?
     let action: (() -> Void)
+    
+    private var foregroundColor: Color? = nil
 
     init(
         title: String,
@@ -43,9 +45,14 @@ struct DKButton: View {
         .buttonVisualStyle(
             style: type,
             appearance: stateStyle,
-            cornerRadius: size.cornerRadius
+            cornerRadius: size.cornerRadius,
+            foregroundColor: foregroundColor
         )
         .disabled(state == .disabled)
+    }
+    
+    public func foregroundColor(_ newForegroundColor: Color) {
+        map { $0.foregroundColor = newForegroundColor }
     }
 }
 

@@ -8,6 +8,9 @@ final class MapViewModel: ObservableObject {
     @Published var viewport: Viewport = .styleDefault
     @Published var places: [Place] = []
     @Published var selectedPlace: Place?
+    @Published var shouldShowAnnotations = true
+    @Published var isPlaceViewVisible = true
+
 
     let service: IPlacesService
     private var task: Task<Void, Error>?
@@ -34,10 +37,6 @@ final class MapViewModel: ObservableObject {
         }
     }
     
-    func close() {
-        selectedPlace = nil
-    }
-
     private func loadPlaces() {
         Task { @MainActor [weak self] in
             guard let self else { return }
@@ -56,8 +55,9 @@ final class MapViewModel: ObservableObject {
     func selectPlace(by feature: Feature) {
         guard let id = (feature.properties?["id"] as? Turf.JSONValue)?.intValue,
               let selected = places.first(where: { $0.id == id }) else { return }
-
+        
         withAnimation {
+            isPlaceViewVisible = true
             selectedPlace = selected
         }
     }
@@ -91,6 +91,8 @@ extension MapViewModel {
             "type": "FeatureCollection",
             "features": features
         ]
+        
+        shouldShowAnnotations = features.isEmpty
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: geoJSON)

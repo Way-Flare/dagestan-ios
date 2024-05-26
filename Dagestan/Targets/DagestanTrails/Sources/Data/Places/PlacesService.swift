@@ -25,7 +25,7 @@ final class PlacesService: IPlacesService {
                 endpoint,
                 expecting: [PlaceDTO].self
             )
-            
+                        
             return places.map { $0.asDomain() }
         } catch {
             throw error

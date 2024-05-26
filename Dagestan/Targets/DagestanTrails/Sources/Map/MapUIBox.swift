@@ -23,20 +23,28 @@ struct MapUIBox: View {
     var body: some View {
         MapReader { proxy in
             ZStack {
-                Map(viewport: $viewModel.viewport)
-                    .mapStyle(.streets)
-                    .onStyleLoaded { _ in setupMap(proxy) }
-                    .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
-                        handleTap(proxy: proxy, feature: feature, context: context)
+                Map(viewport: $viewModel.viewport) {
+                    ForEvery(viewModel.places) { place in
+                        MapViewAnnotation(coordinate: place.coordinate) {
+                            RestaurantView()
+                            if viewModel.selectedPlace?.id == place.id {
+                            }
+                        }
                     }
-                    .onLayerTapGesture(ItemId.point) { feature, _ in
-                        viewModel.selectPlace(by: feature.feature)
-                        return true
-                    }
-                    .onChange(of: viewModel.places) { _ in updatePlaces(proxy) }
+                }
+                .mapStyle(.streets)
+                .onStyleLoaded { _ in setupMap(proxy) }
+                .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
+                    handleTap(proxy: proxy, feature: feature, context: context)
+                }
+                .onLayerTapGesture(ItemId.point) { feature, _ in
+                    viewModel.selectPlace(by: feature.feature)
+                    return true
+                }
+                .onChange(of: viewModel.places) { _ in updatePlaces(proxy) }
                 
-                if let place = viewModel.selectedPlace {
-                    PlaceView(place: place, onClose: viewModel.close)
+                if let place = viewModel.selectedPlace, viewModel.isPlaceViewVisible {
+                    PlaceView(place: place, isVisible: $viewModel.isPlaceViewVisible)
                 }
             }
         }

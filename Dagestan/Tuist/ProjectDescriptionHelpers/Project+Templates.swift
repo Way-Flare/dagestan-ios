@@ -12,6 +12,10 @@ extension Project {
             .remote(
                 url: "https://github.com/mapbox/mapbox-maps-ios.git",
                 requirement: .upToNextMajor(from: "11.2.0")
+            ),
+            .remote(
+                url: "https://github.com/kean/Nuke.git",
+                requirement: .upToNextMajor(from: "12.7")
             )
         ]
         let packageDependencies: [TargetDependency] = [

@@ -42,6 +42,7 @@ opt_in_rules:
   - xct_specific_matcher
   - yoda_condition
 disabled_rules:
+  - empty_count
   - redundant_discardable_let
   - nesting
   - block_based_kvo
