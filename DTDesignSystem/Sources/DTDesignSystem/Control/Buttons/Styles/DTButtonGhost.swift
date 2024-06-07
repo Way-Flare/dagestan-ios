@@ -11,29 +11,31 @@ public struct DTButtonGhost: DTButtonStyle {
     public var hover: DTButtonAppearance = DTButtonGhostHover()
     public var active: DTButtonAppearance = DTButtonGhostActive()
     public var disabled: DTButtonAppearance = DTButtonGhostDisabled()
+    
+    public init() { }
 }
 
 private struct DTButtonGhostDefault: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentDefault")
+    var foregroundColor: Color = WFColor.accentPrimary
     var backgroundColor: Color = .clear
 }
 
 private struct DTButtonGhostHover: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentHover")
-    var backgroundColor: Color = .dtColor(named: "accentContainerHover")
+    var foregroundColor: Color = WFColor.accentHover
+    var backgroundColor: Color = WFColor.accentContainerHover
 }
 
 private struct DTButtonGhostActive: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentDefault")
-    var backgroundColor: Color = .dtColor(named: "accentContainerActive")
+    var foregroundColor: Color = WFColor.accentPrimary
+    var backgroundColor: Color = WFColor.accentContainerActive
 }
 
 private struct DTButtonGhostDisabled: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentDefault").opacity(0.5)
+    var foregroundColor: Color = WFColor.accentPrimary.opacity(0.5)
     var backgroundColor: Color = .clear
 }
 
-extension DTButtonStyle where Self == DTButtonGhost {
+public extension DTButtonStyle where Self == DTButtonGhost {
     static var ghost: DTButtonGhost {
         DTButtonGhost()
     }

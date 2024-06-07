@@ -13,6 +13,7 @@ public struct DTButtonNature: DTButtonStyle {
     public var disabled: DTButtonAppearance = DTButtonNatureDisabled()
 }
 
+// TODO: Заменить цвета WFColor
 private struct DTButtonNatureDefault: DTButtonAppearance {
     var foregroundColor: Color = .dtColor(named: "iconDefault")
     var backgroundColor: Color = .dtColor(named: "bgSurface3")
@@ -33,7 +34,7 @@ private struct DTButtonNatureDisabled: DTButtonAppearance {
     var backgroundColor: Color = .dtColor(named: "bgSurface3").opacity(0.5)
 }
 
-extension DTButtonStyle where Self == DTButtonNature {
+public extension DTButtonStyle where Self == DTButtonNature {
     static var nature: DTButtonNature {
         DTButtonNature()
     }

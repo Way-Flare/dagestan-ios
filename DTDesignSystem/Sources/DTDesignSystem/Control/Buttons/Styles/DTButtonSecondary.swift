@@ -14,26 +14,26 @@ public struct DTButtonSecondary: DTButtonStyle {
 }
 
 private struct DTButtonSecondaryDefault: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentDefault")
-    var backgroundColor: Color = .dtColor(named: "accentContainerDefault")
+    var foregroundColor: Color = WFColor.accentPrimary
+    var backgroundColor: Color = WFColor.accentContainerPrimary
 }
 
 private struct DTButtonSecondaryHover: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentDefault")
-    var backgroundColor: Color = .dtColor(named: "accentContainerHover")
+    var foregroundColor: Color = WFColor.accentPrimary
+    var backgroundColor: Color = WFColor.accentContainerHover
 }
 
 private struct DTButtonSecondaryActive: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentDefault")
-    var backgroundColor: Color = .dtColor(named: "accentContainerActive")
+    var foregroundColor: Color = WFColor.accentPrimary
+    var backgroundColor: Color = WFColor.accentContainerActive
 }
 
 private struct DTButtonSecondaryDisabled: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "accentDefault").opacity(0.5)
-    var backgroundColor: Color = .dtColor(named: "accentContainerDefault").opacity(0.5)
+    var foregroundColor: Color = WFColor.accentPrimary.opacity(0.5)
+    var backgroundColor: Color = WFColor.accentContainerPrimary.opacity(0.5)
 }
 
-extension DTButtonStyle where Self == DTButtonSecondary {
+public extension DTButtonStyle where Self == DTButtonSecondary {
     static var secondary: DTButtonSecondary {
         DTButtonSecondary()
     }

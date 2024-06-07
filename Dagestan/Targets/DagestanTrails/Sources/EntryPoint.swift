@@ -1,5 +1,6 @@
 import SwiftUI
 import DagestanKit
+import DTDesignSystem
 
 @main
 struct EntryPoint: App {

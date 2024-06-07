@@ -3,7 +3,6 @@
 //  DagestanKit
 //
 //  Created by Рассказов Глеб on 25.04.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
 import SwiftUI
@@ -15,7 +14,7 @@ public struct DTButtonIcon: View {
     let type: DTButtonStyle
     let action: (() -> Void)
     
-    init(
+    public init(
         icon: Image,
         size: Size,
         state: DTButtonState,

@@ -14,26 +14,26 @@ public struct DTButtonPrimary: DTButtonStyle {
 }
 
 private struct DTButtonPrimaryDefault: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
-    var backgroundColor: Color = .dtColor(named: "accentDefault")
+    var foregroundColor: Color = WFColor.accentInverted
+    var backgroundColor: Color = WFColor.accentPrimary
 }
 
 private struct DTButtonPrimaryHover: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
-    var backgroundColor: Color = .dtColor(named: "accentHover")
+    var foregroundColor: Color = WFColor.accentInverted
+    var backgroundColor: Color = WFColor.accentHover
 }
 
 private struct DTButtonPrimaryActive: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
-    var backgroundColor: Color = .dtColor(named: "accentActive")
+    var foregroundColor: Color = WFColor.accentInverted
+    var backgroundColor: Color = WFColor.accentActive
 }
 
 private struct DTButtonPrimaryDisabled: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
-    var backgroundColor: Color = .dtColor(named: "accentDefault").opacity(0.5)
+    var foregroundColor: Color = WFColor.accentInverted
+    var backgroundColor: Color = WFColor.accentPrimary.opacity(0.5)
 }
 
-extension DTButtonStyle where Self == DTButtonPrimary {
+public extension DTButtonStyle where Self == DTButtonPrimary {
     static var primary: DTButtonPrimary {
         DTButtonPrimary()
     }

@@ -13,13 +13,14 @@ public struct DTButtonFavorite: DTButtonStyle {
     public var disabled: DTButtonAppearance = DTButtonFavoriteDisabled()
 }
 
+// TODO: Заменить цвета WFColor
 private struct DTButtonFavoriteDefault: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
+    var foregroundColor: Color = .dtColor(named: "on-accent")
     var backgroundColor: Color = .dtColor(named: "bgOverlay1")
 }
 
 private struct DTButtonFavoriteHover: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
+    var foregroundColor: Color = .dtColor(named: "on-accent")
     var backgroundColor: Color = .dtColor(named: "bgOverlay2")
 }
 
@@ -33,7 +34,7 @@ private struct DTButtonFavoriteDisabled: DTButtonAppearance {
     var backgroundColor: Color = .dtColor(named: "bgOverlay3")
 }
 
-extension DTButtonStyle where Self == DTButtonFavorite {
+public extension DTButtonStyle where Self == DTButtonFavorite {
     static var favorite: DTButtonFavorite {
         DTButtonFavorite()
     }

@@ -13,27 +13,28 @@ public struct DTButtonOverlay: DTButtonStyle {
     public var disabled: DTButtonAppearance = DTButtonOverlayDisabled()
 }
 
+// TODO: Заменить цвета WFColor
 private struct DTButtonOverlayDefault: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
+    var foregroundColor: Color = .dtColor(named: "on-accent")
     var backgroundColor: Color = .dtColor(named: "bgOverlay1")
 }
 
 private struct DTButtonOverlayHover: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
+    var foregroundColor: Color = .dtColor(named: "on-accent")
     var backgroundColor: Color = .dtColor(named: "bgOverlay2")
 }
 
 private struct DTButtonOverlayActive: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
+    var foregroundColor: Color = .dtColor(named: "on-accent")
     var backgroundColor: Color = .dtColor(named: "bgOverlay3")
 }
 
 private struct DTButtonOverlayDisabled: DTButtonAppearance {
-    var foregroundColor: Color = .dtColor(named: "onAccent")
+    var foregroundColor: Color = .dtColor(named: "on-accent")
     var backgroundColor: Color = .dtColor(named: "bgOverlay1").opacity(0.5)
 }
 
-extension DTButtonStyle where Self == DTButtonOverlay {
+public extension DTButtonStyle where Self == DTButtonOverlay {
     static var overlay: DTButtonOverlay {
         DTButtonOverlay()
     }

@@ -12,19 +12,21 @@ extension Project {
             .remote(
                 url: "https://github.com/mapbox/mapbox-maps-ios.git",
                 requirement: .upToNextMajor(from: "11.2.0")
-            )
+            ),
+            .local(path: "../DTDesignSystem")
         ]
         let packageDependencies: [TargetDependency] = [
-            .package(product: "MapboxMaps")
+            .package(product: "MapboxMaps"),
+            .package(product: "DTDesignSystem")
         ]
-
+        
         var targets = makeAppTargets(
             name: name,
             destinations: destinations,
             dependencies: additionalTargets.map { TargetDependency.target(name: $0) } + packageDependencies
         )
         targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, destinations: destinations) })
-
+        
         return Project(
             name: name,
             organizationName: "\(orgName).com",
@@ -48,7 +50,7 @@ extension Project {
             resources: ["Targets/\(name)/Resources/**"],
             dependencies: []
         )
-
+        
         return [sources]
     }
     
@@ -71,14 +73,9 @@ extension Project {
             "CFBundleVersion": .string("1"),
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
-            "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
-            "UIAppFonts": .array([
-                .string("Manrope-ExtraBold.ttf"),
-                .string("Manrope-SemiBold.ttf"),
-                .string("Manrope-Regular.ttf"),
-            ])
+            "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw")
         ]
-
+        
         let mainTarget = Target.target(
             name: name,
             destinations: destinations,

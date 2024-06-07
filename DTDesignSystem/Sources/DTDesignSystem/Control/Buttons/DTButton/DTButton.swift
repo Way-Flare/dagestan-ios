@@ -16,7 +16,7 @@ public struct DTButton: View {
     let rightImage: Image?
     let action: (() -> Void)
 
-    init(
+    public init(
         title: String,
         size: Size,
         state: DTButtonState,

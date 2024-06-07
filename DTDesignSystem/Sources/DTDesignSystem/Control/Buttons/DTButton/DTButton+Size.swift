@@ -2,7 +2,6 @@
 //  DTButton+Size.swift
 //
 //  Created by Рассказов Глеб on 25.04.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
 import Foundation
