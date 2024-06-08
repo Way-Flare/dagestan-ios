@@ -15,6 +15,7 @@ struct EntryPoint: App {
 
 struct ContentView: View {
     let placesService = PlacesService(networkService: DTNetworkService())
+    @State private var selectedTab: TabItem = .places // начальный выбор
     @StateObject private var mapViewModel: MapViewModel
     
     // сделать бы норм инжект)
@@ -28,7 +29,7 @@ struct ContentView: View {
         
         NavigationStack {
             contentView
-                .tint(.red)
+                .tint(WFColor.accentPrimary)
                 .onAppear {
                     setupTabBar()
                 }
@@ -36,14 +37,14 @@ struct ContentView: View {
     }
     
     private var contentView: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             ForEach(TabItem.allCases, id: \.self) { tab in
                 tabItemView(for: tab)
                     .tabItem {
-                        Label(
-                            NSLocalizedString(tab.title, comment: ""),
-                            systemImage: tab.icon
-                        )
+                        VStack {
+                            Text(NSLocalizedString(tab.title, comment: ""))
+                            imageForTab(tab: tab)
+                        }
                     }
             }
         }
@@ -51,9 +52,15 @@ struct ContentView: View {
 }
 
 private extension ContentView {
+    func imageForTab(tab: TabItem) -> SwiftUI.Image {
+        let isSelected = (tab == selectedTab)
+        let image = isSelected ? tab.selectedIcon : tab.icon
+        return image
+    }
+    
     func setupTabBar() {
         let appearance = UITabBarAppearance()
-        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
+        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
         appearance.backgroundColor = UIColor(Color.white.opacity(0.1))
         
         UITabBar.appearance().standardAppearance = appearance
@@ -63,7 +70,7 @@ private extension ContentView {
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-            case .map: MapUIBox(viewModel: mapViewModel)
+            case .places: MapUIBox(viewModel: mapViewModel)
             case .dagestankit: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
             default: Text(item.title)
         }

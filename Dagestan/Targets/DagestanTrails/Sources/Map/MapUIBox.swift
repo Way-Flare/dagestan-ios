@@ -22,7 +22,7 @@ struct MapUIBox: View {
     var body: some View {
         MapReader { proxy in
             Map(viewport: $viewModel.viewport)
-                .mapStyle(.dark)
+                .mapStyle(.standard)
                 .onStyleLoaded { _ in setupMap(proxy) }
                 .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
                     handleTap(proxy: proxy, feature: feature, context: context)
