@@ -7,6 +7,7 @@
 //
 
 import DagestanKit
+import SwiftUI
 
 enum TabItem: Int, CaseIterable {
     case map
@@ -18,20 +19,20 @@ enum TabItem: Int, CaseIterable {
     var title: String {
         switch self {
             case .map: return "Карта"
+            case .route: return "Маршруты"
             case .favorite: return "Избранное"
             case .profile: return "Профиль"
-            case .route: return "Маршруты"
             case .dagestankit: return "DagestanKit"
         }
     }
 
-    var icon: String {
+    var icon: Image {
         switch self {
-            case .map: return "map.fill"
-            case .favorite: return "star.fill"
-            case .profile: return "person.fill"
-            case .route: return "location.fill"
-            case .dagestankit: return "arkit"
+            case .map: return DagestanKitAsset.locationMapOutline.swiftUIImage
+            case .route: return DagestanKitAsset.locationRoutingLinear.swiftUIImage
+            case .favorite: return DagestanKitAsset.supportHeartLinear.swiftUIImage
+            case .profile: return DagestanKitAsset.userProfileCircleLinear.swiftUIImage
+            case .dagestankit: return DagestanKitAsset.archiveOutline.swiftUIImage
         }
     }
 }

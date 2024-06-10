@@ -24,6 +24,7 @@ public protocol ApiEndpoint {
 public enum Method: String {
     case get
     case post
+    case patch
 }
 
 public enum Version: String {
@@ -62,5 +63,4 @@ public extension ApiEndpoint {
     var body: Parameters? {
         return nil
     }
-
 }

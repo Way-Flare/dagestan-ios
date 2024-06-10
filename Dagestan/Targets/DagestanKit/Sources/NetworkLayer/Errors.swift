@@ -15,6 +15,7 @@ public enum RequestError: Error {
     case unauthorized
     case unexpectedStatusCode
     case serverError(ServerError)
+    case emptyData
     case unknown
 
     var message: String {
@@ -25,6 +26,8 @@ public enum RequestError: Error {
                 return "invalid URL"
             case .unauthorized:
                 return "Need authorization token"
+            case .emptyData:
+                return "Empty data from response"
             default:
                 return "Unknown error"
         }

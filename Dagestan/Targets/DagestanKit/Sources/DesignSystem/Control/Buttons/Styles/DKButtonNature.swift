@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct DKButtonNature: DKButtonStyle {
-    var `default`: DKButtonAppearance = DKButtonNatureDefault()
-    var hover: DKButtonAppearance = DKButtonNatureHover()
-    var active: DKButtonAppearance = DKButtonNatureActive()
-    var disabled: DKButtonAppearance = DKButtonNatureDisabled()
+public struct DKButtonNature: DKButtonStyle {
+    public var `default`: DKButtonAppearance = DKButtonNatureDefault()
+    public var hover: DKButtonAppearance = DKButtonNatureHover()
+    public var active: DKButtonAppearance = DKButtonNatureActive()
+    public var disabled: DKButtonAppearance = DKButtonNatureDisabled()
 }
 
 private struct DKButtonNatureDefault: DKButtonAppearance {
@@ -35,7 +35,7 @@ private struct DKButtonNatureDisabled: DKButtonAppearance {
     var backgroundColor: Color = DagestanKitAsset.bgSurface3.swiftUIColor.opacity(0.5)
 }
 
-extension DKButtonStyle where Self == DKButtonNature {
+public extension DKButtonStyle where Self == DKButtonNature {
     static var nature: DKButtonNature {
         DKButtonNature()
     }

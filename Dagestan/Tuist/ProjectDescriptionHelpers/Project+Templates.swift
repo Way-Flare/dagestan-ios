@@ -19,7 +19,8 @@ extension Project {
             )
         ]
         let packageDependencies: [TargetDependency] = [
-            .package(product: "MapboxMaps")
+            .package(product: "MapboxMaps"),
+            .package(product: "NukeUI")
         ]
 
         var targets = makeAppTargets(

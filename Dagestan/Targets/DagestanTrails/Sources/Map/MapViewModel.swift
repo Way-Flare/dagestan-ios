@@ -6,11 +6,16 @@ import MapboxMaps
 
 final class MapViewModel: ObservableObject {
     @Published var viewport: Viewport = .styleDefault
-    @Published var places: [Place] = []
-    @Published var selectedPlace: Place?
-    @Published var shouldShowAnnotations = true
-    @Published var isPlaceViewVisible = true
+    @Published var places: [Place] = [] {
+        didSet {
+            filteredPlaces = places
+        }
+    }
 
+    @Published var filteredPlaces: [Place] = []
+    @Published var selectedPlace: Place?
+    @Published var isPlaceViewVisible = true
+    @Published var selectedTags: Set<TagPlace> = []
 
     let service: IPlacesService
     private var task: Task<Void, Error>?
@@ -36,11 +41,11 @@ final class MapViewModel: ObservableObject {
             viewport = .camera(center: coordinate, zoom: zoomLevel)
         }
     }
-    
+
     private func loadPlaces() {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            
+
             do {
                 let places = try await service.getAllPlaces()
                 self.places = places
@@ -55,10 +60,51 @@ final class MapViewModel: ObservableObject {
     func selectPlace(by feature: Feature) {
         guard let id = (feature.properties?["id"] as? Turf.JSONValue)?.intValue,
               let selected = places.first(where: { $0.id == id }) else { return }
-        
+
         withAnimation {
             isPlaceViewVisible = true
             selectedPlace = selected
+        }
+    }
+
+    /// Выбирает место на основе переданного id.
+    /// - Parameter id: Параметр необходимые для идентификации места.
+    func selectPlace(by id: Int) {
+        print(id)
+        guard let selected = places.first(where: { $0.id == id }) else { return }
+
+        withAnimation {
+            isPlaceViewVisible = true
+            selectedPlace = selected
+        }
+    }
+
+    func updateFilteredPlaces() {
+        if selectedTags.isEmpty {
+            filteredPlaces = places
+        } else {
+            filteredPlaces = places.filter { place in
+                !selectedTags.isDisjoint(with: place.tags ?? [])
+            }
+        }
+        
+        filteredPlaces.forEach { print($0.name) }
+    }
+
+    func toggleTag(_ tag: TagPlace) {
+        if selectedTags.contains(tag) {
+            selectedTags.remove(tag)
+        } else {
+            selectedTags.insert(tag)
+        }
+        updateFilteredPlaces()
+    }
+    
+    func moveToDagestan() {
+        let dagestanCoordinates = CLLocationCoordinate2D(latitude: 43.0000, longitude: 47.5000)
+
+        withViewportAnimation(.fly) {
+            viewport = .camera(center: dagestanCoordinates, zoom: 6.5)
         }
     }
 }
@@ -69,7 +115,7 @@ extension MapViewModel {
     /// Конвертирует модели Place в GeoJson для работы с MapBox
     /// - Returns: Data?
     func placesAsGeoJSON() -> Data? {
-        let features = places.map { place -> [String: Any] in
+        let features = filteredPlaces.map { place -> [String: Any] in
             let geometry: [String: Any] = [
                 "type": "Point",
                 "coordinates": [place.coordinate.longitude, place.coordinate.latitude]
@@ -91,8 +137,6 @@ extension MapViewModel {
             "type": "FeatureCollection",
             "features": features
         ]
-        
-        shouldShowAnnotations = features.isEmpty
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: geoJSON)

@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct DKButtonPrimary: DKButtonStyle {
-    var `default`: DKButtonAppearance = DKButtonPrimaryDefault()
-    var hover: DKButtonAppearance = DKButtonPrimaryHover()
-    var active: DKButtonAppearance = DKButtonPrimaryActive()
-    var disabled: DKButtonAppearance = DKButtonPrimaryDisabled()
+public struct DKButtonPrimary: DKButtonStyle {
+    public var `default`: DKButtonAppearance = DKButtonPrimaryDefault()
+    public var hover: DKButtonAppearance = DKButtonPrimaryHover()
+    public var active: DKButtonAppearance = DKButtonPrimaryActive()
+    public var disabled: DKButtonAppearance = DKButtonPrimaryDisabled()
 }
 
 private struct DKButtonPrimaryDefault: DKButtonAppearance {
@@ -35,7 +35,7 @@ private struct DKButtonPrimaryDisabled: DKButtonAppearance {
     var backgroundColor: Color = DagestanKitAsset.accentDefault.swiftUIColor.opacity(0.5)
 }
 
-extension DKButtonStyle where Self == DKButtonPrimary {
+public extension DKButtonStyle where Self == DKButtonPrimary {
     static var primary: DKButtonPrimary {
         DKButtonPrimary()
     }

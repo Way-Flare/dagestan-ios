@@ -4,10 +4,12 @@ import DagestanKit
 @main
 struct EntryPoint: App {
     private let networkService = DTNetworkService()
+    private let timerViewModel = TimerViewModel()
     
     var body: some Scene {
         WindowGroup {
             ContentView(networkService: networkService)
+                .environmentObject(timerViewModel)
         }
     }
 }
@@ -27,7 +29,7 @@ struct ContentView: View {
         
         NavigationStack {
             contentView
-                .tint(.red)
+                .tint(DagestanKitAsset.iconAccent.swiftUIColor)
                 .onAppear {
                     setupTabBar()
                 }
@@ -39,10 +41,11 @@ struct ContentView: View {
             ForEach(TabItem.allCases, id: \.self) { tab in
                 tabItemView(for: tab)
                     .tabItem {
-                        Label(
-                            NSLocalizedString(tab.title, comment: ""),
-                            systemImage: tab.icon
-                        )
+                        VStack(spacing: 4) {
+                            tab.icon
+                            Text(tab.title)
+                        }
+                        .font(DagestanKitFontFamily.Manrope.regular.swiftUIFont(size: 12))
                     }
             }
         }
@@ -52,9 +55,11 @@ struct ContentView: View {
 private extension ContentView {
     func setupTabBar() {
         let appearance = UITabBarAppearance()
-        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialDark)
-        appearance.backgroundColor = UIColor(Color.white.opacity(0.1))
+        appearance.backgroundColor = DagestanKitAsset.bgSurface1.color
         
+        appearance.stackedLayoutAppearance.normal.iconColor = DagestanKitAsset.fgDefault.color
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: DagestanKitAsset.fgDefault.color]
+                
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
@@ -62,7 +67,9 @@ private extension ContentView {
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-            case .map: MapUIBox(viewModel: mapViewModel)
+            case .map: MapView(viewModel: mapViewModel)
+            case .profile: AuthorizationView()
+            case .favorite: FavoritesView()
             case .dagestankit: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
             default: Text(item.title)
         }

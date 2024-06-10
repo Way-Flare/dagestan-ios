@@ -15,7 +15,7 @@ public struct DKButtonIcon: View, Buildable {
     public let type: DKButtonStyle
     public let action: (() -> Void)
     
-    private var foregroundColor: Color? = nil
+    private var foregroundColor: Color?
 
     public init(
         icon: Image,

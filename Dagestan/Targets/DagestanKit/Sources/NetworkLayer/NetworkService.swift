@@ -25,7 +25,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
     public init() {}
 
     public func execute<T: Decodable>(
-        _ request: URLRequest,
+        _ request: URLRequest, 
         expecting type: T.Type
     ) async throws -> T {
         return try await load(request, expecting: type)
@@ -54,13 +54,22 @@ public final class DTNetworkService: NetworkServiceProtocol {
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw RequestError.noResponse
             }
+            
+            print(String(data: data, encoding: .utf8) ?? "nothing")
             switch httpResponse.statusCode {
                 case 200...299:
-                    guard let decodedResponse = try? decoder.decode(type, from: data) else {
-                        throw RequestError.failedDecode
+                    if data.isEmpty {
+                        if type == EmptyResponse.self, let emptyResponse = EmptyResponse() as? T {
+                            return emptyResponse
+                        } else {
+                            throw RequestError.emptyData
+                        }
+                    } else {
+                        guard let decodedResponse = try? decoder.decode(type, from: data) else {
+                            throw RequestError.failedDecode
+                        }
+                        return decodedResponse
                     }
-
-                    return decodedResponse
                 default:
                     guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {
                         throw RequestError.unexpectedStatusCode

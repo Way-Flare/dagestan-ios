@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension DKButton {
+public extension DKButton {
     /// Перечисление `Size` определяет размеры для пользовательского элемента `DKButton`.
     enum Size {
         /// Большой размер.
@@ -21,7 +21,7 @@ extension DKButton {
         case xs
 
         /// Высота кнопки в зависимости от размера кнопки.
-        var height: CGFloat {
+        public var height: CGFloat {
             switch self {
                 case .l: return Grid.pt52
                 case .m: return Grid.pt44
@@ -31,7 +31,7 @@ extension DKButton {
         }
 
         /// Горизонтальные отступы в зависимости от размера кнопки.
-        var horizontalPadding: CGFloat {
+        public var horizontalPadding: CGFloat {
             switch self {
                 case .l: return Grid.pt14
                 case .m, .s: return Grid.pt10
@@ -40,7 +40,7 @@ extension DKButton {
         }
 
         /// Радиус скругления углов в зависимости от размера кнопки.
-        var cornerRadius: CGFloat {
+        public var cornerRadius: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt12
                 case .s, .xs: return Grid.pt10
@@ -48,15 +48,22 @@ extension DKButton {
         }
 
         /// Размер шрифта в зависимости от размера кнопки.
-        var fontSize: CGFloat {
+        public var titleFontSize: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt16
                 case .s, .xs: return Grid.pt14
             }
         }
+        
+        public var subtitleFontSize: CGFloat {
+            switch self {
+                case .l, .m: return Grid.pt12
+                case .s, .xs: return Grid.pt10
+            }
+        }
 
         /// Размер изображения в зависимости от размера кнопки.
-        var imageSize: CGFloat {
+        public var imageSize: CGFloat {
             switch self {
                 case .l, .m: return Grid.pt20
                 case .s, .xs: return Grid.pt14

@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import DagestanKit
 
 extension View {
     func skeleton(

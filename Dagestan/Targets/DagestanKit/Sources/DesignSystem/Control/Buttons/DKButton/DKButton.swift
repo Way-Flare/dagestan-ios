@@ -9,22 +9,24 @@
 import SwiftUI
 
 /// `DKButton` - пользовательская структура кнопки для интерфейса.
-struct DKButton: View, Buildable {
-    let title: String
-    let size: Size
-    let state: DKButtonState
-    let type: DKButtonStyle
-    let leftImage: Image?
-    let rightImage: Image?
-    let action: (() -> Void)
+public struct DKButton: View, Buildable {
+    public let title: String
+    public let size: Size
+    public let state: DKButtonState
+    public let type: DKButtonStyle
+    public let subtitle: String?
+    public let leftImage: Image?
+    public let rightImage: Image?
+    public let action: (() -> Void)
     
-    private var foregroundColor: Color? = nil
+    private var foregroundColor: Color?
 
-    init(
+    public init(
         title: String,
         size: Size,
         state: DKButtonState,
         type: DKButtonStyle,
+        subtitle: String? = nil,
         leftImage: Image? = nil,
         rightImage: Image? = nil,
         action: @escaping () -> Void
@@ -34,11 +36,12 @@ struct DKButton: View, Buildable {
         self.state = state
         self.type = type
         self.action = action
+        self.subtitle = subtitle
         self.leftImage = leftImage
         self.rightImage = rightImage
     }
 
-    var body: some View {
+    public var body: some View {
         Button(action: action ) {
             contentView
         }
@@ -52,7 +55,7 @@ struct DKButton: View, Buildable {
     }
     
     public func foregroundColor(_ newForegroundColor: Color) {
-        map { $0.foregroundColor = newForegroundColor }
+        let _ = map { $0.foregroundColor = newForegroundColor }
     }
 }
 
@@ -63,13 +66,20 @@ extension DKButton {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: size.imageSize, height: size.imageSize)
-            Text(title)
-                .font(.manrope(weight: .semibold, size: size.fontSize))
+            VStack(spacing: .zero) {
+                Text(title)
+                    .font(.manrope(weight: .semibold, size: size.titleFontSize))
+                if let subtitle = subtitle {
+                    Text(subtitle)
+                        .font(.manrope(weight: .semibold, size: size.subtitleFontSize))
+                }
+            }
             rightImage?
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: size.imageSize, height: size.imageSize)
         }
+        .frame(maxWidth: .infinity)
         .frame(height: size.height)
         .padding(.horizontal, size.horizontalPadding)
     }
