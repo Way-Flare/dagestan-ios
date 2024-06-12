@@ -14,19 +14,19 @@ struct StateFavoritesView: View {
     let message: String
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Grid.pt8) {
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 210, height: 210)
+                .frame(width: Grid.pt210, height: Grid.pt210)
             Text(title)
                 .foregroundStyle(WFColor.foregroundPrimary)
-                .font(.manropeSemibold(size: 20))
+                .font(.manropeSemibold(size: Grid.pt20))
             Text(message)
-                .frame(width: 296)
+                .frame(width: Grid.pt296)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(WFColor.foregroundSoft)
-                .font(.manropeRegular(size: 16))
+                .font(.manropeRegular(size: Grid.pt16))
         }
     }
 }

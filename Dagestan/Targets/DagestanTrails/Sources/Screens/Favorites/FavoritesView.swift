@@ -24,15 +24,15 @@ struct FavoritesView: View {
     }
 
     private var counterContainerView: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: Grid.pt6) {
             Text("Избранное")
                 .foregroundStyle(WFColor.foregroundPrimary)
-                .font(.manropeExtrabold(size: 20))
+                .font(.manropeExtrabold(size: Grid.pt20))
             WFCounter(style: .nature, size: .m, number: favoritesCount)
             Spacer()
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 14)
+        .padding(.horizontal, Grid.pt12)
+        .padding(.vertical, Grid.pt14)
     }
 
     private var emptyStateContainerView: some View {

@@ -26,15 +26,15 @@ struct AnnotationView: View {
 
     var body: some View {
         VStack(spacing: .zero) {
-            HStack(spacing: 10) {
+            HStack(spacing: Grid.pt10) {
                 (tagPlace?.icon ?? Image(systemName: "eye"))
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 24, height: 24)
+                    .frame(width: Grid.pt24, height: Grid.pt24)
                     .foregroundColor(WFColor.accentInverted)
-                    .padding(8)
+                    .padding(Grid.pt8)
                     .background(WFColor.accentSoft)
-                    .cornerStyle(.constant(8))
+                    .cornerStyle(.constant(Grid.pt8))
 
                 VStack(alignment: .leading) {
                     Text(name)
@@ -50,14 +50,14 @@ struct AnnotationView: View {
                 .lineLimit(1)
             }
             .padding(Grid.pt6)
-            .background(Color.white)
+            .background(WFColor.surfacePrimary)
             .cornerRadius(Grid.pt10)
-            .shadow(color: .gray, radius: 2, x: 0, y: 2)
+            .shadow(color: .gray, radius: Grid.pt2, x: Grid.pt0, y: Grid.pt2)
 
             Triangle()
-                .fill(Color.white)
-                .frame(width: 20, height: 10)
-                .shadow(color: .gray, radius: 1, x: 0, y: 1)
+                .fill(WFColor.surfacePrimary)
+                .frame(width: Grid.pt20, height: Grid.pt10)
+                .shadow(color: .gray, radius: Grid.pt2, x: Grid.pt0, y: Grid.pt2)
                 .alignmentGuide(.bottom) { d in d[.bottom] - 5 }
         }
         .frame(minWidth: Grid.pt140, maxWidth: Grid.pt260)

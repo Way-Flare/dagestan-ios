@@ -14,22 +14,22 @@ struct PasswordTextFieldView: View {
         ZStack {
             SecureField(placeholder, text: $text)
                 .textContentType(.oneTimeCode)
-                .opacity(isSecure && !showPassword ? 1 : Grid.pt0)
+                .opacity(isSecure && !showPassword ? Grid.pt1 : Grid.pt0)
 
             TextField(placeholder, text: $text)
-                .opacity(isSecure && !showPassword ? Grid.pt0 : 1)
+                .opacity(isSecure && !showPassword ? Grid.pt0 : Grid.pt1)
         }
         .focused($isFocused)
         .placeholder(when: text.isEmpty, with: placeholder)
         .padding(.vertical, Grid.pt12)
-        .padding(.trailing, 30)
+        .padding(.trailing, Grid.pt30)
         .overlay(alignment: .trailing) { eyeButton }
         .font(.manropeRegular(size: Grid.pt16))
         .padding(.horizontal, Grid.pt12)
         .frame(height: Grid.pt44)
         .setBorder(
-            width: 1,
-            color: isFocused ? WFColor.accentPrimary: WFColor.borderMuted
+            width: Grid.pt1,
+            color: isFocused ? WFColor.accentPrimary : WFColor.borderMuted
         )
     }
 
@@ -38,9 +38,9 @@ struct PasswordTextFieldView: View {
             showPassword.toggle()
         } label: {
             Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(WFColor.iconSoft)
         }
-        .opacity(isSecure ? 1 : 0)
+        .opacity(isSecure ? Grid.pt1 : Grid.pt0)
     }
 }
 

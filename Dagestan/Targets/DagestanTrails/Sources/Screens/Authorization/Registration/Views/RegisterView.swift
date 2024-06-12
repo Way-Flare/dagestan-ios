@@ -36,8 +36,8 @@ struct RegisterView: View {
         VStack(spacing: Grid.pt16) {
             DagestanTrailsAsset.logo.swiftUIImage
                 .resizable()
-                .frame(width: 80, height: 64)
-                .cornerStyle(.constant(16))
+                .frame(width: Grid.pt80, height: Grid.pt64)
+                .cornerStyle(.constant(Grid.pt16))
 
             Text("Регистрация")
                 .foregroundStyle(WFColor.foregroundPrimary)

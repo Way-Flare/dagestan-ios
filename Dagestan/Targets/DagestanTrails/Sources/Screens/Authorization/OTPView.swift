@@ -44,7 +44,7 @@ private extension OTPView {
             TextField("", text: $text.limit(4))
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
-                .frame(width: 1, height: 1)
+                .frame(width: Grid.pt1, height: Grid.pt1)
                 .opacity(0.001)
                 .blendMode(.screen)
                 .focused($isKeyboardShowing)
@@ -105,15 +105,15 @@ private extension OTPView {
                 : text.count >= index
                   ? WFColor.accentPrimary
                   : WFColor.borderMuted,
-                lineWidth: 1
+                lineWidth: Grid.pt1
             )
     }
 
     private func indicatorForIndex(_ index: Int) -> some View {
         RoundedRectangle(cornerRadius: Grid.pt8)
-            .frame(width: 2, height: Grid.pt20)
+            .frame(width: Grid.pt2, height: Grid.pt20)
             .foregroundColor(WFColor.accentPrimary)
-            .offset(x: -9)
+            .offset(x: -Grid.pt9)
             .isHidden(text.count != index || isError)
     }
 }
