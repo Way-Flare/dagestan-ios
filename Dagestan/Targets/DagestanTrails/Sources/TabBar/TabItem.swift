@@ -3,35 +3,41 @@
 //  DagestanTraits
 //
 //  Created by Рассказов Глеб on 26.03.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import DagestanKit
+import CoreKit
+import SwiftUI
 
 enum TabItem: Int, CaseIterable {
-    case map
-    case route
+    case places
+    case routes
     case favorite
     case profile
-    case dagestankit
+    case designSystem
 
     var title: String {
         switch self {
-            case .map: return "Карта"
-            case .favorite: return "Избранное"
-            case .profile: return "Профиль"
-            case .route: return "Маршруты"
-            case .dagestankit: return "DagestanKit"
+            case .places: return "tab.places"
+            case .favorite: return "tab.favorites"
+            case .profile: return "tab.profile"
+            case .routes: return "tab.routes"
+            case .designSystem: return "DesignSystem"
         }
     }
 
-    var icon: String {
+    var icon: Image {
         switch self {
-            case .map: return "map.fill"
-            case .favorite: return "star.fill"
-            case .profile: return "person.fill"
-            case .route: return "location.fill"
-            case .dagestankit: return "arkit"
+            case .places:
+                DagestanTrailsAsset.tabLocation.swiftUIImage
+            case .routes:
+                DagestanTrailsAsset.tabRoute.swiftUIImage
+            case .favorite:
+                DagestanTrailsAsset.tabHeart.swiftUIImage
+            case .profile:
+                DagestanTrailsAsset.tabProfileCircle.swiftUIImage
+            case .designSystem:
+                Image(systemName: "eye")
         }
     }
+
 }

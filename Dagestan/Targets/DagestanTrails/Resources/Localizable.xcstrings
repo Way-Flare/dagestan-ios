@@ -1,0 +1,116 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "12-34" : {
+
+    },
+    "Loading..." : {
+
+    },
+    "Size: %@" : {
+
+    },
+    "State: %@" : {
+
+    },
+    "tab.favorites" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorites"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Избранное"
+          }
+        }
+      }
+    },
+    "tab.places" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Places"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Места"
+          }
+        }
+      }
+    },
+    "tab.profile" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Профиль"
+          }
+        }
+      }
+    },
+    "tab.routes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Routes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Маршруты"
+          }
+        }
+      }
+    },
+    "Введенные пароли не совпадают. Пожалуйста, проверьте и попробуйте снова." : {
+
+    },
+    "Введи последние 4 цифры входящего номера" : {
+
+    },
+    "Вход" : {
+
+    },
+    "Звоним на номер %@" : {
+
+    },
+    "Избранное" : {
+
+    },
+    "Например: +7 (XXX)-XXX-" : {
+
+    },
+    "Неверный код. Попробуйте еще раз" : {
+
+    },
+    "Придумай пароль" : {
+
+    },
+    "Регистрация" : {
+
+    },
+    "Сброс пароля" : {
+
+    }
+  },
+  "version" : "1.0"
+}

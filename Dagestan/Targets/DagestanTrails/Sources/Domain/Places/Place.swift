@@ -3,18 +3,17 @@
 //  DagestanTrails
 //
 //  Created by Рассказов Глеб on 19.04.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
 import CoreLocation
-import DagestanKit
+import CoreKit
 
 public struct Place: Identifiable {
     public let id: Int
     public let coordinate: CLLocationCoordinate2D
     public let name: String
     public let shortDescription: String?
-    public let image: URL?
+    public let images: [URL]
     public let rating: Double?
     public let workTime: String?
     public let tags: [TagPlace]?

@@ -3,11 +3,10 @@
 //  DagestanTrails
 //
 //  Created by Abdulaev Ramazan on 13.04.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
 import CoreLocation
-import DagestanKit
+import CoreKit
 
 enum PlacesEndpoint {
     case allPlaces
@@ -25,8 +24,8 @@ extension PlacesEndpoint: ApiEndpoint {
         }
     }
     
-    var method: DagestanKit.Method { return .get }
-    
+    var method: CoreKit.Method { return .get }
+
     var headers: Headers? {
         return nil
     }

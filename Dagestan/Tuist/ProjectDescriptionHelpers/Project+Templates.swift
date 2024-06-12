@@ -12,10 +12,18 @@ extension Project {
             .remote(
                 url: "https://github.com/mapbox/mapbox-maps-ios.git",
                 requirement: .upToNextMajor(from: "11.2.0")
-            )
+            ),
+            .remote(
+                url: "https://github.com/kean/Nuke.git",
+                requirement: .upToNextMajor(from: "12.7")
+            ),
+            .local(path: "../DesignSystem")
         ]
         let packageDependencies: [TargetDependency] = [
-            .package(product: "MapboxMaps")
+            .package(product: "MapboxMaps"),
+            .package(product: "Nuke"),
+            .package(product: "NukeUI"),
+            .package(product: "DesignSystem")
         ]
 
         var targets = makeAppTargets(
@@ -32,9 +40,9 @@ extension Project {
             targets: targets
         )
     }
-    
+
     // MARK: - Private
-    
+
     /// Helper function to create a framework target and an associated unit test target
     private static func makeFrameworkTargets(name: String, destinations: Destinations) -> [Target] {
         let sources = Target.target(
@@ -51,32 +59,27 @@ extension Project {
 
         return [sources]
     }
-    
+
     /// Helper function to create the application target and the unit test target.
     private static func makeAppTargets(name: String, destinations: Destinations, dependencies: [TargetDependency]) -> [Target] {
         let swiftlintScript = """
                                    if [[ "$(uname -m)" == "arm64" ]]; then
                                        export PATH="/opt/homebrew/bin:$PATH"
                                    fi
-                                   
+
                                    if which swiftlint >/dev/null; then
                                    swiftlint --config ".swiftlint.yml"
                                    else
                                        echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
                                    fi
                                    """
-        
+
         let infoPlist: [String: Plist.Value] = [
             "CFBundleShortVersionString": .string("1.0"),
             "CFBundleVersion": .string("1"),
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
-            "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
-            "UIAppFonts": .array([
-                .string("Manrope-ExtraBold.ttf"),
-                .string("Manrope-SemiBold.ttf"),
-                .string("Manrope-Regular.ttf"),
-            ])
+            "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw")
         ]
 
         let mainTarget = Target.target(
@@ -91,7 +94,7 @@ extension Project {
             scripts: [.pre(script: swiftlintScript, name: "SwiftLint")],
             dependencies: dependencies
         )
-        
+
         let testTarget = Target.target(
             name: "\(name)Tests",
             destinations: destinations,

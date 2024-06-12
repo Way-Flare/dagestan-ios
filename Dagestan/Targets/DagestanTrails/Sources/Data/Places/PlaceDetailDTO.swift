@@ -3,10 +3,9 @@
 //  DagestanTrails
 //
 //  Created by Рассказов Глеб on 24.04.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import DagestanKit
+import CoreKit
 import CoreLocation
 
 struct PlaceDetailDTO: Decodable {
@@ -62,7 +61,7 @@ extension PlaceDetailDTO {
     }
 }
 
-// MARK: - Convert to Domain Model
+// MARK: - Domainable
 
 extension PlaceDetailDTO: Domainable {
     typealias DomainType = PlaceDetail
@@ -90,7 +89,7 @@ extension PlaceDetailDTO: Domainable {
 
 extension PlaceDetailDTO.PlaceFeedbackDTO: Domainable {
     typealias DomainType = PlaceDetail.PlaceFeedback
-    
+
     func asDomain() -> PlaceDetail.PlaceFeedback {
         PlaceDetail.PlaceFeedback(
             id: id,
@@ -105,7 +104,7 @@ extension PlaceDetailDTO.PlaceFeedbackDTO: Domainable {
 
 extension PlaceDetailDTO.UserDTO: Domainable {
     typealias DomainType = PlaceDetail.User
-    
+
     func asDomain() -> PlaceDetail.User {
         PlaceDetail.User(
             username: username,
@@ -116,7 +115,7 @@ extension PlaceDetailDTO.UserDTO: Domainable {
 
 extension PlaceDetailDTO.PlaceWayDTO: Domainable {
     typealias DomainType = PlaceDetail.PlaceWay
-    
+
     func asDomain() -> PlaceDetail.PlaceWay {
         PlaceDetail.PlaceWay(
             id: id,
@@ -128,7 +127,7 @@ extension PlaceDetailDTO.PlaceWayDTO: Domainable {
 
 extension PlaceDetailDTO.ContactDTO: Domainable {
     typealias DomainType = PlaceDetail.Contact
-    
+
     func asDomain() -> PlaceDetail.Contact {
         PlaceDetail.Contact(
             id: id,
@@ -140,7 +139,7 @@ extension PlaceDetailDTO.ContactDTO: Domainable {
 
 extension PlaceDetailDTO.RouteDTO: Domainable {
     typealias DomainType = PlaceDetail.Route
-    
+
     func asDomain() -> PlaceDetail.Route {
         PlaceDetail.Route(
             id: id,

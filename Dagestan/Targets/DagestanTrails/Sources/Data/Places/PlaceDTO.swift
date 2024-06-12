@@ -3,10 +3,9 @@
 //  DagestanTrails
 //
 //  Created by Рассказов Глеб on 19.04.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import DagestanKit
+import CoreKit
 import CoreLocation
 
 struct PlaceDTO: Decodable {
@@ -15,27 +14,27 @@ struct PlaceDTO: Decodable {
     let latitude: Double
     let name: String
     let shortDescription: String?
-    let image: ImageDTO? // TODO: Бэкенд должен будет возвращать массив картинок
+    let images: [ImageDTO]
     let rating: Double?
     let workTime: String?
     let tags: [TagPlaceDTO]?
     let feedbackCount: Int?
 }
 
-// MARK: - Convert to Domain model
+// MARK: - Domainable
 
 extension PlaceDTO: Domainable {
     typealias DomainType = Place
-    
+
     func asDomain() -> Place {
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        
+
         return Place(
             id: id,
             coordinate: coordinate,
             name: name,
             shortDescription: shortDescription,
-            image: URL(string: image?.file ?? ""),
+            images: images.compactMap { $0.asDomain() },
             rating: rating,
             workTime: workTime,
             tags: tags?.map { $0.asDomain() },

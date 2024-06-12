@@ -3,11 +3,10 @@
 //  DagestanTrails
 //
 //  Created by Abdulaev Ramazan on 13.04.2024.
-//  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
 import Foundation
-import DagestanKit
+import CoreKit
 
 /// Сервис для работы с точками/местами
 final class PlacesService: IPlacesService {
