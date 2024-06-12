@@ -5,9 +5,9 @@
 //  Created by Рассказов Глеб on 27.04.2024.
 //
 
-import SwiftUI
 import DesignSystem
 import NukeUI
+import SwiftUI
 
 @MainActor
 struct PlaceView: View {
@@ -21,9 +21,9 @@ struct PlaceView: View {
 
     var body: some View {
         contentView
-            .cornerStyle(.constant(16))
-            .padding(.horizontal, 12)
-            .shadow(radius: 5)
+            .cornerStyle(.constant(Grid.pt16))
+            .padding(.horizontal, Grid.pt12)
+            .shadow(radius: Grid.pt4)
         //            .onReceive(timer) { _ in
         //                nextImage()
         //            }
@@ -46,13 +46,13 @@ struct PlaceView: View {
 
     @ViewBuilder private var imageView: some View {
         ZStack(alignment: .topTrailing) {
-            if viewModel.place.images.count != 0 {
+            if !viewModel.place.images.isEmpty {
                 LazyImage(url: viewModel.place.images[viewModel.index]) { state in
                     state.image?
                         .resizable()
                         .frame(height: 174)
                         .aspectRatio(contentMode: .fit)
-                        .cornerStyle(.constant(4, .bottomCorners))
+                        .cornerStyle(.constant(Grid.pt4, .bottomCorners))
                         .overlay(sliderView, alignment: .bottom)
                         .overlay(gestureOverlay)
                         .onReceive(viewModel.timer) { _ in
@@ -77,9 +77,9 @@ extension PlaceView {
                     progressCapsule(for: index)
                 }
             }
-            .frame(height: 4)
-            .padding(.horizontal, 12)
-            .padding(.bottom, 8)
+            .frame(height: Grid.pt4)
+            .padding(.horizontal, Grid.pt12)
+            .padding(.bottom, Grid.pt8)
         }
     }
 
@@ -128,18 +128,18 @@ extension PlaceView {
     private var titleAndRatingView: some View {
         HStack {
             Text(viewModel.place.name)
-                .font(.manropeSemibold(size: 18))
+                .font(.manropeSemibold(size: Grid.pt18))
             Spacer()
             starRatingView
         }
-        .skeleton(show: viewModel.isLoading, cornerStyle: .constant(4))
+        .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
     }
 
     private var starRatingView: some View {
         HStack(spacing: Grid.pt4) {
             Image(systemName: "star")
                 .resizable()
-                .frame(width: 16, height: 16)
+                .frame(width: Grid.pt16, height: Grid.pt16)
                 .aspectRatio(contentMode: .fit)
                 .foregroundStyle(.yellow)
 
@@ -152,7 +152,7 @@ extension PlaceView {
     private var operatingHoursView: some View {
         Text(viewModel.place.workTime ?? "")
             .font(.manropeRegular(size: Grid.pt14))
-            .skeleton(show: viewModel.isLoading, cornerStyle: .constant(4))
+            .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
     }
 
     private var routeDescriptionView: some View {
@@ -160,7 +160,7 @@ extension PlaceView {
             .font(.manropeRegular(size: Grid.pt14))
             .lineLimit(3)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .skeleton(show: viewModel.isLoading, cornerStyle: .constant(4))
+            .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
     }
 
     private var buttonsView: some View {
@@ -181,6 +181,6 @@ extension PlaceView {
                 isPlaceViewVisible = false
             }
         }
-        .padding([.top, .trailing], 12)
+        .padding([.top, .trailing], Grid.pt12)
     }
 }

@@ -13,11 +13,11 @@ struct PhoneMaskTextFieldView: View {
             isEditing: $isEditing,
             placeholder: placeholder
         )
-        .frame(height: 44)
-        .padding(.leading, 12)
+        .frame(height: Grid.pt44)
+        .padding(.leading, Grid.pt12)
         .setBorder(
-            width: 1,
-            color: isEditing ? WFColor.accentPrimary: WFColor.borderMuted
+            width: Grid.pt1,
+            color: isEditing ? WFColor.accentPrimary : WFColor.borderMuted
         )
     }
 }

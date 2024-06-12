@@ -12,12 +12,18 @@ import Foundation
 public enum Grid {
     /// 0 поинтов
     public static let pt0: CGFloat = 0.0
+    /// 1 поинт
+    public static let pt1: CGFloat = 1.0
+    /// 2 поинта
+    public static let pt2: CGFloat = 2.0
     /// 4 поинта
     public static let pt4: CGFloat = 4.0
     /// 6 поинта
     public static let pt6: CGFloat = 6.0
     /// 8 поинтов
     public static let pt8: CGFloat = 8.0
+    /// 9 поинтов
+    public static let pt9: CGFloat = 9.0
     /// 10 поинтов
     public static let pt10: CGFloat = 10.0
     /// 12 поинтов
@@ -26,14 +32,22 @@ public enum Grid {
     public static let pt14: CGFloat = 14.0
     /// 16 поинтов
     public static let pt16: CGFloat = 16.0
+    /// 18 поинтов
+    public static let pt18: CGFloat = 18.0
     /// 20 поинтов
     public static let pt20: CGFloat = 20.0
+    /// 22 поинта
+    public static let pt22: CGFloat = 22.0
     /// 24 поинта
     public static let pt24: CGFloat = 24.0
     /// 28 поинтов
     public static let pt28: CGFloat = 28.0
+    /// 30 поинтов
+    public static let pt30: CGFloat = 30.0
     /// 32 поинта
     public static let pt32: CGFloat = 32.0
+    /// 34 поинта
+    public static let pt34: CGFloat = 34.0
     /// 36 поинтов
     public static let pt36: CGFloat = 36.0
     /// 40 поинтов
@@ -134,6 +148,8 @@ public extension Grid {
     static let pt204: CGFloat = 204.0
     /// 208 поинтов
     static let pt208: CGFloat = 208.0
+    /// 210 поинтов
+    static let pt210: CGFloat = 210.0
     /// 212 поинтов
     static let pt212: CGFloat = 212.0
     /// 216 поинтов

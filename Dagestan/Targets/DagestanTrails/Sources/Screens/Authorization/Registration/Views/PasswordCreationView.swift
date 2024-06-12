@@ -24,7 +24,7 @@ struct PasswordCreationView: View {
                 nextButton
                 Spacer()
             }
-            .padding([.horizontal, .top], 16)
+            .padding([.horizontal, .top], Grid.pt16)
             .setCustomBackButton()
             .alert("Ошибка", isPresented: $viewModel.showAlert) {
                 Button("OK", role: .cancel) {}
@@ -37,7 +37,7 @@ struct PasswordCreationView: View {
     private var coincidenceContainerView: some View {
         Text("Введенные пароли не совпадают. Пожалуйста, проверьте и попробуйте снова.")
             .foregroundStyle(WFColor.foregroundPrimary)
-            .font(.manropeRegular(size: 20))
+            .font(.manropeRegular(size: Grid.pt20))
             .multilineTextAlignment(.center)
     }
 
@@ -45,19 +45,19 @@ struct PasswordCreationView: View {
         Text("Придумай пароль")
             .multilineTextAlignment(.center)
             .foregroundStyle(WFColor.foregroundPrimary)
-            .font(.manropeExtrabold(size: 22))
+            .font(.manropeExtrabold(size: Grid.pt22))
     }
 
     private var inputsContainerView: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Grid.pt12) {
             PasswordTextFieldView(text: $viewModel.password, placeholder: "Придумай пароль")
             PasswordTextFieldView(text: $viewModel.confirmPassword, placeholder: "Повтори пароль")
         }
-        .padding(.top, 12)
+        .padding(.top, Grid.pt12)
     }
 
     private var requirementsContainerView: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Grid.pt4) {
             ForEach(viewModel.validationRules.indices, id: \.self) { index in
                 ValidationRow(rule: viewModel.validationRules[index])
             }
@@ -78,7 +78,7 @@ struct PasswordCreationView: View {
                 viewModel.showAlert = true
             }
         }
-        .padding(.top, 4)
+        .padding(.top, Grid.pt4)
     }
 }
 

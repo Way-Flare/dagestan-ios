@@ -24,7 +24,7 @@ struct BackButton: View {
                     Image(systemName: "chevron.left")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: Grid.pt20, height: Grid.pt20)
+                        .frame(width: Grid.pt16, height: Grid.pt16)
                         .foregroundStyle(WFColor.iconPrimary)
                 )
                 .shadow(

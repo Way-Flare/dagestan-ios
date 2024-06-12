@@ -34,36 +34,36 @@ struct RegisterVerificationView: View {
                 Spacer()
             }
             .foregroundStyle(WFColor.foregroundSoft)
-            .font(.manropeSemibold(size: 16))
-            .padding(.horizontal, 16)
-            .padding(.top, 34)
+            .font(.manropeSemibold(size: Grid.pt16))
+            .padding(.horizontal, Grid.pt16)
+            .padding(.top, Grid.pt34)
             .endEditingOnTap()
         }
     }
 
     private var enterCodeContainerView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Grid.pt16) {
             DagestanTrailsAsset.logo.swiftUIImage
                 .resizable()
-                .frame(width: 80, height: 64)
-                .cornerStyle(.constant(16))
+                .frame(width: Grid.pt80, height: Grid.pt64)
+                .cornerStyle(.constant(Grid.pt16))
 
             Text("Введи последние 4 цифры входящего номера")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(WFColor.foregroundPrimary)
-                .font(.manropeExtrabold(size: 22))
+                .font(.manropeExtrabold(size: Grid.pt22))
         }
     }
 
     private var exampleNumberContainerView: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: .zero) {
             Text("Например: +7 (XXX)-XXX-")
                 +
                 Text("12-34")
                 .foregroundColor(WFColor.accentPrimary)
             Text("Звоним на номер \(FilterNumberPhone.format(phone: registerViewModel.phoneNumber))")
         }
-        .padding(.top, 12)
+        .padding(.top, Grid.pt12)
     }
 
     private var buttonContainerView: some View {
@@ -76,7 +76,7 @@ struct RegisterVerificationView: View {
         ) {
             timerViewModel.startTimer()
         }
-        .padding(.top, 4)
+        .padding(.top, Grid.pt4)
     }
 
     private func formatTime(_ seconds: Int) -> String {

@@ -13,7 +13,7 @@ struct ValidationRow: View {
 
     private var foregroundColor: Color {
         if !rule.showIcon {
-            return .green
+            return WFColor.iconPrimary
         } else {
             return rule.isValid
                    ? WFColor.successPrimary
@@ -28,7 +28,7 @@ struct ValidationRow: View {
 
             Text(rule.description)
                 .foregroundStyle(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: 14))
+                .font(.manropeRegular(size: Grid.pt14))
         }
     }
 }

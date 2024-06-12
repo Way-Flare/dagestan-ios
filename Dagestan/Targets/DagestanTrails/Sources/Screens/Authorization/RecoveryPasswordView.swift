@@ -20,13 +20,13 @@ struct RecoveryPasswordView: View {
     private var contentView: some View {
         ZStack {
             WFColor.surfaceSecondary.ignoresSafeArea()
-            VStack(spacing: 12) {
+            VStack(spacing: Grid.pt12) {
                 createPasswordContainerView
                 inputsContainerView
                 nextButton
                 Spacer()
             }
-            .padding([.horizontal, .top], 16)
+            .padding([.horizontal, .top], Grid.pt16)
             .setCustomBackButton()
         }
     }
@@ -35,7 +35,7 @@ struct RecoveryPasswordView: View {
         Text("Сброс пароля")
             .multilineTextAlignment(.center)
             .foregroundStyle(WFColor.foregroundPrimary)
-            .font(.manropeExtrabold(size: 22))
+            .font(.manropeExtrabold(size: Grid.pt22))
     }
 
     private var inputsContainerView: some View {
@@ -43,7 +43,7 @@ struct RecoveryPasswordView: View {
             text: $resetViewModel.phoneNumber,
             placeholder: "Номер телефона"
         )
-        .padding(.top, 12)
+        .padding(.top, Grid.pt12)
     }
 
     private var nextButton: some View {
@@ -55,7 +55,7 @@ struct RecoveryPasswordView: View {
         ) {
             path.append(NavigationRoute.verification)
         }
-        .padding(.top, 4)
+        .padding(.top, Grid.pt4)
     }
 }
 
