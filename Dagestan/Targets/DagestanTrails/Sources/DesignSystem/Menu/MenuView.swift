@@ -1,6 +1,6 @@
 //
 //  MenuView.swift
-//  DagestanKit
+//  CoreKit
 //
 //  Created by Рассказов Глеб on 25.04.2024.
 //
@@ -16,7 +16,7 @@ public struct MenuView<
     ItemType.AllCases.Index == Int,
     Router.CaseItem == ItemType {
     public init() {}
-    
+
     public var body: some View {
         NavigationStack {
             List {

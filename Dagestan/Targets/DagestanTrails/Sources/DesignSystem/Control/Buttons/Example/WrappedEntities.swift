@@ -1,12 +1,12 @@
 //
 //  WrappedEntities.swift
-//  DagestanKit
+//  CoreKit
 //
 //  Created by Рассказов Глеб on 03.05.2024.
 //
 
 import Foundation
-import DTDesignSystem
+import DesignSystem
 
 extension ButtonExampleView {
     enum WrappedButtonType: String, CaseIterable {
@@ -17,7 +17,7 @@ extension ButtonExampleView {
         case overlay = "Overlay"
         case favorite = "Favorite"
 
-        var buttonType: DTButtonStyle {
+        var buttonType: WFButtonStyle {
             switch self {
                 case .primary: return .primary
                 case .secondary: return .secondary
@@ -31,8 +31,8 @@ extension ButtonExampleView {
 
     enum WrappedButtonSize: String, CaseIterable {
         case l, m, s, xs
-        
-        var buttonSize: DTButton.Size {
+
+        var buttonSize: WFButton.Size {
             switch self {
                 case .l: return .l
                 case .m: return .m
@@ -40,8 +40,8 @@ extension ButtonExampleView {
                 case .xs: return .xs
             }
         }
-        
-        var buttonIconSize: DTButtonIcon.Size {
+
+        var buttonIconSize: WFButtonIcon.Size {
             switch self {
                 case .l: return .l
                 case .m: return .m
@@ -50,14 +50,14 @@ extension ButtonExampleView {
             }
         }
     }
-    
+
     enum WrappedButtonState: String, CaseIterable {
         case `default`
         case hover
         case active
         case disabled
-        
-        var buttonState: DTButtonState {
+
+        var buttonState: WFButtonState {
             switch self {
                 case .default: return .default
                 case .hover: return .hover

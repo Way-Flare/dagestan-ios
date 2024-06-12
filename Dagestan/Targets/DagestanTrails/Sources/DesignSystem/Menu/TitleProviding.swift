@@ -1,6 +1,6 @@
 //
 //  TitleProviding.swift
-//  DagestanKit
+//  CoreKit
 //
 //  Created by Рассказов Глеб on 25.04.2024.
 //

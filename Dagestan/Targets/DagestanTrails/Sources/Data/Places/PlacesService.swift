@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import DagestanKit
+import CoreKit
 
 /// Сервис для работы с точками/местами
 final class PlacesService: IPlacesService {

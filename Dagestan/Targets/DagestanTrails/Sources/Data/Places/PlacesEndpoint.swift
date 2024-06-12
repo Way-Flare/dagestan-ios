@@ -6,7 +6,7 @@
 //
 
 import CoreLocation
-import DagestanKit
+import CoreKit
 
 enum PlacesEndpoint {
     case allPlaces
@@ -24,8 +24,8 @@ extension PlacesEndpoint: ApiEndpoint {
         }
     }
     
-    var method: DagestanKit.Method { return .get }
-    
+    var method: CoreKit.Method { return .get }
+
     var headers: Headers? {
         return nil
     }

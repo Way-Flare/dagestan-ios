@@ -9,11 +9,11 @@ import Foundation
 
 final class PlaceDetailViewModel: ObservableObject {
     @Published var place: PlaceDetail?
-    
+
     private let service: IPlacesService
     private let placeId: Int
     private var task: Task<Void, Error>?
-    
+
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками
     /// - Parameter placeId: Id - для получения детальной информации о месте.
@@ -21,15 +21,15 @@ final class PlaceDetailViewModel: ObservableObject {
         self.service = service
         self.placeId = placeId
     }
-    
+
     deinit {
         task?.cancel()
     }
-    
+
     func loadPlaceDetail() {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            
+
             do {
                 let place = try await service.getPlace(id: placeId)
                 self.place = place

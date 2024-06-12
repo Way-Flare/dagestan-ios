@@ -5,7 +5,7 @@
 //  Created by Рассказов Глеб on 26.03.2024.
 //
 
-import DagestanKit
+import CoreKit
 import SwiftUI
 
 enum TabItem: Int, CaseIterable {
@@ -13,7 +13,7 @@ enum TabItem: Int, CaseIterable {
     case routes
     case favorite
     case profile
-    case dagestankit
+    case designSystem
 
     var title: String {
         switch self {
@@ -21,22 +21,7 @@ enum TabItem: Int, CaseIterable {
             case .favorite: return "tab.favorites"
             case .profile: return "tab.profile"
             case .routes: return "tab.routes"
-            case .dagestankit: return "DesignSystem"
-        }
-    }
-
-    var selectedIcon: Image {
-        switch self {
-            case .places:
-                DagestanTrailsAsset.tabLocationSelected.swiftUIImage
-            case .routes:
-                DagestanTrailsAsset.tabRouteSelected.swiftUIImage
-            case .favorite:
-                DagestanTrailsAsset.tabHeartSelected.swiftUIImage
-            case .profile:
-                DagestanTrailsAsset.tabProfileCircleSelected.swiftUIImage
-            case .dagestankit:
-                DagestanTrailsAsset.hideSoft.swiftUIImage
+            case .designSystem: return "DesignSystem"
         }
     }
 
@@ -50,8 +35,8 @@ enum TabItem: Int, CaseIterable {
                 DagestanTrailsAsset.tabHeart.swiftUIImage
             case .profile:
                 DagestanTrailsAsset.tabProfileCircle.swiftUIImage
-            case .dagestankit:
-                DagestanTrailsAsset.viewSoft.swiftUIImage
+            case .designSystem:
+                Image(systemName: "eye")
         }
     }
 

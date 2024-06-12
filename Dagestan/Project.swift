@@ -27,5 +27,5 @@ let localHelper = LocalHelper(name: "MyPlugin")
 let project = Project.app(
     name: "DagestanTrails",
     destinations: [.iPhone, .iPad, .macWithiPadDesign],
-    additionalTargets: ["DagestanKit"]
+    additionalTargets: ["CoreKit"]
 )

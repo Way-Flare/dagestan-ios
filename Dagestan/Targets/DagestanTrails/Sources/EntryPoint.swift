@@ -1,50 +1,52 @@
 import SwiftUI
-import DagestanKit
-import DTDesignSystem
+import CoreKit
+import DesignSystem
 
 @main
 struct EntryPoint: App {
     private let networkService = DTNetworkService()
-    
+    private let timerViewModel = TimerViewModel()
+
     var body: some Scene {
         WindowGroup {
             ContentView(networkService: networkService)
+                .environmentObject(timerViewModel)
         }
     }
 }
 
 struct ContentView: View {
     let placesService = PlacesService(networkService: DTNetworkService())
-    @State private var selectedTab: TabItem = .places // начальный выбор
     @StateObject private var mapViewModel: MapViewModel
-    
+
     // сделать бы норм инжект)
     init(networkService: NetworkServiceProtocol) {
         let placesService = PlacesService(networkService: networkService)
         _mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
     }
-    
+
     var body: some View {
         let _ = Self._printChanges()
-        
+
         NavigationStack {
             contentView
-                .tint(WFColor.accentPrimary)
+                .tint(WFColor.iconAccent)
                 .onAppear {
                     setupTabBar()
                 }
         }
     }
-    
+
     private var contentView: some View {
-        TabView(selection: $selectedTab) {
+        TabView {
             ForEach(TabItem.allCases, id: \.self) { tab in
                 tabItemView(for: tab)
                     .tabItem {
-                        VStack {
+                        VStack(spacing: Grid.pt4) {
+                            tab.icon
                             Text(NSLocalizedString(tab.title, comment: ""))
-                            imageForTab(tab: tab)
                         }
+                        .font(.manropeRegular(size: Grid.pt12))
                     }
             }
         }
@@ -52,26 +54,26 @@ struct ContentView: View {
 }
 
 private extension ContentView {
-    func imageForTab(tab: TabItem) -> SwiftUI.Image {
-        let isSelected = (tab == selectedTab)
-        let image = isSelected ? tab.selectedIcon : tab.icon
-        return image
-    }
-    
     func setupTabBar() {
         let appearance = UITabBarAppearance()
-        appearance.backgroundEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
-        appearance.backgroundColor = UIColor(Color.white.opacity(0.1))
-        
+        appearance.backgroundColor = UIColor(WFColor.surfacePrimary)
+
+        appearance.stackedLayoutAppearance.normal.iconColor = UIColor(WFColor.foregroundPrimary)
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: UIColor(WFColor.foregroundPrimary)
+        ]
+
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
-    
+
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-            case .places: MapUIBox(viewModel: mapViewModel)
-            case .dagestankit: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
+            case .places: MapView(viewModel: mapViewModel)
+            case .profile: AuthorizationView()
+            case .favorite: FavoritesView()
+            case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
             default: Text(item.title)
         }
     }

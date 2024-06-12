@@ -1,12 +1,12 @@
 //
 //  ButtonExampleViewModel.swift
-//  DagestanKit
+//  CoreKit
 //
 //  Created by Рассказов Глеб on 03.05.2024.
 //
 
 import SwiftUI
-import DTDesignSystem
+import DesignSystem
 
 class ButtonExampleViewModel: ObservableObject {
     @Published var selectedType: ButtonExampleView.WrappedButtonType = .primary
@@ -24,15 +24,21 @@ class ButtonExampleViewModel: ObservableObject {
         let key = "\(size.rawValue)-\(state.rawValue)"
         selectedStates[key, default: false].toggle()
     }
-    
-    func isSelected(size: ButtonExampleView.WrappedButtonSize, state: ButtonExampleView.WrappedButtonState) -> Bool {
+
+    func isSelected(
+        size: ButtonExampleView.WrappedButtonSize,
+        state: ButtonExampleView.WrappedButtonState
+    ) -> Bool {
         selectedStates["\(size.rawValue)-\(state.rawValue)", default: false]
     }
-    
-    func currentState(size: ButtonExampleView.WrappedButtonSize, state: ButtonExampleView.WrappedButtonState) -> DTButtonState {
+
+    func currentState(
+        size: ButtonExampleView.WrappedButtonSize,
+        state: ButtonExampleView.WrappedButtonState
+    ) -> WFButtonState {
         isSelected(size: size, state: state) ? ButtonExampleView.WrappedButtonState.active.buttonState : state.buttonState
     }
-    
+
     func currentImage(isSelected: Bool) -> Image {
         isSelected ? selectedImage : unselectedImage
     }

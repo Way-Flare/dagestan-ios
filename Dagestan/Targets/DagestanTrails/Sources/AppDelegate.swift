@@ -1,5 +1,5 @@
 import UIKit
-import DTDesignSystem
+import DesignSystem
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

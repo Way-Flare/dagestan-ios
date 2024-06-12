@@ -1,12 +1,11 @@
 //
-//  DemoCheckingDKButton.swift
-//  DagestanKit
+//  DemoCheckingWFButton.swift
 //
 //  Created by Рассказов Глеб on 25.04.2024.
 //
 
 import SwiftUI
-import DTDesignSystem
+import DesignSystem
 
 struct ButtonExampleView: View {
     @StateObject var viewModel: ButtonExampleViewModel
@@ -40,7 +39,7 @@ struct ButtonExampleView: View {
         }
         .frame(maxWidth: .infinity)
     }
-    
+
     private func infoView(
         size: WrappedButtonSize,
         type: Binding<WrappedButtonType>,
@@ -52,14 +51,14 @@ struct ButtonExampleView: View {
                 Text("Size: \(size.rawValue)")
                 Text("State: \(state.rawValue)")
             }
-            
+
             Spacer()
-            
+
             let currentImage = viewModel.currentImage(isSelected: isSelected)
             let currentState = viewModel.currentState(size: size, state: state)
-            
+
             if viewModel.buttonType == .button {
-                DTButton(
+                WFButton(
                     title: "Label",
                     size: size.buttonSize,
                     state: currentState,
@@ -70,7 +69,7 @@ struct ButtonExampleView: View {
                     viewModel.toggleState(size: size, state: state)
                 }
             } else {
-                DTButtonIcon(
+                WFButtonIcon(
                     icon: currentImage,
                     size: size.buttonIconSize,
                     state: currentState,

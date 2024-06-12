@@ -6,14 +6,14 @@
 //
 
 import CoreLocation
-import DagestanKit
+import CoreKit
 
 public struct Place: Identifiable {
     public let id: Int
     public let coordinate: CLLocationCoordinate2D
     public let name: String
     public let shortDescription: String?
-    public let image: URL?
+    public let images: [URL]
     public let rating: Double?
     public let workTime: String?
     public let tags: [TagPlace]?
