@@ -7,12 +7,20 @@
 
 import SwiftUI
 
-struct WFSegmentedPickerView<T: Hashable & CaseIterable & CustomStringConvertible, Content: View>: View {
+public struct WFSegmentedPickerView<T: Hashable & CaseIterable & CustomStringConvertible, Content: View>: View {
     @Binding var selection: T
     let content: (T) -> Content
     private let tabs = Array(T.allCases)
+    
+    public init(
+        selection: Binding<T>,
+        content: @escaping (T) -> Content
+    ) {
+        self._selection = selection
+        self.content = content
+    }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: .zero) {
             VStack(spacing: Grid.pt4){
                 HStack {
@@ -35,10 +43,10 @@ struct WFSegmentedPickerView<T: Hashable & CaseIterable & CustomStringConvertibl
                         .offset(x: calculateOffset(geometry: geometry), y: 0)
                         .animation(.easeInOut(duration: 0.2), value: selection)
                 }
-                .frame(height: Grid.pt3)
+                .frame(height: Grid.pt2)
             }
             .padding(Grid.pt16)
-            
+
             content(selection)
             Spacer()
         }

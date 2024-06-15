@@ -5,20 +5,28 @@
 //  Created by Рассказов Глеб on 08.06.2024.
 //
 
-import SwiftUI
 import DesignSystem
+import SwiftUI
 
 struct FavoritesView: View {
-    let favoritesCount = 0
+    @State var section: FavoriteSection = .places
+    let favoritesCount = 5
 
     var body: some View {
         ZStack {
             WFColor.surfaceSecondary.ignoresSafeArea()
-            VStack {
+            VStack(spacing: Grid.pt12) {
                 counterContainerView
-                Spacer()
-                counterContainerView
-                Spacer()
+                if favoritesCount == 0 {
+                    Spacer()
+                    emptyStateContainerView
+                    Spacer()
+                    Spacer()
+                } else {
+                    WFSegmentedPickerView(selection: $section) { section in
+                        contentView(for: section)
+                    }
+                }
             }
         }
     }
@@ -49,6 +57,22 @@ struct FavoritesView: View {
             title: "Плохое соеденение",
             message: "Проверь доступ к интернету и обнови страницу"
         )
+    }
+
+    @ViewBuilder
+    private func contentView(for section: FavoriteSection) -> some View {
+        ScrollView {
+            switch section {
+                case .places, .routes:
+                    LazyVStack(spacing: Grid.pt12) {
+                        ForEach(0 ..< favoritesCount, id: \.self) { _ in
+                            FavoriteCardView()
+                                .padding(.horizontal, Grid.pt12)
+                        }
+                    }
+            }
+        }
+        .scrollIndicators(.hidden)
     }
 }
 
