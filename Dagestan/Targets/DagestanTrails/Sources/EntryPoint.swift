@@ -11,6 +11,7 @@ struct EntryPoint: App {
         WindowGroup {
             ContentView(networkService: networkService)
                 .environmentObject(timerViewModel)
+                .environment(\.colorScheme, .light)
         }
     }
 }
