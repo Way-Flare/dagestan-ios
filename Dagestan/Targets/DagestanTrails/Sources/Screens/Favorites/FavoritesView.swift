@@ -64,10 +64,10 @@ struct FavoritesView: View {
         ScrollView {
             switch section {
                 case .places, .routes:
-                    LazyVStack(spacing: 12) {
+                    LazyVStack(spacing: Grid.pt12) {
                         ForEach(0 ..< favoritesCount, id: \.self) { _ in
                             FavoriteCardView()
-                                .padding(.horizontal, 12)
+                                .padding(.horizontal, Grid.pt12)
                         }
                     }
             }

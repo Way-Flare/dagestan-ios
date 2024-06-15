@@ -43,7 +43,7 @@ public struct WFSegmentedPickerView<T: Hashable & CaseIterable & CustomStringCon
                         .offset(x: calculateOffset(geometry: geometry), y: 0)
                         .animation(.easeInOut(duration: 0.2), value: selection)
                 }
-                .frame(height: Grid.pt3)
+                .frame(height: Grid.pt2)
             }
             .padding(Grid.pt16)
 

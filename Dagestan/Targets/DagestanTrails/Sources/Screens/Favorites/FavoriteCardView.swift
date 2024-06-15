@@ -17,7 +17,7 @@ struct FavoriteCardView: View {
         }
         .background(.white)
         .cornerStyle(.constant(Grid.pt12, .bottomCorners))
-        .font(.manropeRegular(size: 14))
+        .font(.manropeRegular(size: Grid.pt14))
     }
     
     private var imageContainerView: some View {
@@ -25,7 +25,7 @@ struct FavoriteCardView: View {
             ZStack(alignment: .topTrailing) {
                 Image("phoot")
                     .resizable()
-                    .frame(height: 174)
+                    .frame(height: Grid.pt174)
                     .cornerStyle(.constant(Grid.pt12, .topCorners))
                     .cornerStyle(.constant(Grid.pt4, .bottomCorners))
                 
@@ -35,14 +35,14 @@ struct FavoriteCardView: View {
                     type: .favorite
                 ) {}
                     .foregroundColor(WFColor.errorSoft)
-                    .padding([.top, .trailing], 12)
+                    .padding([.top, .trailing], Grid.pt12)
             }
         }
     }
     
     private var contentContainerView: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: Grid.pt6) {
+            HStack(spacing: Grid.pt12) {
                 titleContainerView
                 ratingContainerView
             }
@@ -53,15 +53,15 @@ struct FavoriteCardView: View {
             Text("Маршрут 'Дагестанский квест': Погрузитесь в магию Дагестана, начав магию Дагестана, начав магию Дагестана, начав магию ")
                 .foregroundStyle(WFColor.iconPrimary)
         }
-        .padding([.top, .horizontal], 8)
-        .padding(.bottom, 12)
+        .padding([.top, .horizontal], Grid.pt8)
+        .padding(.bottom, Grid.pt12)
     }
     
     private var titleContainerView: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Grid.pt4) {
             DagestanTrailsAsset.tree.swiftUIImage
                 .resizable()
-                .frame(width: 20, height: 20)
+                .frame(width: Grid.pt20, height: Grid.pt20)
                 .foregroundStyle(WFColor.iconSoft)
             
             Text("Склон горы Тарки-Тау  Смотровая площадка")
@@ -72,10 +72,10 @@ struct FavoriteCardView: View {
     }
     
     private var ratingContainerView: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Grid.pt4) {
             Image(systemName: "star.fill")
                 .resizable()
-                .frame(width: 16, height: 16)
+                .frame(width: Grid.pt16, height: Grid.pt16)
                 .foregroundStyle(.yellow)
             
             Text("4.3")
@@ -86,5 +86,5 @@ struct FavoriteCardView: View {
 
 #Preview {
     FavoriteCardView()
-        .padding(.horizontal, 12)
+        .padding(.horizontal, Grid.pt12)
 }
