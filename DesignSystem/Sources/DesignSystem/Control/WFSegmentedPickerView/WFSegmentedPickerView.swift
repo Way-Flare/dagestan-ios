@@ -46,8 +46,8 @@ struct WFSegmentedPickerView<T: Hashable & CaseIterable & CustomStringConvertibl
 
     private func calculateOffset(geometry: GeometryProxy, fixedIndicatorWidth: CGFloat = 148) -> CGFloat {
         let totalWidth = geometry.size.width
-        let numberOfTabs = CGFloat(T.allCases.count)
-        let indexedCases = Array(T.allCases.enumerated())
+        let numberOfTabs = CGFloat(tabs.count)
+        let indexedCases = tabs.enumerated()
 
         guard let selectedIndex = indexedCases.first(where: { $0.element == selection })?.offset else {
             return 0
