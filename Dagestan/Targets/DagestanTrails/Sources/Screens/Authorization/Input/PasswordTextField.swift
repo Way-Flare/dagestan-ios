@@ -38,6 +38,7 @@ struct PasswordTextFieldView: View {
             showPassword.toggle()
         } label: {
             Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                .frame(width: Grid.pt20, height: Grid.pt20)
                 .foregroundStyle(WFColor.iconSoft)
         }
         .opacity(isSecure ? Grid.pt1 : Grid.pt0)
