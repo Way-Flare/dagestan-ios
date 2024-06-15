@@ -27,7 +27,6 @@ struct FavoritesView: View {
                         contentView(for: section)
                     }
                 }
-                WFAvatarView.initials("Gleb Rasskazov", userId: "36152", size: .size88)
             }
         }
     }

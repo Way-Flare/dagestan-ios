@@ -36,6 +36,8 @@ public enum Grid {
     public static let pt18: CGFloat = 18.0
     /// 20 поинтов
     public static let pt20: CGFloat = 20.0
+    /// 21 поинт
+    public static let pt21: CGFloat = 21.0
     /// 22 поинта
     public static let pt22: CGFloat = 22.0
     /// 24 поинта
@@ -58,6 +60,8 @@ public enum Grid {
     public static let pt46: CGFloat = 46.0
     /// 48 поинтов
     public static let pt48: CGFloat = 48.0
+    /// 49 поинтов
+    public static let pt49: CGFloat = 49.0
     /// 52 поинта
     public static let pt52: CGFloat = 52.0
     /// 56 поинтов
@@ -74,6 +78,8 @@ public enum Grid {
     public static let pt76: CGFloat = 76.0
     /// 80 поинтов
     public static let pt80: CGFloat = 80.0
+    /// 83 поинта
+    public static let pt83: CGFloat = 83.0
     /// 84 поинта
     public static let pt84: CGFloat = 84.0
     /// 88 поинтов
@@ -101,6 +107,8 @@ public extension Grid {
     static let pt120: CGFloat = 120.0
     /// 124 поинта
     static let pt124: CGFloat = 124.0
+    /// 125 поинтов
+    static let pt125: CGFloat = 125.0
     /// 128 поинтов
     static let pt128: CGFloat = 128.0
     /// 132 поинта

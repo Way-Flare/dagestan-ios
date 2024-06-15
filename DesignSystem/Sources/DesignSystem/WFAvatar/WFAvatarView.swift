@@ -7,14 +7,6 @@
 
 import SwiftUI
 
-public struct EmptyAvatarContent: AvatarContent {
-    public init() {}
-    
-    public func contentView() -> some View {
-        EmptyView()
-    }
-}
-
 public struct WFAvatarView<Content: AvatarContent>: View {
     let content: Content
 
@@ -45,6 +37,10 @@ public extension WFAvatarView where Content == EmptyAvatarContent {
     }
 }
 
- #Preview {
-     WFAvatarView.initials("Gleb Rasskazov", userId: UUID().uuidString, size: .size44)
- }
+public struct EmptyAvatarContent: AvatarContent {
+    public init() {}
+    
+    public func contentView() -> some View {
+        EmptyView()
+    }
+}

@@ -17,10 +17,10 @@ public struct WFAvatarImageContent: AvatarContent {
     }
     
     public func contentView() -> some View {
-        ZStack {
-            Circle()
-                .fill(Color.random)
-                .frame(width: size.value, height: size.value)
-        }
+        image
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: size.value, height: size.value)
+            .cornerStyle(.round)
     }
 }

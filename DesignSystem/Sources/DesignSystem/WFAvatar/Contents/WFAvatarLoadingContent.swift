@@ -15,10 +15,8 @@ public struct WFAvatarLoadingContent: AvatarContent {
     }
     
     public func contentView() -> some View {
-        ZStack {
-            Circle()
-                .fill(Color.random)
-                .frame(width: size.value, height: size.value)
-        }
+        Circle()
+            .foregroundColor(WFColor.iconDisabled)
+            .frame(width: size.value, height: size.value)
     }
 }
