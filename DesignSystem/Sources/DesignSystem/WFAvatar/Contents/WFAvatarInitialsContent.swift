@@ -7,14 +7,6 @@
 
 import SwiftUI
 
-extension Color {
-    static func generateNearbyGradient(baseHue: Double, saturation: Double, brightness: Double, hueIncrement: Double) -> LinearGradient {
-        let color1 = Color(hue: baseHue, saturation: saturation, brightness: brightness)
-        let color2 = Color(hue: (baseHue + hueIncrement).truncatingRemainder(dividingBy: 1.0), saturation: saturation, brightness: brightness)
-        return LinearGradient(gradient: Gradient(colors: [color1, color2]), startPoint: .topLeading, endPoint: .bottomTrailing)
-    }
-}
-
 public struct WFAvatarInitialsContent: AvatarContent {
     public let userName: String?
     public let userId: String
