@@ -119,5 +119,7 @@ public struct WFColor {
     public static let iconMuted: Color = .dsColor(named: "iconMuted")
     public static let iconDisabled: Color = .dsColor(named: "iconDisabled")
     public static let iconInverted: Color = .dsColor(named: "iconInverted")
-
+    
+    // MARK: - Stars
+    public static let starActive: Color = .dsColor(named: "starActive")
 }
