@@ -11,10 +11,10 @@ public struct FontManager {
     public static func registerFonts() {
         let bundle = Bundle.module
         let fontUrls = [
-            "Manrope-ExtraBold.ttf",
-            "Manrope-Regulard.ttf",
+            "Manrope-ExtraBold",
+            "Manrope-Regulard",
             "Manrope-SemiBold"
-        ].compactMap { bundle.url(forResource: $0, withExtension: nil) }
+        ].compactMap { bundle.url(forResource: $0, withExtension: "ttf") }
 
         fontUrls.forEach { url in
             CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)

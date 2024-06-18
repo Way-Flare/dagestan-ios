@@ -157,15 +157,17 @@ extension MapView {
 
     private func createClusteredLayer() -> CircleLayer {
         var layer = CircleLayer(id: ItemId.clusterCircle, source: ItemId.source)
+        layer.circleStrokeWidth = .constant(2.0)
+        layer.circleStrokeColor = .constant(StyleColor(UIColor(WFColor.iconInverted)))
         layer.circleColor = .expression(Exp(.step) {
             Exp(.get) { "point_count" }
-            UIColor.systemGreen
+            UIColor(WFColor.iconAccent)
             50
-            UIColor.systemBlue
+            UIColor(WFColor.infoActive)
             100
-            UIColor.systemRed
+            UIColor(WFColor.errorSoft)
         })
-        layer.circleRadius = .constant(25)
+        layer.circleRadius = .constant(15)
         layer.filter = Exp(.has) { "point_count" }
         return layer
     }
@@ -173,13 +175,14 @@ extension MapView {
     private func createUnclusteredLayer() -> SymbolLayer {
         var layer = SymbolLayer(id: ItemId.point, source: ItemId.source)
         layer.iconImage = .constant(.name("place-icon"))
-        layer.iconColor = .constant(StyleColor(.white))
+        layer.iconColor = .constant(StyleColor(UIColor(WFColor.iconAccent)))
         layer.filter = Exp(.not) { Exp(.has) { "point_count" } }
         return layer
     }
 
     private func createNumberLayer() -> SymbolLayer {
         var layer = SymbolLayer(id: ItemId.count, source: ItemId.source)
+        layer.textColor = .constant(StyleColor(UIColor(WFColor.iconInverted)))
         layer.textField = .expression(Exp(.get) { "point_count" })
         layer.textSize = .constant(Grid.pt12)
         layer.filter = Exp(.has) { "point_count" }

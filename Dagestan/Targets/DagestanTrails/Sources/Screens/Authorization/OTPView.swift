@@ -65,6 +65,7 @@ private extension OTPView {
 
     }
 
+    // TODO: DAGESTAN-200
     @ViewBuilder var errorText: some View {
         if isError {
             Text("Неверный код. Попробуйте еще раз")

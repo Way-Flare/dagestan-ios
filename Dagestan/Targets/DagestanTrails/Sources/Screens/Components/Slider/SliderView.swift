@@ -44,7 +44,7 @@ struct SliderView: View {
                             viewModel.animateTimerProgress()
                         }
                         .skeleton(show: state.isLoading)
-                    
+
                     if state.error != nil {
                         DagestanTrailsAsset.notAvaibleImage.swiftUIImage
                             .resizable()

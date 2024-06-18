@@ -13,6 +13,7 @@ struct RatingWingView: View {
     let rating: Double
     let reviewsCount: Int
     
+    // TODO: DAGESTAN-200
     private var reviewString: String {
         if reviewsCount > 0 {
             return "Всего \(reviewsCount) \(correctFormForCount(reviewsCount))"
@@ -44,6 +45,7 @@ struct RatingWingView: View {
         .foregroundStyle(WFColor.iconPrimary)
     }
     
+    // TODO: DAGESTAN-200
     private func correctFormForCount(_ count: Int) -> String { // Потом придумаю как сделать сущность которая будет учитывать плюрализацию
         let lastDigit = count % 10
         let lastTwoDigits = count % 100

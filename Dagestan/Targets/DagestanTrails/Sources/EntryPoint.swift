@@ -17,12 +17,12 @@ struct EntryPoint: App {
 }
 
 struct ContentView: View {
-    let placesService = PlacesService(networkService: DTNetworkService())
     @StateObject private var mapViewModel: MapViewModel
     @StateObject private var routeViewModel: RouteListViewModel
 
     // сделать бы норм инжект)
     init(networkService: NetworkServiceProtocol) {
+        FontManager.registerFonts()
         let placesService = PlacesService(networkService: networkService)
         let routeService = RouteService(networkService: networkService)
         

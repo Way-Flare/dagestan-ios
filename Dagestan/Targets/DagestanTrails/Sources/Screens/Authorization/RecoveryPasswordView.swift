@@ -31,6 +31,7 @@ struct RecoveryPasswordView: View {
         }
     }
 
+    // TODO: DAGESTAN-200
     private var createPasswordContainerView: some View {
         Text("Сброс пароля")
             .multilineTextAlignment(.center)
@@ -38,6 +39,7 @@ struct RecoveryPasswordView: View {
             .font(.manropeExtrabold(size: Grid.pt22))
     }
 
+    // TODO: DAGESTAN-200
     private var inputsContainerView: some View {
         PhoneMaskTextFieldView(
             text: $resetViewModel.phoneNumber,
@@ -46,9 +48,10 @@ struct RecoveryPasswordView: View {
         .padding(.top, Grid.pt12)
     }
 
+    // TODO: DAGESTAN-200
     private var nextButton: some View {
         WFButton(
-            title: "Далее",
+            title: "Далее", // TODO: DAGESTAN-200
             size: .l,
             state: resetViewModel.phoneNumber.count <= 10 ? .disabled : .default,
             type: .primary

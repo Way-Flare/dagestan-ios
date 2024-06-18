@@ -26,7 +26,7 @@ struct RouteCardView: View {
     private var imageContainerView: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                SliderView(images: Place.mock.images)
+                SliderView(images: route.images.compactMap { $0 } )
                     .frame(height: 174)
                 
                 WFButtonIcon(
@@ -50,7 +50,7 @@ struct RouteCardView: View {
             Text("\(String(format: ".2f", route.distance))км • \(formatExtendedTravelTime()) • \(Int.random(in: 1 ... 12)) мест")
                 .foregroundStyle(WFColor.foregroundSoft)
 
-            Text("Маршрут 'Дагестанский квест': Погрузитесь в магию Дагестана, начав магию Дагестана, начав магию Дагестана, начав магию ")
+            Text(route.shortDescription ?? "")
                 .multilineTextAlignment(.leading)
                 .foregroundStyle(WFColor.iconPrimary)
         }
@@ -59,7 +59,7 @@ struct RouteCardView: View {
     }
     
     private var titleContainerView: some View {
-        Text("Склон горы Тарки-Тау  Смотровая площадка")
+        Text(route.title)
             .foregroundStyle(WFColor.foregroundPrimary)
             .font(.manropeSemibold(size: Grid.pt16))
             .lineLimit(1)

@@ -26,6 +26,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         } content: {
             VStack(alignment: .leading, spacing: Grid.pt16) {
                 routeInfoContainerView
+                expandableTextContainerView
 
                 PlaceRouteInfoView(
                     type: .route(
@@ -73,11 +74,17 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     distance: route.distance,
                     time: route.travelTime
                 )
-                Text(isBackdropVisible ? route.description ?? "" : "")
-                    .foregroundStyle(WFColor.foregroundPrimary)
-                    .multilineTextAlignment(.leading)
-                    .font(.manropeRegular(size: 16))
             }
+        }
+    }
+
+    @ViewBuilder private var expandableTextContainerView: some View {
+        if let route = viewModel.state.data, let description = route.description {
+            ExpandableTextView(text: description, lineLimit: 8) { isExpanded in
+                Text(isExpanded ? "свернуть" : "раскрыть")
+                    .underline()
+            }
+            .foregroundStyle(WFColor.foregroundPrimary)
         }
     }
 
