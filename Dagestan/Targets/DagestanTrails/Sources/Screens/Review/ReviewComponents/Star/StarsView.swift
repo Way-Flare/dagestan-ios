@@ -31,7 +31,7 @@ struct StarsView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: size.value, height: size.value)
-                    .foregroundStyle(index < amount ? WFColor.starActive : WFColor.surfaceFivefold)
+                    .foregroundStyle(index < amount ? WFColor.starActive : WFColor.starPrimary)
             }
         }
     }

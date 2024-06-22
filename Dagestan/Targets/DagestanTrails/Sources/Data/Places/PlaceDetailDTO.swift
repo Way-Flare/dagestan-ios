@@ -14,10 +14,10 @@ struct PlaceDetailDTO: Decodable {
     let latitude: Double
     let name: String
     let tags: [TagPlaceDTO]
-    let shortDescription: String
-    let description: String
+    let shortDescription: String?
+    let description: String?
     let images: [ImageDTO]
-    let workTime: String
+    let workTime: String?
     let placeFeedbacks: [PlaceFeedbackDTO]
     let rating: Int
     let placeWays: [PlaceWayDTO]
@@ -31,7 +31,7 @@ extension PlaceDetailDTO {
         let images: [ImageDTO]
         let user: UserDTO
         let stars: Int
-        let comment: String
+        let comment: String?
         let createdAt: String
     }
 
@@ -42,20 +42,20 @@ extension PlaceDetailDTO {
 
     struct PlaceWayDTO: Decodable {
         let id: Int
-        let info: String
+        let info: String?
         let images: [ImageDTO]
     }
 
     struct ContactDTO: Decodable {
         let id: Int
-        let phoneNumber: String
-        let email: String
+        let phoneNumber: String?
+        let email: String?
     }
 
     struct RouteDTO: Decodable {
         let id: Int
         let title: String
-        let shortDescription: String
+        let shortDescription: String?
         let images: [ImageDTO]
         let rating: Int
     }

@@ -49,6 +49,7 @@ final class MapViewModel: ObservableObject {
             do {
                 let places = try await service.getAllPlaces()
                 self.places = places
+                print(places)
             } catch {
                 print("Failed to load landmarks: \(error.localizedDescription)")
             }
@@ -70,12 +71,12 @@ final class MapViewModel: ObservableObject {
     /// Выбирает место на основе переданного id.
     /// - Parameter id: Параметр необходимые для идентификации места.
     func selectPlace(by id: Int) {
-        print(id)
-        guard let selected = places.first(where: { $0.id == id }) else { return }
-
-        withAnimation {
+        if let currentSelected = selectedPlace, currentSelected.id == id {
+            isPlaceViewVisible = false
+            selectedPlace = nil
+        } else {
+            selectedPlace = filteredPlaces.first { $0.id == id }
             isPlaceViewVisible = true
-            selectedPlace = selected
         }
     }
 

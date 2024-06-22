@@ -16,7 +16,7 @@ struct FavoriteCardView: View {
             contentContainerView
         }
         .background(.white)
-        .cornerStyle(.constant(Grid.pt12, .bottomCorners))
+        .cornerStyle(.constant(Grid.pt12))
         .font(.manropeRegular(size: Grid.pt14))
     }
     
