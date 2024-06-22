@@ -25,7 +25,7 @@ extension StarsView {
 
         var spacing: CGFloat {
             switch self {
-                case .l: return Grid.pt12
+                case .l: return Grid.pt16
                 case .m: return Grid.pt10
                 case .s: return Grid.pt6
             }

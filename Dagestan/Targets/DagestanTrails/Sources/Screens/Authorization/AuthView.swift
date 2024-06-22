@@ -12,7 +12,7 @@ import CoreKit
 struct AuthorizationView: View {
     @StateObject var authViewModel = AuthorizationViewModel()
     @StateObject var registerViewModel = RegisterViewModel()
-    @StateObject var resetViewModel = RegisterViewModel() // - потом придумаю по поводу этого, потому что еще нужно будет хэндлить состояние в RegisterVerificationView для разных вьюмоделей
+    @StateObject var resetViewModel = RegisterViewModel()
 
     var body: some View {
         NavigationStack(path: $authViewModel.path) {

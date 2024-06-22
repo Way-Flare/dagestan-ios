@@ -31,6 +31,7 @@ struct MapView: View {
                                     viewModel.selectPlace(by: place.id)
                                 }
                         }
+                        .allowOverlap(true)
                     }
                 }
                 .mapStyle(.streets)

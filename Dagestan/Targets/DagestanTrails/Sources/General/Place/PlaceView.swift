@@ -9,10 +9,10 @@ import DesignSystem
 import NukeUI
 import SwiftUI
 
-@MainActor
 struct PlaceView: View {
     @Binding var isPlaceViewVisible: Bool
     @StateObject private var viewModel: PlaceViewModel
+    @State private var isActive = false
 
     init(place: Place, isVisible: Binding<Bool>) {
         self._viewModel = StateObject(wrappedValue: PlaceViewModel(place: place))
@@ -20,25 +20,24 @@ struct PlaceView: View {
     }
 
     var body: some View {
-        contentView
-            .cornerStyle(.constant(Grid.pt16))
-            .padding(.horizontal, Grid.pt12)
-            .shadow(radius: Grid.pt4)
-        //            .onReceive(timer) { _ in
-        //                nextImage()
-        //            }
+        NavigationView {
+            NavigationLink(destination: PlaceDetailView(placeId: 3, service: MockPlaceService()), isActive: $isActive) {
+                contentView
+                    .cornerStyle(.constant(Grid.pt16))
+                    .padding(.horizontal, Grid.pt12)
+                    .shadow(radius: Grid.pt4)
+                    .onTapGesture {
+                        isActive = true
+                    }
+            }
+        }
+        .frame(height: 302)
     }
 
-    //    private func nextImage() {
-    //        if !isLoading {
-    //            timerProgress = (timerProgress + 0.01).truncatingRemainder(dividingBy: CGFloat(place.images.count))
-    //        }
-    //    }
-
     private var contentView: some View {
-        VStack(spacing: Grid.pt8) {
+        VStack(alignment: .leading, spacing: Grid.pt8) {
             imageView
-            descriptionView.padding(.horizontal, Grid.pt8)
+            descriptionView
         }
         .padding(.bottom, Grid.pt12)
         .background(WFColor.surfacePrimary)
@@ -46,71 +45,12 @@ struct PlaceView: View {
 
     @ViewBuilder private var imageView: some View {
         ZStack(alignment: .topTrailing) {
-            if !viewModel.place.images.isEmpty {
-                LazyImage(url: viewModel.place.images[viewModel.index]) { state in
-                    state.image?
-                        .resizable()
-                        .frame(height: 174)
-                        .aspectRatio(contentMode: .fit)
-                        .cornerStyle(.constant(Grid.pt4, .bottomCorners))
-                        .overlay(sliderView, alignment: .bottom)
-                        .overlay(gestureOverlay)
-                        .onReceive(viewModel.timer) { _ in
-                            viewModel.animateTimerProgress()
-                        }
-                        .skeleton(show: state.isLoading)
-                }
-            }
-
+            SliderView(images: viewModel.place.images)
             buttonsView
         }
-    }
-}
+        .cornerStyle(.constant(Grid.pt4, .bottomCorners))
+        .frame(height: 174)
 
-// MARK: - Slider with progress logic
-
-extension PlaceView {
-    @ViewBuilder private var sliderView: some View {
-        if viewModel.place.images.count > 1 {
-            HStack(spacing: Grid.pt4) {
-                ForEach(0 ..< viewModel.place.images.count, id: \.self) { index in
-                    progressCapsule(for: index)
-                }
-            }
-            .frame(height: Grid.pt4)
-            .padding(.horizontal, Grid.pt12)
-            .padding(.bottom, Grid.pt8)
-        }
-    }
-
-    private func progressCapsule(for index: Int) -> some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width
-            let progress = viewModel.calculateProgress(for: index, width: width)
-
-            Capsule()
-                .fill(Color.white.opacity(0.5))
-                .overlay(alignment: .leading) {
-                    Capsule()
-                        .fill(Color.white)
-                        .frame(width: progress)
-                }
-        }
-    }
-
-    private var gestureOverlay: some View {
-        HStack(spacing: .zero) {
-            gestureRectangle(by: -1)
-            gestureRectangle(by: 1)
-        }
-    }
-
-    private func gestureRectangle(by increment: CGFloat) -> some View {
-        Rectangle()
-            .fill(Color.black.opacity(0.01))
-            .onTapGesture {
-                viewModel.updateTimerProgress(increment: increment)
-            }
     }
 }
 
@@ -123,12 +63,15 @@ extension PlaceView {
             operatingHoursView
             routeDescriptionView
         }
+        .padding(.horizontal, Grid.pt8)
     }
 
     private var titleAndRatingView: some View {
         HStack {
             Text(viewModel.place.name)
+                .foregroundColor(WFColor.foregroundPrimary)
                 .font(.manropeSemibold(size: Grid.pt18))
+                .lineLimit(1)
             Spacer()
             starRatingView
         }
@@ -137,30 +80,35 @@ extension PlaceView {
 
     private var starRatingView: some View {
         HStack(spacing: Grid.pt4) {
-            Image(systemName: "star")
-                .resizable()
-                .frame(width: Grid.pt16, height: Grid.pt16)
-                .aspectRatio(contentMode: .fit)
-                .foregroundStyle(.yellow)
-
+            StarsView(amount: 1, size: .s, type: .review)
             Text(String(viewModel.place.rating ?? 0.0))
                 .font(.manropeRegular(size: Grid.pt14))
                 .foregroundStyle(WFColor.foregroundSoft)
         }
     }
 
-    private var operatingHoursView: some View {
-        Text(viewModel.place.workTime ?? "")
-            .font(.manropeRegular(size: Grid.pt14))
-            .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
+    @ViewBuilder private var operatingHoursView: some View {
+        Group {
+            Text(viewModel.formatter.operatingStatus)
+                .foregroundColor(viewModel.formatter.operatingStatusColor)
+            +
+            Text(viewModel.formatter.operatingStatusSuffix)
+                .foregroundColor(WFColor.foregroundSoft)
+        }
+        .font(.manropeRegular(size: Grid.pt14))
+        .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
     }
 
-    private var routeDescriptionView: some View {
-        Text(viewModel.place.shortDescription ?? "")
-            .font(.manropeRegular(size: Grid.pt14))
-            .lineLimit(3)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
+    @ViewBuilder private var routeDescriptionView: some View {
+        if let shortDescription = viewModel.place.shortDescription {
+            HStack {
+                Text(shortDescription)
+                    .font(.manropeRegular(size: Grid.pt14))
+                    .lineLimit(3)
+                    .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
+                Spacer()
+            }
+        }
     }
 
     private var buttonsView: some View {
@@ -183,4 +131,8 @@ extension PlaceView {
         }
         .padding([.top, .trailing], Grid.pt12)
     }
+}
+
+#Preview {
+    PlaceView(place: Place.mock, isVisible: .constant(false))
 }

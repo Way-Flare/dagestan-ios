@@ -13,6 +13,15 @@ struct SkeletonModifier: ViewModifier {
     private let foreverAnimation = Animation.default.speed(0.25).repeatForever(autoreverses: false)
     private let isLoading: Bool
     private let cornerStyle: CornerStyle
+    
+    
+    private var linearGradient: LinearGradient {
+        LinearGradient(
+            gradient: .init(colors: [.clear, .white, .clear]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+    }
 
     init(isLoading: Bool, cornerStyle: CornerStyle) {
         self.isLoading = isLoading
@@ -60,13 +69,5 @@ struct SkeletonModifier: ViewModifier {
         } else {
             EmptyView()
         }
-    }
-
-    private var linearGradient: LinearGradient {
-        LinearGradient(
-            gradient: .init(colors: [.clear, .white, .clear]),
-            startPoint: .leading,
-            endPoint: .trailing
-        )
     }
 }

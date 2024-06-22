@@ -9,8 +9,8 @@ import CoreKit
 import Foundation
 
 public struct ImageDTO: Decodable {
-    public let file: String
     public let name: String?
+    public let file: String
 }
 
 extension ImageDTO: Domainable {
