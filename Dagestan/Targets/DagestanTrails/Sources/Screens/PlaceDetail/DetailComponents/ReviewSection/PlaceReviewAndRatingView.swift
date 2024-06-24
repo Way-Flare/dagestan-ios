@@ -10,37 +10,36 @@ import DesignSystem
 import SwiftUI
 
 struct PlaceReviewAndRatingView: View {
-    let place: PlaceDetail?
+    let rating: Double
+    let reviewsCount: Int
 
     var body: some View {
-        if let place {
-            VStack(alignment: .leading, spacing: Grid.pt12) {
-                Text("Отзывы и оценки")
-                    .font(.manropeSemibold(size: Grid.pt18))
-                    .foregroundStyle(WFColor.foregroundPrimary)
+        VStack(alignment: .leading, spacing: Grid.pt12) {
+            Text("Отзывы и оценки")
+                .font(.manropeSemibold(size: Grid.pt18))
+                .foregroundStyle(WFColor.foregroundPrimary)
 
+            VStack(spacing: Grid.pt12) {
+                RatingWingView(rating: rating, reviewsCount: reviewsCount)
+                Divider()
+                    .background(WFColor.borderMuted)
+                    .frame(height: Grid.pt16)
                 VStack(spacing: Grid.pt12) {
-                    RatingWingView(rating: Double(place.rating), reviewsCount: place.placeFeedbacks.count)
-                    Divider()
-                        .background(WFColor.borderMuted)
-                        .frame(height: Grid.pt16)
-                    VStack(spacing: Grid.pt12) {
-                        Text("Оцените место и оставьте отзыв")
-                            .foregroundStyle(WFColor.iconPrimary)
-                        StarsView(amount: 0, size: .l)
-                    }
+                    Text("Оцените место и оставьте отзыв")
+                        .foregroundStyle(WFColor.iconPrimary)
+                    StarsView(amount: 0, size: .l)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, Grid.pt12)
-                .padding(.top, Grid.pt16)
-                .padding(.bottom, Grid.pt20)
-                .background(WFColor.surfacePrimary)
-                .cornerStyle(.constant(Grid.pt12))
             }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, Grid.pt12)
+            .padding(.top, Grid.pt16)
+            .padding(.bottom, Grid.pt20)
+            .background(WFColor.surfacePrimary)
+            .cornerStyle(.constant(Grid.pt12))
         }
     }
 }
 
 #Preview {
-    PlaceReviewAndRatingView(place: PlaceDetail.mock())
+    PlaceReviewAndRatingView(rating: 5, reviewsCount: 12)
 }

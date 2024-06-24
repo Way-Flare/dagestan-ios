@@ -43,8 +43,7 @@ struct RoutePlacesView: View {
         }
     }
 
-    @ViewBuilder
-    private var expandButton: some View {
+    @ViewBuilder private var expandButton: some View {
         let placesCount = items.count - 5
         let placesText = pluralPlaces(count: placesCount)
 

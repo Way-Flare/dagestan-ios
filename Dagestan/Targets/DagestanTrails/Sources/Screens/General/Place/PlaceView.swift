@@ -46,6 +46,7 @@ struct PlaceView: View {
     @ViewBuilder private var imageView: some View {
         ZStack(alignment: .topTrailing) {
             SliderView(images: viewModel.place.images)
+                .frame(height: 174)
             buttonsView
         }
         .cornerStyle(.constant(Grid.pt4, .bottomCorners))
@@ -101,13 +102,12 @@ extension PlaceView {
 
     @ViewBuilder private var routeDescriptionView: some View {
         if let shortDescription = viewModel.place.shortDescription {
-            HStack {
-                Text(shortDescription)
-                    .font(.manropeRegular(size: Grid.pt14))
-                    .lineLimit(3)
-                    .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
-                Spacer()
-            }
+            Text(shortDescription)
+                .font(.manropeRegular(size: Grid.pt14))
+                .lineLimit(3)
+                .multilineTextAlignment(.leading)
+                .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 

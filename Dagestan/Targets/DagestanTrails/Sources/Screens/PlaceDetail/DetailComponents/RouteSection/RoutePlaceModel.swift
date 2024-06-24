@@ -8,8 +8,18 @@
 
 import SwiftUI
 
-struct RoutePlaceModel {
-    let icon: Image
-    let title: String
-    let subtitle: String?
+public struct RoutePlaceModel {
+    public let icon: Image
+    public let title: String
+    public let subtitle: String?
+    
+    public init(
+        icon: Image,
+        title: String,
+        subtitle: String?
+    ) {
+        self.icon = icon
+        self.title = title
+        self.subtitle = subtitle
+    }
 }

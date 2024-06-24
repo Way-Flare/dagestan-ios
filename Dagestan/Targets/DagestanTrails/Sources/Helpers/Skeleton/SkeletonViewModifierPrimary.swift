@@ -14,7 +14,6 @@ struct SkeletonModifier: ViewModifier {
     private let isLoading: Bool
     private let cornerStyle: CornerStyle
     
-    
     private var linearGradient: LinearGradient {
         LinearGradient(
             gradient: .init(colors: [.clear, .white, .clear]),

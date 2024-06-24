@@ -56,6 +56,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
             switch httpResponse.statusCode {
                 case 200...299:
                     guard let decodedResponse = try? decoder.decode(type, from: data) else {
+                        print("Ошибка декодирования")
                         throw RequestError.failedDecode
                     }
 

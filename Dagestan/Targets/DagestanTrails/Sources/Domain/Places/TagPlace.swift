@@ -13,6 +13,10 @@ public enum TagPlace: String, CaseIterable {
     case food
     case landmark
     case unknown
+    
+    public init(rawValue: String) {
+        self = TagPlace.allCases.first { $0.rawValue == rawValue } ?? .unknown
+    }
 }
 
 extension TagPlace {

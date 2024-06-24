@@ -22,7 +22,8 @@ struct FullScreenImageGallery: View {
     private let minScale: CGFloat = 1.0
     private let maxScale: CGFloat = 5.0
 
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) 
+    var dismiss
 
     var body: some View {
         VStack {

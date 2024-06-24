@@ -18,7 +18,7 @@ struct PlaceDetail {
     let images: [URL]
     let workTime: String?
     let placeFeedbacks: [PlaceFeedback]
-    let rating: Int
+    let rating: Double
     let placeWays: [PlaceWay]
     let contacts: [Contact]
     let routes: [Route]
