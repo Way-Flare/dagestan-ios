@@ -46,7 +46,9 @@ struct SliderView: View {
                         .skeleton(show: state.isLoading)
                     
                     if state.error != nil {
-                        Text(state.error!.localizedDescription)
+                        DagestanTrailsAsset.notAvaibleImage.swiftUIImage
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
                     }
                 }
                 .onAppear {

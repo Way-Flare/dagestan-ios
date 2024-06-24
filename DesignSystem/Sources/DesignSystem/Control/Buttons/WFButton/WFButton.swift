@@ -22,7 +22,7 @@ public struct WFButton: View, Buildable {
     public init(
         title: String,
         size: Size,
-        state: WFButtonState,
+        state: WFButtonState = .default,
         type: WFButtonStyle,
         subtitle: String? = nil,
         leftImage: Image? = nil,

@@ -19,7 +19,7 @@ struct PlaceDetailDTO: Decodable {
     let images: [ImageDTO]
     let workTime: String?
     let placeFeedbacks: [PlaceFeedbackDTO]
-    let rating: Int
+    let rating: Double
     let placeWays: [PlaceWayDTO]
     let contacts: [ContactDTO]
     let routes: [RouteDTO]

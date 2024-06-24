@@ -12,6 +12,18 @@ import DesignSystem
 struct PlaceRouteInfoView: View {
     let title: String
     let items: [RoutePlaceModel]?
+    let isRoutes: Bool
+    let countRoutes: Int
+    
+    init(
+        type: InfoType,
+        items: [RoutePlaceModel]?
+    ) {
+        self.title = type.title
+        self.items = items
+        self.isRoutes = type.isRoutes
+        self.countRoutes = type.countRoutes
+    }
     
     var body: some View {
         if let items {
@@ -21,14 +33,54 @@ struct PlaceRouteInfoView: View {
                         .font(.manropeSemibold(size: Grid.pt18))
                         .foregroundStyle(WFColor.foregroundPrimary)
                     
-                    DagestanTrailsAsset.routingBulk.swiftUIImage
-                        .resizable()
-                        .frame(width: Grid.pt16, height: Grid.pt16)
-                        .padding(.vertical, Grid.pt4)
-                        .padding(.horizontal, Grid.pt6)
-                        .background(WFColor.surfaceSecondary)
+                    if !isRoutes {
+                        DagestanTrailsAsset.routingBulk.swiftUIImage
+                            .resizable()
+                            .frame(width: Grid.pt16, height: Grid.pt16)
+                            .padding(.vertical, Grid.pt4)
+                            .padding(.horizontal, Grid.pt6)
+                            .background(WFColor.surfaceSecondary)
+                    } else {
+                        Text(String(countRoutes))
+                            .foregroundStyle(WFColor.foregroundSoft)
+                            .font(.manropeSemibold(size: 18))
+                    }
                 }
-                RoutePlacesView(items: items, isRoutes: false)
+                RoutePlacesView(items: items, isRoutes: isRoutes)
+            }
+        }
+    }
+}
+
+extension PlaceRouteInfoView {
+    enum InfoType {
+        case place(title: String)
+        case route(title: String, count: Int)
+        
+        var title: String {
+            switch self {
+                case let .place(title):
+                    return title
+                case let .route(title, _):
+                    return title
+            }
+        }
+        
+        var isRoutes: Bool {
+            switch self {
+                case .place:
+                    return false
+                case .route:
+                    return true
+            }
+        }
+        
+        var countRoutes: Int {
+            switch self {
+                case .place:
+                    return 0
+                case let .route(_, count):
+                    return count
             }
         }
     }
@@ -36,7 +88,7 @@ struct PlaceRouteInfoView: View {
 
 #Preview {
     PlaceRouteInfoView(
-        title: "Это место в маршрутах",
+        type: .place(title: "Это место в маршрутах"),
         items: PlaceDetail.mock().routes.map { $0.asDomain() }
     )
 }

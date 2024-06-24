@@ -122,4 +122,5 @@ public struct WFColor {
     
     // MARK: - Stars
     public static let starActive: Color = .dsColor(named: "starActive")
+    public static let starPrimary: Color = .dsColor(named: "starPrimary")
 }

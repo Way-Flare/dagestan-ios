@@ -54,4 +54,3 @@ struct ItemRowView: View {
 #Preview {
     RoutePlacesView(items: PlaceDetail.mock().routes.map { $0.asDomain() }, isRoutes: false)
 }
-

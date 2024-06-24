@@ -43,7 +43,7 @@ struct PlaceDetailInfoView: View {
                     .font(.manropeExtrabold(size: Grid.pt22))
                 Spacer()
                 HStack(spacing: Grid.pt4) {
-                    StarsView(amount: place.rating, size: .s, type: .review)
+                    StarsView(amount: Int(place.rating), size: .s, type: .review)
                     Text(String(Double(place.rating)))
                         .foregroundStyle(WFColor.foregroundSoft)
                 }

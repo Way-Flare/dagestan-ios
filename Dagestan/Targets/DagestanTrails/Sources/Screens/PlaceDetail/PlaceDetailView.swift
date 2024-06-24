@@ -14,7 +14,6 @@ import MapboxMaps
 
 struct PlaceDetailView: View {
     @StateObject private var viewModel: PlaceDetailViewModel
-    @State private var isExpanded = false
 
     init(placeId: Int, service: IPlacesService) {
         _viewModel = StateObject(wrappedValue: PlaceDetailViewModel(service: service, placeId: placeId))
@@ -33,12 +32,17 @@ struct PlaceDetailView: View {
                     place: viewModel.state.data
                 )
                 PlaceRouteInfoView(
-                    title: "Это место в маршрутах",
+                    type: .place(title: "Это место в маршрутах"),
                     items: viewModel.state.data?.routes.map { $0.asDomain() }
                 )
                 mapContainerView
                 PlaceSendErrorView()
-                PlaceReviewAndRatingView(place: viewModel.state.data)
+                if let route = viewModel.state.data {
+                    PlaceReviewAndRatingView(
+                        rating: route.rating,
+                        reviewsCount: route.placeFeedbacks.count
+                    )
+                }
                 reviewContainerView
             }
             .padding(.horizontal, Grid.pt12)
@@ -65,10 +69,10 @@ struct PlaceDetailView: View {
                     AnnotationView(name: place.name, workingTime: place.workTime, tagPlace: place.tags.first)
                 }
             }
-                .mapStyle(.streets)
-                .frame(maxWidth: .infinity)
-                .frame(height: Grid.pt253)
-                .cornerStyle(.constant(Grid.pt12))
+            .mapStyle(.streets)
+            .frame(maxWidth: .infinity)
+            .frame(height: Grid.pt253)
+            .cornerStyle(.constant(Grid.pt12))
         }
     }
 
@@ -81,7 +85,7 @@ struct PlaceDetailView: View {
             }
         }
     }
-    
+
     private var bottomContentContainerView: some View {
         VStack(spacing: .zero) {
             if viewModel.isVisibleSnackbar {

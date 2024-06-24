@@ -19,11 +19,15 @@ struct EntryPoint: App {
 struct ContentView: View {
     let placesService = PlacesService(networkService: DTNetworkService())
     @StateObject private var mapViewModel: MapViewModel
+    @StateObject private var routeViewModel: RouteListViewModel
 
     // сделать бы норм инжект)
     init(networkService: NetworkServiceProtocol) {
         let placesService = PlacesService(networkService: networkService)
-        _mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
+        let routeService = RouteService(networkService: networkService)
+        
+        self._mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
+        self._routeViewModel = StateObject(wrappedValue: RouteListViewModel(service: routeService))
     }
 
     var body: some View {
@@ -74,6 +78,7 @@ private extension ContentView {
             case .places: MapView(viewModel: mapViewModel)
             case .profile: AuthorizationView()
             case .favorite: FavoritesView()
+            case .routes: RouteListView(viewModel: routeViewModel)
             case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
             default: Text(item.title)
         }

@@ -13,7 +13,8 @@ public struct WFAvatarInitialsContent: AvatarContent {
     public let size: AvatarSize
     
     private var initials: String {
-        guard let fullName = userName, !fullName.isEmpty else {
+        guard let fullName = userName,
+              !fullName.isEmpty else {
             return ""
         }
         let parts = fullName.split(separator: " ").map(String.init)
@@ -60,4 +61,8 @@ public struct WFAvatarInitialsContent: AvatarContent {
             .background(gradient)
             .clipShape(Circle())
     }
+}
+
+#Preview {
+    WFAvatarView.initials("username", userId: "1235421", size: .size80)
 }
