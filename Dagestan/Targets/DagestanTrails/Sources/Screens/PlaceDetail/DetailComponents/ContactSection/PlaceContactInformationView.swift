@@ -23,30 +23,29 @@ struct PlaceContactInformationView: View {
                     Text("Контакты")
                         .font(.manropeSemibold(size: Grid.pt18))
                         .foregroundStyle(WFColor.foregroundPrimary)
-                    if let contact = place.contacts.first {
-                        VStack(alignment: .leading, spacing: Grid.pt4) {
-                            ContactView(
-                                isVisible: $isVisible,
-                                type: .phone(with: contact.phoneNumber)
-                            ) {
-                                if let phone = contact.phoneNumber,
-                                   let url = URL(string: "tel://\(phone)") {
-                                    UIApplication.shared.open(url)
-                                }
+                    VStack(alignment: .leading, spacing: Grid.pt4) {
+                        ContactView(
+                            isVisible: $isVisible,
+                            type: .phone(with: place.contacts.first?.phoneNumber)
+                        ) {
+                            if let phone = place.contacts.first?.phoneNumber,
+                               let url = URL(string: "tel://\(phone)")
+                            {
+                                UIApplication.shared.open(url)
                             }
-                            ContactView(
-                                isVisible: $isVisible,
-                                type: .email(with: contact.email)
-                            )
                         }
+                        ContactView(
+                            isVisible: $isVisible,
+                            type: .email(with: place.contacts.first?.email)
+                        )
                     }
                 }
 
                 VStack(alignment: .leading, spacing: Grid.pt8) {
                     let _ = getLocation(by: CLLocation(
-                            latitude: place.coordinate.latitude,
-                            longitude: place.coordinate.longitude
-                        )
+                        latitude: place.coordinate.latitude,
+                        longitude: place.coordinate.longitude
+                    )
                     )
                     Text("Адрес")
                         .font(.manropeSemibold(size: Grid.pt18))

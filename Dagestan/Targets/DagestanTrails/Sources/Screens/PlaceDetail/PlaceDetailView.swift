@@ -14,13 +14,14 @@ import MapboxMaps
 
 struct PlaceDetailView: View {
     @StateObject private var viewModel: PlaceDetailViewModel
+    @State private var isBackdropVisible = false
 
     init(placeId: Int, service: IPlacesService) {
         _viewModel = StateObject(wrappedValue: PlaceDetailViewModel(service: service, placeId: placeId))
     }
 
     var body: some View {
-        StretchableHeaderScrollView {
+        StretchableHeaderScrollView(showsBackdrop: $isBackdropVisible) {
             if let images = viewModel.state.data?.images {
                 SliderView(images: images)
             }
@@ -58,7 +59,7 @@ struct PlaceDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
         .navigationBarBackButtonHidden(true)
-        .navigationTitle(viewModel.state.data?.name ?? "")
+        .navigationTitle(isBackdropVisible ? viewModel.state.data?.name ?? "" : "")
         .navigationBarItems(leading: BackButton())
     }
 

@@ -63,7 +63,7 @@ struct MapView: View {
     private var bottomContentContainerView: some View {
         Group {
             if let place = viewModel.selectedPlace, viewModel.isPlaceViewVisible {
-                PlaceView(place: place, isVisible: $viewModel.isPlaceViewVisible)
+                PlaceView(service: viewModel.service, place: place, isVisible: $viewModel.isPlaceViewVisible)
                     .padding(.bottom, Grid.pt12)
             } else {
                 tagsContainerView

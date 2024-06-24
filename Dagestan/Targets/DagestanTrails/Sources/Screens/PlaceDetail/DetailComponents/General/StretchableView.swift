@@ -11,11 +11,14 @@ import SwiftUI
 struct StretchableHeaderScrollView<Header: View, Content: View>: View {
     let header: () -> Header
     let content: () -> Content
+    @Binding var showsBackdrop: Bool // Переменная для управления видимостью подложки
 
     init(
+        showsBackdrop: Binding<Bool>,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder content: @escaping () -> Content
     ) {
+        _showsBackdrop = showsBackdrop
         self.header = header
         self.content = content
     }
@@ -30,6 +33,10 @@ struct StretchableHeaderScrollView<Header: View, Content: View>: View {
                             .frame(width: geometry.size.width, height: max(geometry.size.width * 0.6, geometry.size.width * 0.6 + (minY > 0 ? minY : 0)))
                             .clipped()
                             .offset(y: minY > 0 ? -minY : 0)
+                            .onChange(of: minY) { value in
+                                // Обновляем showsBackdrop когда header становится видимым или скрытым
+                                showsBackdrop = value < 0
+                            }
                     }
                     .frame(height: geometry.size.width * 0.6)
 
@@ -38,13 +45,5 @@ struct StretchableHeaderScrollView<Header: View, Content: View>: View {
             }
             .scrollIndicators(.hidden)
         }
-    }
-}
-
-#Preview {
-    StretchableHeaderScrollView {
-        DagestanTrailsAsset.connectionFavorites.swiftUIImage
-    } content: {
-        Text("asdfpoaskgpoasgg")
     }
 }

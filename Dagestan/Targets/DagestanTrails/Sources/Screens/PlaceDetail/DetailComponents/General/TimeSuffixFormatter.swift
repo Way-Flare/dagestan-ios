@@ -14,22 +14,34 @@ struct TimeSuffixFormatter {
     
     var operatingStatus: String {
         guard let workTime else { return "Время работы неизвестно" }
+        if workTime == "24/7" || workTime == "Круглосуточно" {
+            return "Открыто"
+        }
         return isOpenNow(workTime: workTime) ? "Открыто" : "Закрыто"
     }
     
     var operatingStatusColor: Color {
         guard let workTime else { return WFColor.foregroundSoft }
+        if workTime == "24/7" || workTime == "Круглосуточно" {
+            return WFColor.successPrimary
+        }
         return isOpenNow(workTime: workTime) ? WFColor.successPrimary : WFColor.errorPrimary
     }
     
     var operatingStatusSuffix: String {
         guard let workTime else { return "" }
+        if workTime == "24/7" || workTime == "Круглосуточно" {
+            return " • Круглосуточно"
+        }
         
         let times = workTime.split(separator: "-").map { String($0) }
-        return " • до" + (isOpenNow(workTime: workTime) ? times[1] : times[0])
+        return " • до " + (isOpenNow(workTime: workTime) ? times[1] : times[0])
     }
     
     private func isOpenNow(workTime: String) -> Bool {
+        if workTime == "24/7" || workTime == "Круглосуточно" {
+            return true
+        }
         // workTime имеет формат "HH:mm-HH:mm"
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
