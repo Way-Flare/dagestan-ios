@@ -13,12 +13,13 @@ import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
+    @State var isBackdropVisible = false
 
     private let routeLayer = "route"
     private let routeFeature = "route-feature"
 
     var body: some View {
-        StretchableHeaderScrollView {
+        StretchableHeaderScrollView(showsBackdrop: $isBackdropVisible) {
             if let images = viewModel.state.data?.images {
                 SliderView(images: images)
             }
@@ -57,31 +58,29 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
         .navigationBarBackButtonHidden(true)
-        .navigationTitle(viewModel.state.data?.title ?? "")
+        .navigationTitle(isBackdropVisible ? viewModel.state.data?.title ?? "" : "")
         .navigationBarItems(leading: BackButton())
     }
 
     @ViewBuilder private var routeInfoContainerView: some View {
         if let route = viewModel.state.data {
             VStack(alignment: .leading, spacing: Grid.pt12) {
-                Text(viewModel.state.data?.title ?? "")
+                Text(route.title)
                     .foregroundStyle(WFColor.iconPrimary)
                     .font(.manropeExtrabold(size: 22))
-                if let route = viewModel.state.data {
-                    RouteCellView(
-                        rating: route.rating,
-                        distance: route.distance,
-                        time: route.travelTime
-                    )
-                }
-                Text(viewModel.state.data?.description ?? "")
+                RouteCellView(
+                    rating: route.rating,
+                    distance: route.distance,
+                    time: route.travelTime
+                )
+                Text(isBackdropVisible ? route.description ?? "" : "")
                     .foregroundStyle(WFColor.foregroundPrimary)
                     .multilineTextAlignment(.leading)
                     .font(.manropeRegular(size: 16))
             }
         }
     }
-    
+
     private var mapContainerView: some View {
         let camera = viewModel.calculateCenterAndApproximateZoom()
 

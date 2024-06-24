@@ -12,22 +12,23 @@ import SwiftUI
 struct PlaceView: View {
     @Binding var isPlaceViewVisible: Bool
     @StateObject private var viewModel: PlaceViewModel
-    @State private var isActive = false
-
-    init(place: Place, isVisible: Binding<Bool>) {
+    let service: IPlacesService
+    
+    init(service: IPlacesService, place: Place, isVisible: Binding<Bool>) {
+        self.service = service
         self._viewModel = StateObject(wrappedValue: PlaceViewModel(place: place))
         self._isPlaceViewVisible = isVisible
     }
 
     var body: some View {
         NavigationView {
-            NavigationLink(destination: PlaceDetailView(placeId: 3, service: MockPlaceService()), isActive: $isActive) {
+            NavigationLink(destination: PlaceDetailView(placeId: viewModel.place.id, service: service), isActive: $viewModel.isActive) {
                 contentView
                     .cornerStyle(.constant(Grid.pt16))
                     .padding(.horizontal, Grid.pt12)
                     .shadow(radius: Grid.pt4)
                     .onTapGesture {
-                        isActive = true
+                        viewModel.isActive = true
                     }
             }
         }
@@ -81,8 +82,8 @@ extension PlaceView {
 
     private var starRatingView: some View {
         HStack(spacing: Grid.pt4) {
-            StarsView(amount: 1, size: .s, type: .review)
-            Text(String(viewModel.place.rating ?? 0.0))
+            StarsView(amount: Int(viewModel.place.rating ?? .zero), size: .s, type: .review)
+            Text(String(viewModel.place.rating ?? .zero))
                 .font(.manropeRegular(size: Grid.pt14))
                 .foregroundStyle(WFColor.foregroundSoft)
         }
@@ -131,8 +132,4 @@ extension PlaceView {
         }
         .padding([.top, .trailing], Grid.pt12)
     }
-}
-
-#Preview {
-    PlaceView(place: Place.mock, isVisible: .constant(false))
 }
