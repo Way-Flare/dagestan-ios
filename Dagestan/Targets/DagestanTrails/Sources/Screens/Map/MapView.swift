@@ -17,9 +17,9 @@ private enum ItemId {
     static let source = "place-source"
 }
 
-struct MapView: View {
-    @ObservedObject var viewModel: MapViewModel
-
+struct MapView<ViewModel: IMapViewModel>: View {
+    @ObservedObject var viewModel: ViewModel
+    
     var body: some View {
         MapReader { proxy in
             ZStack {
@@ -62,11 +62,11 @@ struct MapView: View {
 
     private var bottomContentContainerView: some View {
         Group {
-            if let place = viewModel.selectedPlace, viewModel.isPlaceViewVisible {
-                PlaceView(service: viewModel.service, place: place, isVisible: $viewModel.isPlaceViewVisible)
-                    .padding(.bottom, Grid.pt12)
-            } else {
+            if viewModel.selectedPlace == nil  {
                 tagsContainerView
+            } else {
+                PlaceView(place: $viewModel.selectedPlace, service: viewModel.service)
+                    .padding(.bottom, Grid.pt12)
             }
         }
     }

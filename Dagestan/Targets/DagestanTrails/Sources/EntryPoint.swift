@@ -1,6 +1,6 @@
-import SwiftUI
 import CoreKit
 import DesignSystem
+import SwiftUI
 
 @main
 struct EntryPoint: App {
@@ -26,7 +26,7 @@ struct ContentView: View {
         FontManager.registerFonts()
         let placesService = PlacesService(networkService: networkService)
         let routeService = RouteService(networkService: networkService)
-        
+
         self._mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
         self._routeViewModel = StateObject(wrappedValue: RouteListViewModel(service: routeService))
         self.authService = AuthService(networkService: networkService)
@@ -35,13 +35,11 @@ struct ContentView: View {
     var body: some View {
         let _ = Self._printChanges()
 
-        NavigationStack {
-            contentView
-                .tint(WFColor.iconAccent)
-                .onAppear {
-                    setupTabBar()
-                }
-        }
+        contentView
+            .tint(WFColor.iconAccent)
+            .onAppear {
+                setupTabBar()
+            }
     }
 
     private var contentView: some View {

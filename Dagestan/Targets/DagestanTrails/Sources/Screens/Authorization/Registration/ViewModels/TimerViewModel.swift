@@ -8,7 +8,16 @@
 import Combine
 import Foundation
 
-class TimerViewModel: ObservableObject {
+protocol ITimerViewModel: ObservableObject {
+    var remainingSeconds: Int { get set }
+    var subtitle: String? { get set }
+    var timerIsActive: Bool { get set }
+    
+    func startTimer()
+    func stopTimer()
+}
+
+class TimerViewModel: ITimerViewModel {
     @Published var remainingSeconds = 59
     @Published var subtitle: String?
     @Published var timerIsActive = false

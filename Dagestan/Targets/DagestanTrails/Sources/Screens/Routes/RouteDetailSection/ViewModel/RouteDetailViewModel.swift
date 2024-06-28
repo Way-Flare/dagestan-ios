@@ -10,8 +10,9 @@ import CoreLocation
 
 protocol IRouteDetailViewModel: ObservableObject {
     var state: LoadingState<RouteDetail> { get }
-
     var routeCoordinates: [CLLocationCoordinate2D] { get }
+    var isBackdropVisible: Bool { get set }
+
 
     func loadRouteDetail()
     func calculateCenterAndApproximateZoom() -> (center: CLLocationCoordinate2D, zoom: Double)
@@ -22,11 +23,13 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
     private let id: Int
 
     @Published var state: LoadingState<RouteDetail> = .idle
+    @Published var isBackdropVisible = false
 
     var routeCoordinates: [CLLocationCoordinate2D] {
         [
             .init(latitude: 42.9833, longitude: 47.5046),
-            .init(latitude: 42.1167, longitude: 48.1936)
+            .init(latitude: 41.1167, longitude: 45.1936),
+            .init(latitude: 42.1167, longitude: 48.1936),
         ]
     }
 

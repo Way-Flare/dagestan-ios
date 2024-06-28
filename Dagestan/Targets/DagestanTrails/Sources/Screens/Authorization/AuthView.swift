@@ -5,29 +5,30 @@
 //  Created by Рассказов Глеб on 01.06.2024.
 //
 
-import SwiftUI
-import DesignSystem
 import CoreKit
+import DesignSystem
+import SwiftUI
 
 struct AuthorizationView: View {
     @StateObject var authViewModel: AuthorizationViewModel
     @StateObject var registerViewModel: RegisterViewModel
     @StateObject var resetViewModel: RegisterViewModel
     
+    private let service: AuthService
+
     init(service: AuthService) {
+        self.service = service
         self._authViewModel = StateObject(wrappedValue: AuthorizationViewModel(authService: service))
         self._registerViewModel = StateObject(wrappedValue: RegisterViewModel(authService: service))
         self._resetViewModel = StateObject(wrappedValue: RegisterViewModel(isRecovery: true, authService: service))
     }
 
     var body: some View {
-        let _ = Self._printChanges()
-
         NavigationStack(path: $authViewModel.path) {
             contentView
-                .navigationDestination(for: NavigationRoute.self) { route in
+                .navigationDestination(for: AuthNavigationRoute.self) { route in
                     switch route {
-                        case .register: 
+                        case .register:
                             RegisterView(viewModel: registerViewModel, path: $authViewModel.path)
                         case .recoveryPassword:
                             RecoveryPasswordView(viewModel: resetViewModel, path: $authViewModel.path)
@@ -37,7 +38,7 @@ struct AuthorizationView: View {
                                 path: $authViewModel.path
                             )
                         case let .passwordCreation(phone):
-                            PasswordCreationView(phone: phone, path: $authViewModel.path)
+                            PasswordCreationView(service: service, phone: phone, path: $authViewModel.path)
                     }
                 }
         }
@@ -108,7 +109,7 @@ struct AuthorizationView: View {
                     state: .default,
                     type: .nature
                 ) {
-                    authViewModel.path.append(NavigationRoute.recoveryPassword)
+                    authViewModel.path.append(AuthNavigationRoute.recoveryPassword)
                 }
             }
             Spacer()
@@ -119,7 +120,7 @@ struct AuthorizationView: View {
                 state: .default,
                 type: .ghost
             ) {
-                authViewModel.path.append(NavigationRoute.register)
+                authViewModel.path.append(AuthNavigationRoute.register)
             }
         }
     }

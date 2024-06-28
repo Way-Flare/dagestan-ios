@@ -76,7 +76,7 @@ struct RegisterView: View {
                     await viewModel.performAuthRequest()
 
                     if !viewModel.registrationState.isError {
-                        path.append(NavigationRoute.verification(isRecovery: false))
+                        path.append(AuthNavigationRoute.verification(isRecovery: false))
                     }
                 }
             }

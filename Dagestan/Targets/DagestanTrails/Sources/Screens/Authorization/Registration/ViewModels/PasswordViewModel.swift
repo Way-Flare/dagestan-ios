@@ -8,12 +8,21 @@
 import SwiftUI
 import CoreKit
 
-class PasswordViewModel: ObservableObject {
+protocol IPasswordViewModel: ObservableObject {
+    var password: String { get set }
+    var confirmPassword: String { get set }
+    var validationRules: [ValidationRule] { get set }
+    var showAlert: Bool { get set }
+    var isButtonDisabled: Bool { get }
+    
+    func registerPhone() async
+}
+
+class PasswordViewModel: IPasswordViewModel {
     @Published var password = ""
     @Published var confirmPassword = ""
     @Published var validationRules: [ValidationRule] = []
     @Published var showAlert = false
-    var isFirstInput = true
 
     var isButtonDisabled: Bool {
         validationRules.contains(where: { !$0.isValid })
@@ -21,8 +30,8 @@ class PasswordViewModel: ObservableObject {
     
     private let phone: String
     private let authService: AuthService
+    private var isFirstInput = true
     private let alphabet = "abcdefghijklmnopqrstuvwxyz"
-
     // swiftlint:disable opening_brace
     // swiftlint:disable large_tuple
     private let rulesDescriptions: [(description: String, validator: (String) -> Bool, icon: Image)] = [
@@ -58,7 +67,7 @@ class PasswordViewModel: ObservableObject {
     // swiftlint:enable large_tuple
     // swiftlint:enable opening_brace
 
-    init(authService: AuthService = AuthService(networkService: DTNetworkService()), phone: String) {
+    init(authService: AuthService, phone: String) {
         self.authService = authService
         self.phone = phone
         setupBindings()

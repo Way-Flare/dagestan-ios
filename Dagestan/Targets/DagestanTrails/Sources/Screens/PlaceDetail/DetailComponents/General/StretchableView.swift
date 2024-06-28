@@ -34,7 +34,6 @@ struct StretchableHeaderScrollView<Header: View, Content: View>: View {
                             .clipped()
                             .offset(y: minY > 0 ? -minY : 0)
                             .onChange(of: minY) { value in
-                                // Обновляем showsBackdrop когда header становится видимым или скрытым
                                 showsBackdrop = value < 0
                             }
                     }

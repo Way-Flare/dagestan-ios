@@ -32,7 +32,7 @@ final class AuthorizationViewModel: ObservableObject {
     init(authService: AuthService) {
         self.authService = authService
     }
-
+    
     func login() async {
         withAnimation {
             state = .loading

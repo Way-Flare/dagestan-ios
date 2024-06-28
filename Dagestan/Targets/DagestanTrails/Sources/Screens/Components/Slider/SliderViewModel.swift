@@ -9,7 +9,20 @@
 import Combine
 import SwiftUI
 
-final class SliderViewModel: ObservableObject {
+protocol ISliderViewModel: ObservableObject {
+    var timer: Publishers.Autoconnect<Timer.TimerPublisher>? { get set }
+    var timerProgress: CGFloat { get set }
+    var images: [URL] { get }
+    var index: Int { get }
+    
+    func calculateProgress(for index: Int, width: CGFloat) -> CGFloat
+    func updateTimerProgress(increment: CGFloat)
+    func startTimer()
+    func stopTimer()
+    func animateTimerProgress()
+}
+
+final class SliderViewModel: ISliderViewModel {
     @Published var timer: Publishers.Autoconnect<Timer.TimerPublisher>? = Timer.publish(every: 0.15, on: .main, in: .common).autoconnect()
 
     @Published var timerProgress: CGFloat = 0

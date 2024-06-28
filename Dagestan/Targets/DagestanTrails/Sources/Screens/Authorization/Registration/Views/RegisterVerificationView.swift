@@ -10,7 +10,7 @@ import CoreKit
 import DesignSystem
 import SwiftUI
 
-struct RegisterVerificationView: View {
+struct RegisterVerificationView<RegisterViewModel: IRegisterViewModel>: View {
     @EnvironmentObject private var timerViewModel: TimerViewModel
     @ObservedObject var registerViewModel: RegisterViewModel
     @Binding var path: NavigationPath
@@ -30,7 +30,7 @@ struct RegisterVerificationView: View {
                     Task {
                         await registerViewModel.performVerificationRequest()
                         if !registerViewModel.verificationState.isError {
-                            path.append(NavigationRoute.passwordCreation(phone: registerViewModel.phoneNumber))
+                            path.append(AuthNavigationRoute.passwordCreation(phone: registerViewModel.phoneNumber))
                         }
                     }
                 }

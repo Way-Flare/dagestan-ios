@@ -9,8 +9,8 @@ import CoreKit
 import DesignSystem
 import SwiftUI
 
-struct RecoveryPasswordView: View {
-    @ObservedObject var viewModel: RegisterViewModel
+struct RecoveryPasswordView<ViewModel: IRegisterViewModel>: View {
+    @ObservedObject var viewModel: ViewModel
     @Binding var path: NavigationPath
 
     var body: some View {
@@ -69,7 +69,7 @@ struct RecoveryPasswordView: View {
                 await viewModel.performAuthRequest()
 
                 if !viewModel.registrationState.isError {
-                    path.append(NavigationRoute.verification(isRecovery: true))
+                    path.append(AuthNavigationRoute.verification(isRecovery: true))
                 }
             }
         }

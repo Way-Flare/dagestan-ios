@@ -14,8 +14,8 @@ struct PasswordCreationView: View {
     @StateObject private var viewModel: PasswordViewModel
     @Binding var path: NavigationPath
     
-    init(phone: String, path: Binding<NavigationPath>) {
-        self._viewModel = StateObject(wrappedValue: PasswordViewModel(phone: phone))
+    init(service: AuthService, phone: String, path: Binding<NavigationPath>) {
+        self._viewModel = StateObject(wrappedValue: PasswordViewModel(authService: service, phone: phone))
         self._path = path
     }
 

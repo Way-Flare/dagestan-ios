@@ -11,6 +11,7 @@ import DesignSystem
 
 struct TextFieldContainer: UIViewRepresentable {
     @Binding var isEditing: Bool
+    
     private var placeholder: String
     private var text: Binding<String>
 
@@ -28,30 +29,32 @@ struct TextFieldContainer: UIViewRepresentable {
         Coordinator(self)
     }
 
-    func makeUIView(context: UIViewRepresentableContext<TextFieldContainer>) -> UITextField {
-        let innertTextField = UITextField(frame: .zero)
-        innertTextField.placeholder = placeholder
-        innertTextField.font = .manropeRegular(size: Grid.pt16)
-        innertTextField.textColor = UIColor(WFColor.foregroundPrimary)
-        innertTextField.text = text.wrappedValue
-        innertTextField.delegate = context.coordinator
-        innertTextField.keyboardType = .numberPad
+    func makeUIView(context: Context) -> UITextField {
+        let textField = UITextField(frame: .zero)
+        textField.placeholder = placeholder
+        textField.font = .manropeRegular(size: Grid.pt16)
+        textField.textColor = UIColor(WFColor.foregroundPrimary)
+        textField.text = text.wrappedValue
+        textField.delegate = context.coordinator
+        textField.keyboardType = .numberPad
 
         let placeholderAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor(WFColor.foregroundSoft),
             .font: UIFont.manropeRegular(size: Grid.pt16)
         ]
-        innertTextField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: placeholderAttributes)
+        textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: placeholderAttributes)
 
-        context.coordinator.setup(innertTextField)
+        context.coordinator.setup(textField)
 
-        return innertTextField
+        return textField
     }
 
-    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<TextFieldContainer>) {
+    func updateUIView(_ uiView: UITextField, context: Context) {
         uiView.text = self.text.wrappedValue
     }
+}
 
+extension TextFieldContainer {
     class Coordinator: NSObject, UITextFieldDelegate {
         var parent: TextFieldContainer
 

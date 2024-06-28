@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum NavigationRoute: Hashable {
+enum AuthNavigationRoute: Hashable {
     case passwordCreation(phone: String)
     case register
     case verification(isRecovery: Bool)

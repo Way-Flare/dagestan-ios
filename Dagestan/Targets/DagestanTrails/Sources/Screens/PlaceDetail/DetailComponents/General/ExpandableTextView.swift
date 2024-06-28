@@ -12,6 +12,7 @@ import DesignSystem
 struct ExpandableTextView<T: View>: View {
     @State private var expanded = false
     @State private var textExceedsLimit = false
+    
     private let text: String
     private let lineLimit: Int
     private let labelButton: (Bool) -> T

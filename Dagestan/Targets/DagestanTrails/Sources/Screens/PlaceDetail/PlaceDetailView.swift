@@ -12,16 +12,11 @@ import SwiftUI
 @_spi(Experimental)
 import MapboxMaps
 
-struct PlaceDetailView: View {
-    @StateObject private var viewModel: PlaceDetailViewModel
-    @State private var isBackdropVisible = false
-
-    init(placeId: Int, service: IPlacesService) {
-        _viewModel = StateObject(wrappedValue: PlaceDetailViewModel(service: service, placeId: placeId))
-    }
+struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
+    @StateObject var viewModel: ViewModel
 
     var body: some View {
-        StretchableHeaderScrollView(showsBackdrop: $isBackdropVisible) {
+        StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
             if let images = viewModel.state.data?.images {
                 SliderView(images: images)
             }
@@ -59,7 +54,7 @@ struct PlaceDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
         .navigationBarBackButtonHidden(true)
-        .navigationTitle(isBackdropVisible ? viewModel.state.data?.name ?? "" : "")
+        .navigationTitle(viewModel.isBackdropVisible ? viewModel.state.data?.name ?? "" : "")
         .navigationBarItems(leading: BackButton())
     }
 
@@ -104,5 +99,5 @@ struct PlaceDetailView: View {
 }
 
 #Preview {
-    PlaceDetailView(placeId: 1, service: MockPlaceService())
+    PlaceDetailView(viewModel: PlaceDetailViewModel(service: MockPlaceService(), placeId: 1))
 }

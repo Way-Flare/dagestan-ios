@@ -16,16 +16,27 @@ class MockPlaceService: IPlacesService {
             Place.mock
         ]
     }
-
+    
     func getPlace(id: Int) async throws -> PlaceDetail {
-//        try await Task.sleep(nanoseconds: 2_000_000_000)
+        //        try await Task.sleep(nanoseconds: 2_000_000_000)
         return PlaceDetail.mock()
     }
 }
 
-final class PlaceDetailViewModel: ObservableObject {
+protocol IPlaceDetailViewModel: ObservableObject {
+    var state: LoadingState<PlaceDetail> { get }
+    var isVisibleSnackbar: Bool { get set }
+    var isBackdropVisible: Bool { get set }
+    var formatter: TimeSuffixFormatter { get }
+    
+    func loadPlaceDetail()
+}
+
+final class PlaceDetailViewModel: IPlaceDetailViewModel {
     @Published var state: LoadingState<PlaceDetail> = .idle
     @Published var isVisibleSnackbar = false
+    @Published var isBackdropVisible = false
+
     
     lazy var formatter = TimeSuffixFormatter(workTime: state.data?.workTime)
 

@@ -14,7 +14,7 @@ struct RouteCardView: View {
     let route: Route
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             imageContainerView
             contentContainerView
         }
@@ -24,19 +24,17 @@ struct RouteCardView: View {
     }
     
     private var imageContainerView: some View {
-        VStack {
-            ZStack(alignment: .topTrailing) {
-                SliderView(images: route.images.compactMap { $0 })
-                    .frame(height: 174)
+        ZStack(alignment: .topTrailing) {
+            SliderView(images: route.images)
+                .frame(height: 174)
                 
-                WFButtonIcon(
-                    icon: DagestanTrailsAsset.heartFilled.swiftUIImage,
-                    size: .m,
-                    type: .favorite
-                ) {}
-                    .foregroundColor(WFColor.errorSoft)
-                    .padding([.top, .trailing], Grid.pt12)
-            }
+            WFButtonIcon(
+                icon: DagestanTrailsAsset.heartFilled.swiftUIImage,
+                size: .m,
+                type: .favorite
+            ) {}
+                .foregroundColor(WFColor.errorSoft)
+                .padding([.top, .trailing], Grid.pt12)
         }
     }
     
