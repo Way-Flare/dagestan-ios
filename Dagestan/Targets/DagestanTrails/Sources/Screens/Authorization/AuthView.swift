@@ -22,7 +22,7 @@ struct AuthorizationView: View {
                         case .register: RegisterView(viewModel: registerViewModel, path: $authViewModel.path)
                         case .recoveryPassword: RecoveryPasswordView(resetViewModel: resetViewModel, path: $authViewModel.path)
                         case .verification: RegisterVerificationView(registerViewModel: registerViewModel, path: $authViewModel.path)
-                        case .passwordCreation: PasswordCreationView(path: $authViewModel.path)
+                    case let .passwordCreation(phone): PasswordCreationView(phone: phone, path: $authViewModel.path)
                     }
                 }
         }

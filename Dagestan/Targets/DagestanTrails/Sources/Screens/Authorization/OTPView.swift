@@ -49,7 +49,7 @@ private extension OTPView {
                 .blendMode(.screen)
                 .focused($isKeyboardShowing)
                 .onChange(of: text) { newValue in
-                    if newValue.count == 4 && !isError {
+                    if newValue.count == 4 {
                         action?()
                     }
                 }

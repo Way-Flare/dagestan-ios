@@ -7,7 +7,7 @@
 
 import CoreKit
 
-final class AuthService: IAuthService {
+final class AuthService: IAuthService {    
     private let networkService: NetworkServiceProtocol
 
     init(networkService: NetworkServiceProtocol) {
@@ -30,13 +30,25 @@ final class AuthService: IAuthService {
         return true
     }
 
-    func register(phone: String, password: String, repeated: String) async -> Bool {
-        let _ = AuthEndpoint.register(phone: phone, password: password, repeated: repeated)
+    func register(phone: String, password: String, repeated: String) async throws -> Bool {
+        let endpoint = AuthEndpoint.register(phone: phone, password: password, repeated: repeated)
+        do {
+            let token = try await networkService.execute(endpoint, expecting: String.self)
+            print("ACCESS TOKEN: \(token)")
+        } catch {
+            throw error
+        }
         return true
     }
 
-    func registerConfirmVerification(phone: String, code: Int) async -> Bool {
-        let _ = AuthEndpoint.registerConfirmVerification(phone: phone, code: code)
+    func registerConfirmVerification(phone: String, code: Int) async throws -> Bool {
+        let endpoint = AuthEndpoint.registerConfirmVerification(phone: phone, code: code)
+        do {
+            let token = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
+            print(token)
+        } catch {
+            throw error
+        }
         return true
     }
 

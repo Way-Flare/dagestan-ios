@@ -38,7 +38,12 @@ struct NumberPhoneMaskView: View {
                     .foregroundStyle(WFColor.iconSoft)
             }
             .buttonStyle(.plain)
-            .padding(.trailing, Grid.pt12)
+            .padding(Grid.pt12)
+            .contentShape(Rectangle())
         }
     }
+}
+
+#Preview {
+    NumberPhoneMaskView(text: .constant("79818363211"), isEditing: .constant(true), placeholder: "dsome")
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 enum NavigationRoute: Hashable {
-    case passwordCreation
+    case passwordCreation(phone: String)
     case register
     case verification
     case recoveryPassword

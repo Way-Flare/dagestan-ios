@@ -27,7 +27,12 @@ struct RegisterVerificationView: View {
                 enterCodeContainerView
                 exampleNumberContainerView
                 OTPView(text: $registerViewModel.code, isError: registerViewModel.isFailedValidation) {
-                    path.append(NavigationRoute.passwordCreation)
+                    Task {
+                        await registerViewModel.checkVerification()
+                        if !registerViewModel.isFailedValidation {
+                            path.append(NavigationRoute.passwordCreation(phone: registerViewModel.phoneNumber))
+                        }
+                    }
                 }
 
                 buttonContainerView
@@ -75,6 +80,9 @@ struct RegisterVerificationView: View {
             subtitle: timerViewModel.subtitle
         ) {
             timerViewModel.startTimer()
+            Task {
+                await registerViewModel.register()
+            }
         }
         .padding(.top, Grid.pt4)
     }
