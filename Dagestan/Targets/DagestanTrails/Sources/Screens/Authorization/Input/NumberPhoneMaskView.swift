@@ -38,7 +38,8 @@ struct NumberPhoneMaskView: View {
                     .foregroundStyle(WFColor.iconSoft)
             }
             .buttonStyle(.plain)
-            .padding(Grid.pt12)
+            .padding([.trailing], Grid.pt12)
+            .padding([.leading, .vertical], Grid.pt24)
             .contentShape(Rectangle())
         }
     }
