@@ -20,7 +20,6 @@ public protocol NetworkServiceProtocol: AnyObject {
 }
 
 public final class DTNetworkService: NetworkServiceProtocol {
-
     public init() {}
 
     public func execute<T: Decodable>(
@@ -48,13 +47,22 @@ public final class DTNetworkService: NetworkServiceProtocol {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            
+
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw RequestError.noResponse
             }
             switch httpResponse.statusCode {
-                case 200...299:
+                case 200 ... 299:
+                    if data.isEmpty {
+                        if T.self == EmptyResponse.self,
+                           let emptyResponse = EmptyResponse() as? T {
+                            return emptyResponse
+                        } else {
+                            throw RequestError.emptyResponse
+                        }
+                    }
+
                     guard let decodedResponse = try? decoder.decode(type, from: data) else {
                         print("Ошибка декодирования")
                         throw RequestError.failedDecode
@@ -67,6 +75,8 @@ public final class DTNetworkService: NetworkServiceProtocol {
                     }
                     throw RequestError.serverError(decodedError)
             }
+        } catch let error as RequestError {
+            throw error
         } catch {
             throw RequestError.unknown
         }

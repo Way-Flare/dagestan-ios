@@ -11,6 +11,7 @@ public struct WFButtonGhost: WFButtonStyle {
     public var hover: WFButtonAppearance = WFButtonGhostHover()
     public var active: WFButtonAppearance = WFButtonGhostActive()
     public var disabled: WFButtonAppearance = WFButtonGhostDisabled()
+    public var loading: WFButtonAppearance = WFButtonGhostLoading()
     
     public init() { }
 }
@@ -31,6 +32,11 @@ private struct WFButtonGhostActive: WFButtonAppearance {
 }
 
 private struct WFButtonGhostDisabled: WFButtonAppearance {
+    var foregroundColor: Color = WFColor.accentPrimary.opacity(0.5)
+    var backgroundColor: Color = .clear
+}
+
+private struct  WFButtonGhostLoading: WFButtonAppearance {
     var foregroundColor: Color = WFColor.accentPrimary.opacity(0.5)
     var backgroundColor: Color = .clear
 }

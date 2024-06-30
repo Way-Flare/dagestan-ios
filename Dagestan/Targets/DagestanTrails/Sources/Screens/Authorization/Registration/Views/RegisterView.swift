@@ -5,9 +5,9 @@
 //  Created by Рассказов Глеб on 08.06.2024.
 //
 
-import SwiftUI
-import DesignSystem
 import CoreKit
+import DesignSystem
+import SwiftUI
 
 struct RegisterView: View {
     @ObservedObject var viewModel: RegisterViewModel
@@ -47,10 +47,19 @@ struct RegisterView: View {
     }
 
     private var inputContainerView: some View {
-        PhoneMaskTextFieldView(
-            text: $viewModel.phoneNumber,
-            placeholder: "Номер телефона"
-        )
+        VStack(alignment: .leading) {
+            PhoneMaskTextFieldView(
+                text: $viewModel.phoneNumber,
+                placeholder: "Номер телефона",
+                isError: viewModel.registrationState.isError
+            )
+
+            if let error = viewModel.registrationState.error {
+                Text(error)
+                    .foregroundStyle(WFColor.errorPrimary)
+                    .font(.manropeRegular(size: Grid.pt14))
+            }
+        }
         .padding(.bottom, Grid.pt16)
         .padding(.top, Grid.pt44)
     }
@@ -60,15 +69,15 @@ struct RegisterView: View {
             WFButton(
                 title: "Зарегистрироваться",
                 size: .l,
-                state: viewModel.phoneNumber.count >= 11 ? .default : .disabled,
+                state: viewModel.registrationState.isLoading ? .loading : viewModel.phoneNumber.count >= 11 ? .default : .disabled,
                 type: .primary
             ) {
                 Task {
-                    await viewModel.register()
-                }
+                    await viewModel.performAuthRequest()
 
-                if !viewModel.isFailedValidation {
-                    path.append(NavigationRoute.verification)
+                    if !viewModel.registrationState.isError {
+                        path.append(NavigationRoute.verification(isRecovery: false))
+                    }
                 }
             }
             Spacer()

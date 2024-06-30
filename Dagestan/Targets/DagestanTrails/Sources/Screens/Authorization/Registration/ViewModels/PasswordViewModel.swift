@@ -18,7 +18,9 @@ class PasswordViewModel: ObservableObject {
     var isButtonDisabled: Bool {
         validationRules.contains(where: { !$0.isValid })
     }
-
+    
+    private let phone: String
+    private let authService: AuthService
     private let alphabet = "abcdefghijklmnopqrstuvwxyz"
 
     // swiftlint:disable opening_brace
@@ -56,7 +58,21 @@ class PasswordViewModel: ObservableObject {
     // swiftlint:enable large_tuple
     // swiftlint:enable opening_brace
 
-    init() {
+    init(authService: AuthService = AuthService(networkService: DTNetworkService()), phone: String) {
+        self.authService = authService
+        self.phone = phone
+        setupBindings()
+    }
+    
+    func registerPhone() async {
+        do {
+            let _ = try await authService.register(phone: phone, password: password, repeated: confirmPassword)
+        } catch {
+            print(error)
+        }
+    }
+
+    private func setupBindings() {
         $password
             .receive(on: RunLoop.main)
             .map { [weak self] password -> [ValidationRule] in
@@ -64,12 +80,12 @@ class PasswordViewModel: ObservableObject {
                     return self?.createInitialRules() ?? []
                 }
                 if isFirstInput && !password.isEmpty {
-                     isFirstInput = false
-                     return validate(password: password)
-                 } else if !isFirstInput {
-                     return validate(password: password)
-                 }
-                 return createInitialRules()
+                    isFirstInput = false
+                    return validate(password: password)
+                } else if !isFirstInput {
+                    return validate(password: password)
+                }
+                return createInitialRules()
             }
             .assign(to: &$validationRules)
     }

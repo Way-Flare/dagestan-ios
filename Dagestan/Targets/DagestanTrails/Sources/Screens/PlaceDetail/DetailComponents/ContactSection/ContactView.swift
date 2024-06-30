@@ -29,7 +29,7 @@ struct ContactView: View {
         Button {
             if let action = action {
                 action()
-            } else if let text = type.text  {
+            } else if let text = type.text {
                 UIPasteboard.general.string = text
                 withAnimation(.interactiveSpring) {
                     isVisible = true

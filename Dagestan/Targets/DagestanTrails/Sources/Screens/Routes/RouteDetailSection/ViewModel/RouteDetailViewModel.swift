@@ -43,8 +43,7 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
                 let route = try await service.getRoute(id: id)
                 state = .loaded(route)
             } catch {
-                state = .failed(error)
-                print(error)
+                state = .failed(error.localizedDescription)
             }
         }
     }

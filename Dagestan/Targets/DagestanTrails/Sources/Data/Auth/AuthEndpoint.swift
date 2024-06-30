@@ -19,7 +19,6 @@ enum AuthEndpoint {
 }
 
 extension AuthEndpoint: ApiEndpoint {
-
     var path: String {
         switch self {
             case .login:
@@ -64,9 +63,20 @@ extension AuthEndpoint: ApiEndpoint {
                     "phone": phone,
                     "password": password
                 ]
-            case let .registerSendVerification(phone):
+            case let .registerSendVerification(phone), let .resetPasswordSendVerification(phone):
                 parameters = [
                     "phone": phone
+                ]
+            case let .registerConfirmVerification(phone, code), let .resetPasswordConfirmVerification(phone, code):
+                parameters = [
+                    "phone": phone,
+                    "code": code
+                ]
+            case let .register(phone, password, repeated), let .resetPassword(phone, password, repeated):
+                parameters = [
+                    "phone": phone,
+                    "password": password,
+                    "repeat_password": repeated
                 ]
             default:
                 parameters = nil

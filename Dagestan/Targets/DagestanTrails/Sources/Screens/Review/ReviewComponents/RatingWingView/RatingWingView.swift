@@ -63,5 +63,5 @@ struct RatingWingView: View {
 }
 
 #Preview {
-    RatingWingView(rating: 5, reviewsCount: 10421)
+    RatingWingView(rating: 5, reviewsCount: 55)
 }

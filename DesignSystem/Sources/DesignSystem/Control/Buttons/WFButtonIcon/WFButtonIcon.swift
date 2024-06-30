@@ -63,6 +63,7 @@ extension WFButtonIcon {
             case .hover: type.hover
             case .active: type.active
             case .disabled: type.disabled
+            case .loading: type.default
         }
     }
 }

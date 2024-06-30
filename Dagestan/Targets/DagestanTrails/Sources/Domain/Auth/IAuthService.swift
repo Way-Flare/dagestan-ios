@@ -8,12 +8,12 @@
 import Foundation
 
 protocol IAuthService {
-    func login(phone: String, password: String) async throws -> Bool
-    func refreshToken(token: String) async -> Bool
-    func register(phone: String, password: String, repeated: String) async -> Bool
-    func registerConfirmVerification(phone: String, code: Int) async -> Bool
-    func registerSendVerification(phone: String) async throws -> Bool
-    func resetPassword(phone: String, password: String, repeated: String) async -> Bool
-    func resetPasswordConfirmVerification(phone: String, code: Int) async -> Bool
-    func resetPasswordSendVerification(phone: String) async -> Bool
+    func login(phone: String, password: String) async throws -> AuthToken
+    func refreshToken(token: String) async throws -> String
+    func register(phone: String, password: String, repeated: String) async throws -> String
+    func registerConfirmVerification(phone: String, code: Int) async throws
+    func registerSendVerification(phone: String) async throws
+    func resetPassword(phone: String, password: String, repeated: String) async throws -> String
+    func resetPasswordConfirmVerification(phone: String, code: Int) async throws
+    func resetPasswordSendVerification(phone: String) async throws
 }

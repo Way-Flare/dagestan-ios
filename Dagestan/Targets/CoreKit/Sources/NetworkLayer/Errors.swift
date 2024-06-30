@@ -15,22 +15,25 @@ public enum RequestError: Error {
     case unexpectedStatusCode
     case serverError(ServerError)
     case unknown
+    case emptyResponse
 
-    var message: String {
+    public var message: String {
         switch self {
             case .failedDecode:
-                return "Decode error"
+                return "Ошибка декодирования"
             case .invalidURL:
-                return "invalid URL"
+                return "Неккоректный URL"
             case .unauthorized:
-                return "Need authorization token"
+                return "Необходима авторизация"
+            case let .serverError(error):
+                return error.detail
+
             default:
-                return "Unknown error"
+                return "Произошла неизвестная ошибка"
         }
     }
 }
 
 public struct ServerError: Decodable {
-    let code: String
-    let message: String
+    public let detail: String
 }

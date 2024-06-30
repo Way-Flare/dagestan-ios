@@ -12,6 +12,7 @@ public protocol WFButtonStyle {
     var hover: WFButtonAppearance { get }
     var active: WFButtonAppearance { get }
     var disabled: WFButtonAppearance { get }
+    var loading: WFButtonAppearance { get }
 }
 
 /// Перечисление `WFButtonState` определяет возможные состояния кнопки.
@@ -20,6 +21,7 @@ public enum WFButtonState {
     case hover
     case active
     case disabled
+    case loading
 }
 
 /// Протокол `WFButtonAppearance` описывает внешний вид кнопки, включая цвета переднего и заднего плана.

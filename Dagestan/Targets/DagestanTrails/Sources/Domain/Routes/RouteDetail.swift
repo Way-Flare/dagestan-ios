@@ -43,3 +43,9 @@ extension RouteDetail.PlaceInRoute: Domainable {
         )
     }
 }
+
+extension RouteDetail: Equatable {
+    public static func == (lhs: RouteDetail, rhs: RouteDetail) -> Bool {
+        lhs.id == rhs.id
+    }
+}

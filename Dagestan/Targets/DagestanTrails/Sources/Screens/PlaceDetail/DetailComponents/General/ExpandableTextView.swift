@@ -52,11 +52,3 @@ struct ExpandableTextView<T: View>: View {
         }
     }
 }
-
-#Preview {
-    ExpandableTextView(text: "Маршрут 'Дагестанский квест': Погрузитесь в магию Дагестана, начав путешествие с его сердца. Посетите древние крепости, окунитесь в аутентичную культуру в горных деревнях и нsdfsdfsdfsdsdfsfsdfdfsdsdsfsddfsdfdsfsdfasdasdasdasfdssdsfdfssffsdssffасладитесь величественными видами  в традиционных в в традиционных") { expanded in
-        Text(expanded ? "Скрыть" : "Раскрыть")
-                            .font(.body)
-                            .foregroundColor(.blue)
-    }
-}

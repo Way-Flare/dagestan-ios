@@ -5,12 +5,12 @@
 //  Created by Рассказов Глеб on 08.06.2024.
 //
 
-import SwiftUI
-import DesignSystem
 import CoreKit
+import DesignSystem
+import SwiftUI
 
 struct RecoveryPasswordView: View {
-    @ObservedObject var resetViewModel: RegisterViewModel
+    @ObservedObject var viewModel: RegisterViewModel
     @Binding var path: NavigationPath
 
     var body: some View {
@@ -41,10 +41,19 @@ struct RecoveryPasswordView: View {
 
     // TODO: DAGESTAN-200
     private var inputsContainerView: some View {
-        PhoneMaskTextFieldView(
-            text: $resetViewModel.phoneNumber,
-            placeholder: "Номер телефона"
-        )
+        VStack(alignment: .leading) {
+            PhoneMaskTextFieldView(
+                text: $viewModel.phoneNumber,
+                placeholder: "Номер телефона",
+                isError: viewModel.registrationState.isError
+            )
+
+            if let error = viewModel.registrationState.error {
+                Text(error)
+                    .foregroundStyle(WFColor.errorPrimary)
+                    .font(.manropeRegular(size: Grid.pt14))
+            }
+        }
         .padding(.top, Grid.pt12)
     }
 
@@ -53,10 +62,16 @@ struct RecoveryPasswordView: View {
         WFButton(
             title: "Далее", // TODO: DAGESTAN-200
             size: .l,
-            state: resetViewModel.phoneNumber.count <= 10 ? .disabled : .default,
+            state: viewModel.registrationState.isLoading ? .loading : viewModel.phoneNumber.count >= 11 ? .default : .disabled,
             type: .primary
         ) {
-            path.append(NavigationRoute.verification)
+            Task {
+                await viewModel.performAuthRequest()
+
+                if !viewModel.registrationState.isError {
+                    path.append(NavigationRoute.verification(isRecovery: true))
+                }
+            }
         }
         .padding(.top, Grid.pt4)
     }

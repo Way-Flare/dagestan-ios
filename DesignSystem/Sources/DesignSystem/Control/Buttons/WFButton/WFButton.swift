@@ -49,7 +49,7 @@ public struct WFButton: View, Buildable {
             cornerRadius: size.cornerRadius,
             foregroundColor: foregroundColor
         )
-        .disabled(state == .disabled)
+        .disabled(state == .disabled || state == .loading)
     }
 
     public func foregroundColor(_ newForegroundColor: Color) {
@@ -60,22 +60,26 @@ public struct WFButton: View, Buildable {
 extension WFButton {
     private var contentView: some View {
         HStack(spacing: Grid.pt8) {
-            leftImage?
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: size.imageSize, height: size.imageSize)
-            VStack(spacing: .zero) {
-                Text(title)
-                    .font(.manropeSemibold(size: size.titleFontSize))
-                if let subtitle = subtitle {
-                    Text(subtitle)
-                        .font(.manropeSemibold(size: size.subtitleFontSize))
+            if state == .loading {
+                WFSpinner()
+            } else {
+                leftImage?
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: size.imageSize, height: size.imageSize)
+                VStack(spacing: .zero) {
+                    Text(title)
+                        .font(.manropeSemibold(size: size.titleFontSize))
+                    if let subtitle = subtitle {
+                        Text(subtitle)
+                            .font(.manropeSemibold(size: size.subtitleFontSize))
+                    }
                 }
+                rightImage?
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: size.imageSize, height: size.imageSize)
             }
-            rightImage?
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: size.imageSize, height: size.imageSize)
         }
         .frame(maxWidth: .infinity)
         .frame(height: size.height)
@@ -88,6 +92,7 @@ extension WFButton {
             case .hover: type.hover
             case .active: type.active
             case .disabled: type.disabled
+            case .loading: type.default
         }
     }
 }

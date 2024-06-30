@@ -11,8 +11,13 @@ import CoreKit
 import DesignSystem
 
 struct PasswordCreationView: View {
-    @StateObject private var viewModel = PasswordViewModel()
+    @StateObject private var viewModel: PasswordViewModel
     @Binding var path: NavigationPath
+    
+    init(phone: String, path: Binding<NavigationPath>) {
+        self._viewModel = StateObject(wrappedValue: PasswordViewModel(phone: phone))
+        self._path = path
+    }
 
     var body: some View {
         ZStack {
@@ -50,8 +55,8 @@ struct PasswordCreationView: View {
 
     private var inputsContainerView: some View {
         VStack(spacing: Grid.pt12) {
-            PasswordTextFieldView(text: $viewModel.password, placeholder: "Придумай пароль")
-            PasswordTextFieldView(text: $viewModel.confirmPassword, placeholder: "Повтори пароль")
+            PasswordTextFieldView(text: $viewModel.password, placeholder: "Придумай пароль", isError: false)
+            PasswordTextFieldView(text: $viewModel.confirmPassword, placeholder: "Повтори пароль", isError: false)
         }
         .padding(.top, Grid.pt12)
     }
@@ -73,7 +78,10 @@ struct PasswordCreationView: View {
             type: .primary
         ) {
             if viewModel.password == viewModel.confirmPassword {
-                path.removeLast(path.count)
+                Task {
+                    await viewModel.registerPhone()
+                    path.removeLast(path.count)
+                }
             } else {
                 viewModel.showAlert = true
             }

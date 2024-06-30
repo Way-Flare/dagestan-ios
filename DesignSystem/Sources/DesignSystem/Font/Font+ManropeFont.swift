@@ -33,3 +33,21 @@ public extension Font {
         return .custom("Manrope-ExtraBold", size: size)
     }
 }
+
+public extension UIFont {
+    static func manrope(weight: ManropeWeight, size: CGFloat) -> UIFont {
+        return UIFont(name: weight.fontName, size: size) ?? .systemFont(ofSize: size)
+    }
+
+    static func manropeRegular(size: CGFloat) -> UIFont {
+        return UIFont(name: "Manrope-Regular", size: size) ?? .systemFont(ofSize: size)
+    }
+
+    static func manropeSemibold(size: CGFloat) -> UIFont {
+        return UIFont(name: "Manrope-Semibold", size: size) ?? .systemFont(ofSize: size)
+    }
+
+    static func manropeExtrabold(size: CGFloat) -> UIFont {
+        return UIFont(name: "Manrope-Extrabold", size: size) ?? .systemFont(ofSize: size)
+    }
+}

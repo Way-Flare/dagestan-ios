@@ -143,3 +143,9 @@ extension PlaceDetail.Route {
         )
     }
 }
+
+extension PlaceDetail: Equatable {
+    static func == (lhs: PlaceDetail, rhs: PlaceDetail) -> Bool {
+        lhs.id == rhs.id
+    }
+}
