@@ -55,8 +55,8 @@ struct PasswordCreationView: View {
 
     private var inputsContainerView: some View {
         VStack(spacing: Grid.pt12) {
-            PasswordTextFieldView(text: $viewModel.password, placeholder: "Придумай пароль")
-            PasswordTextFieldView(text: $viewModel.confirmPassword, placeholder: "Повтори пароль")
+            PasswordTextFieldView(text: $viewModel.password, placeholder: "Придумай пароль", isError: false)
+            PasswordTextFieldView(text: $viewModel.confirmPassword, placeholder: "Повтори пароль", isError: false)
         }
         .padding(.top, Grid.pt12)
     }

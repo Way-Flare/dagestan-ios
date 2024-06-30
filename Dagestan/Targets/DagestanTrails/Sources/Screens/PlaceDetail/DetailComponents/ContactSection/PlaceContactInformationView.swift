@@ -29,8 +29,7 @@ struct PlaceContactInformationView: View {
                             type: .phone(with: place.contacts.first?.phoneNumber)
                         ) {
                             if let phone = place.contacts.first?.phoneNumber,
-                               let url = URL(string: "tel://\(phone)")
-                            {
+                               let url = URL(string: "tel://\(phone)") {
                                 UIApplication.shared.open(url)
                             }
                         }

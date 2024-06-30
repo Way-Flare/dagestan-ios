@@ -12,7 +12,7 @@ public struct FontManager {
         let bundle = Bundle.module
         let fontUrls = [
             "Manrope-ExtraBold",
-            "Manrope-Regulard",
+            "Manrope-Regular",
             "Manrope-SemiBold"
         ].compactMap { bundle.url(forResource: $0, withExtension: "ttf") }
 

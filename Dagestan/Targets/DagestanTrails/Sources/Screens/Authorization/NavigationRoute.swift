@@ -10,6 +10,6 @@ import Foundation
 enum NavigationRoute: Hashable {
     case passwordCreation(phone: String)
     case register
-    case verification
+    case verification(isRecovery: Bool)
     case recoveryPassword
 }

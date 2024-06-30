@@ -26,10 +26,10 @@ struct RegisterVerificationView: View {
             VStack(spacing: Grid.pt12) {
                 enterCodeContainerView
                 exampleNumberContainerView
-                OTPView(text: $registerViewModel.code, isError: registerViewModel.isFailedValidation) {
+                OTPView(text: $registerViewModel.code, isError: registerViewModel.verificationState.error != nil) {
                     Task {
-                        await registerViewModel.checkVerification()
-                        if !registerViewModel.isFailedValidation {
+                        await registerViewModel.performVerificationRequest()
+                        if !registerViewModel.verificationState.isError {
                             path.append(NavigationRoute.passwordCreation(phone: registerViewModel.phoneNumber))
                         }
                     }
@@ -81,7 +81,7 @@ struct RegisterVerificationView: View {
         ) {
             timerViewModel.startTimer()
             Task {
-                await registerViewModel.register()
+                await registerViewModel.performAuthRequest()
             }
         }
         .padding(.top, Grid.pt4)

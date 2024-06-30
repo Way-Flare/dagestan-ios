@@ -11,6 +11,7 @@ public struct WFButtonPrimary: WFButtonStyle {
     public var hover: WFButtonAppearance = WFButtonPrimaryHover()
     public var active: WFButtonAppearance = WFButtonPrimaryActive()
     public var disabled: WFButtonAppearance = WFButtonPrimaryDisabled()
+    public var loading: WFButtonAppearance = WFButtonPrimaryLoading()
 }
 
 private struct WFButtonPrimaryDefault: WFButtonAppearance {
@@ -31,6 +32,11 @@ private struct WFButtonPrimaryActive: WFButtonAppearance {
 private struct WFButtonPrimaryDisabled: WFButtonAppearance {
     var foregroundColor: Color = WFColor.accentInverted
     var backgroundColor: Color = WFColor.accentPrimary.opacity(0.5)
+}
+
+private struct WFButtonPrimaryLoading: WFButtonAppearance {
+    var foregroundColor: Color = WFColor.accentInverted
+    var backgroundColor: Color = .clear
 }
 
 public extension WFButtonStyle where Self == WFButtonPrimary {

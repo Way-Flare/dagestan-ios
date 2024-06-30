@@ -11,6 +11,7 @@ public struct WFButtonOverlay: WFButtonStyle {
     public var hover: WFButtonAppearance = WFButtonOverlayHover()
     public var active: WFButtonAppearance = WFButtonOverlayActive()
     public var disabled: WFButtonAppearance = WFButtonOverlayDisabled()
+    public var loading: WFButtonAppearance = WFButtonOverlayLoading()
 }
 
 private struct WFButtonOverlayDefault: WFButtonAppearance {
@@ -31,6 +32,11 @@ private struct WFButtonOverlayActive: WFButtonAppearance {
 private struct WFButtonOverlayDisabled: WFButtonAppearance {
     var foregroundColor: Color = WFColor.accentInverted
     var backgroundColor: Color = WFColor.overlayPrimary.opacity(0.5)
+}
+
+private struct WFButtonOverlayLoading: WFButtonAppearance {
+    var foregroundColor: Color = WFColor.accentInverted
+    var backgroundColor: Color = .clear
 }
 
 public extension WFButtonStyle where Self == WFButtonOverlay {

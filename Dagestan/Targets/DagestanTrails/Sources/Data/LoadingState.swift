@@ -12,7 +12,7 @@ enum LoadingState<T> {
     case idle
     case loading
     case loaded(T)
-    case failed(Error)
+    case failed(String? = nil)
 
     var data: T? {
         if case let .loaded(data) = self {
@@ -21,11 +21,15 @@ enum LoadingState<T> {
         return nil
     }
 
-    var error: Error? {
+    var error: String? {
         if case let .failed(error) = self {
             return error
         }
         return nil
+    }
+    
+    var isError: Bool {
+        error != nil
     }
 
     var isLoading: Bool {

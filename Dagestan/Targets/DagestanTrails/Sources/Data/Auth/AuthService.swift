@@ -7,74 +7,86 @@
 
 import CoreKit
 
-final class AuthService: IAuthService {    
+final class AuthService: IAuthService {
     private let networkService: NetworkServiceProtocol
 
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
     }
 
-    func login(phone: String, password: String) async throws -> Bool {
+    func login(phone: String, password: String) async throws -> AuthToken {
         let endpoint = AuthEndpoint.login(phone: phone, password: password)
         do {
-            let token = try await networkService.execute(endpoint, expecting: String.self)
-            print(token)
+            let token = try await networkService.execute(endpoint, expecting: AuthToken.self)
+            return token
         } catch {
             throw error
         }
-        return true
     }
 
-    func refreshToken(token: String) async -> Bool {
-        let _ = AuthEndpoint.refreshToken(token: token)
-        return true
+    func refreshToken(token: String) async throws -> String {
+        let endpoint = AuthEndpoint.refreshToken(token: token)
+        do {
+            let token = try await networkService.execute(endpoint, expecting: String.self)
+            return token
+        } catch {
+            throw error
+        }
     }
 
-    func register(phone: String, password: String, repeated: String) async throws -> Bool {
+    func register(phone: String, password: String, repeated: String) async throws -> String {
         let endpoint = AuthEndpoint.register(phone: phone, password: password, repeated: repeated)
         do {
             let token = try await networkService.execute(endpoint, expecting: String.self)
-            print("ACCESS TOKEN: \(token)")
+            return token
         } catch {
             throw error
         }
-        return true
     }
 
-    func registerConfirmVerification(phone: String, code: Int) async throws -> Bool {
+    func registerConfirmVerification(phone: String, code: Int) async throws {
         let endpoint = AuthEndpoint.registerConfirmVerification(phone: phone, code: code)
         do {
-            let token = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
-            print(token)
+            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
         } catch {
             throw error
         }
-        return true
     }
 
-    func registerSendVerification(phone: String) async throws -> Bool {
+    func registerSendVerification(phone: String) async throws {
         let endpoint = AuthEndpoint.registerSendVerification(phone: phone)
         do {
-            let token = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
-            print(token)
+            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
         } catch {
             throw error
         }
-        return true
     }
 
-    func resetPassword(phone: String, password: String, repeated: String) async -> Bool {
-        let _ = AuthEndpoint.resetPassword(phone: phone, password: password, repeated: repeated)
-        return true
+    func resetPassword(phone: String, password: String, repeated: String) async throws -> String {
+        let endpoint = AuthEndpoint.resetPassword(phone: phone, password: password, repeated: repeated)
+        do {
+            let token = try await networkService.execute(endpoint, expecting: String.self)
+            return token
+        } catch {
+            throw error
+        }
     }
 
-    func resetPasswordConfirmVerification(phone: String, code: Int) async -> Bool {
-        let _ = AuthEndpoint.resetPasswordConfirmVerification(phone: phone, code: code)
-        return true
+    func resetPasswordConfirmVerification(phone: String, code: Int) async throws {
+        let endpoint = AuthEndpoint.resetPasswordConfirmVerification(phone: phone, code: code)
+        do {
+            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
+        } catch {
+            throw error
+        }
     }
 
-    func resetPasswordSendVerification(phone: String) async -> Bool {
-        let _ = AuthEndpoint.resetPasswordSendVerification(phone: phone)
-        return true
+    func resetPasswordSendVerification(phone: String) async throws {
+        let endpoint = AuthEndpoint.resetPasswordSendVerification(phone: phone)
+        do {
+            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
+        } catch {
+            throw error
+        }
     }
 }

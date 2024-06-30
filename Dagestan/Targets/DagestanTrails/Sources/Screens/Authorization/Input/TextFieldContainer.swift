@@ -31,7 +31,7 @@ struct TextFieldContainer: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<TextFieldContainer>) -> UITextField {
         let innertTextField = UITextField(frame: .zero)
         innertTextField.placeholder = placeholder
-        innertTextField.font = .preferredFont(from: Font.manropeRegular(size: Grid.pt16))
+        innertTextField.font = .manropeRegular(size: Grid.pt16)
         innertTextField.textColor = UIColor(WFColor.foregroundPrimary)
         innertTextField.text = text.wrappedValue
         innertTextField.delegate = context.coordinator
@@ -39,6 +39,7 @@ struct TextFieldContainer: UIViewRepresentable {
 
         let placeholderAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor(WFColor.foregroundSoft),
+            .font: UIFont.manropeRegular(size: Grid.pt16)
         ]
         innertTextField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: placeholderAttributes)
 

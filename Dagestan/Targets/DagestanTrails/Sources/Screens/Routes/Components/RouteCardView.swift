@@ -20,13 +20,13 @@ struct RouteCardView: View {
         }
         .background(.white)
         .cornerStyle(.constant(Grid.pt12))
-        .font(.manropeRegular(size: Grid.pt14))
+        .font(.manropeRegular(size: 14))
     }
     
     private var imageContainerView: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                SliderView(images: route.images.compactMap { $0 } )
+                SliderView(images: route.images.compactMap { $0 })
                     .frame(height: 174)
                 
                 WFButtonIcon(
@@ -72,7 +72,7 @@ struct RouteCardView: View {
                 .frame(width: Grid.pt16, height: Grid.pt16)
                 .foregroundStyle(.yellow)
             
-            Text("4.3")
+            Text("333")
                 .foregroundStyle(WFColor.foregroundSoft)
         }
     }

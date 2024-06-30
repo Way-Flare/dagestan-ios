@@ -19,6 +19,7 @@ struct EntryPoint: App {
 struct ContentView: View {
     @StateObject private var mapViewModel: MapViewModel
     @StateObject private var routeViewModel: RouteListViewModel
+    private let authService: AuthService
 
     // сделать бы норм инжект)
     init(networkService: NetworkServiceProtocol) {
@@ -28,6 +29,7 @@ struct ContentView: View {
         
         self._mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
         self._routeViewModel = StateObject(wrappedValue: RouteListViewModel(service: routeService))
+        self.authService = AuthService(networkService: networkService)
     }
 
     var body: some View {
@@ -76,11 +78,10 @@ private extension ContentView {
     func tabItemView(for item: TabItem) -> some View {
         switch item {
             case .places: MapView(viewModel: mapViewModel)
-            case .profile: AuthorizationView()
+            case .profile: AuthorizationView(service: authService)
             case .favorite: FavoritesView()
             case .routes: RouteListView(viewModel: routeViewModel)
             case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
-            default: Text(item.title)
         }
     }
 }

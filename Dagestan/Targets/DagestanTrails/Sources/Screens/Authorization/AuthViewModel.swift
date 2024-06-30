@@ -5,34 +5,53 @@
 //  Created by Рассказов Глеб on 08.06.2024.
 //
 
-import SwiftUI
 import CoreKit
+import SwiftUI
 
-class AuthorizationViewModel: ObservableObject {
+@MainActor
+final class AuthorizationViewModel: ObservableObject {
     private let authService: AuthService
-    @Published var path = NavigationPath()
 
-    @Published var phoneNumber = ""
-    @Published var password = ""
-    @Published var lastDigits = "" {
+    @Published var path = NavigationPath()
+    @Published var state: LoadingState<Void> = .idle
+    @Published var phoneNumber = "" {
         didSet {
-            withAnimation(.interactiveSpring) {
-                isFailedValidation = lastDigits != "1234" && lastDigits.count == 4
+            withAnimation {
+                state = oldValue != phoneNumber ? .idle : state
+            }
+        }
+    }
+    @Published var password = "" {
+        didSet {
+            withAnimation {
+                state = oldValue != password ? .idle : state
             }
         }
     }
 
-    @Published var isFailedValidation = false
-
-    init(authService: AuthService = AuthService(networkService: DTNetworkService())) {
+    init(authService: AuthService) {
         self.authService = authService
     }
 
     func login() async {
+        withAnimation {
+            state = .loading
+        }
+        
         do {
+            try await Task.sleep(nanoseconds: 750_000_000)
             let _ = try await authService.login(phone: phoneNumber, password: password)
+            withAnimation {
+                state = .loaded(())
+            }
+        } catch let requestError as RequestError {
+            withAnimation {
+                state = .failed(requestError.message)
+            }
         } catch {
-            print(error)
+            withAnimation {
+                state = .failed("Произошла ошибка: \(error.localizedDescription)")
+            }
         }
     }
 }

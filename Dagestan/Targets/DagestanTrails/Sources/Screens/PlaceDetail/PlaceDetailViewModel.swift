@@ -55,7 +55,7 @@ final class PlaceDetailViewModel: ObservableObject {
                 let place = try await service.getPlace(id: placeId)
                 state = .loaded(place)
             } catch {
-                state = .failed(error)
+                state = .failed(error.localizedDescription)
                 print("Failed to load place: \(error.localizedDescription)")
             }
         }

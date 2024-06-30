@@ -7,17 +7,23 @@ struct PasswordTextFieldView: View {
     @FocusState var isFocused: Bool
 
     var placeholder: String
-    var isError = false
+    var isError: Bool
     var isSecure = true
+    
+    init(text: Binding<String>, placeholder: String, isError: Bool) {
+        self._text = text
+        self.placeholder = placeholder
+        self.isError = isError
+    }
 
     var body: some View {
         ZStack {
             SecureField(placeholder, text: $text)
                 .textContentType(.oneTimeCode)
-                .opacity(isSecure && !showPassword ? Grid.pt1 : Grid.pt0)
+                .opacity(isSecure && !showPassword ? Grid.pt1 : 0.0001)
 
             TextField(placeholder, text: $text)
-                .opacity(isSecure && !showPassword ? Grid.pt0 : Grid.pt1)
+                .opacity(isSecure && !showPassword ? 0.0001 : 1)
         }
         .focused($isFocused)
         .placeholder(when: text.isEmpty, with: placeholder)
@@ -27,9 +33,10 @@ struct PasswordTextFieldView: View {
         .font(.manropeRegular(size: Grid.pt16))
         .padding(.horizontal, Grid.pt12)
         .frame(height: Grid.pt44)
+        .background(isError ? WFColor.errorContainerPrimary : WFColor.surfacePrimary)
         .setBorder(
             width: Grid.pt1,
-            color: isFocused ? WFColor.accentPrimary : WFColor.borderMuted
+            color: isError ? WFColor.errorPrimary : isFocused ? WFColor.accentPrimary : WFColor.borderMuted
         )
     }
 
@@ -46,5 +53,5 @@ struct PasswordTextFieldView: View {
 }
 
 #Preview {
-    PasswordTextFieldView(text: .constant(""), placeholder: "Some")
+    PasswordTextFieldView(text: .constant(""), placeholder: "Some", isError: true)
 }

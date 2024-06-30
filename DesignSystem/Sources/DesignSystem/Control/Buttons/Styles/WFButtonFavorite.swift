@@ -11,6 +11,7 @@ public struct WFButtonFavorite: WFButtonStyle {
     public var hover: WFButtonAppearance = WFButtonFavoriteHover()
     public var active: WFButtonAppearance = WFButtonFavoriteActive()
     public var disabled: WFButtonAppearance = WFButtonFavoriteDisabled()
+    public var loading: WFButtonAppearance = WFButtonFavoriteLoading()
 }
 
 private struct WFButtonFavoriteDefault: WFButtonAppearance {
@@ -31,6 +32,11 @@ private struct WFButtonFavoriteActive: WFButtonAppearance {
 private struct WFButtonFavoriteDisabled: WFButtonAppearance {
     var foregroundColor: Color = WFColor.errorSoft
     var backgroundColor: Color = WFColor.overlayTertiary
+}
+
+private struct WFButtonFavoriteLoading: WFButtonAppearance {
+    var foregroundColor: Color = WFColor.errorSoft
+    var backgroundColor: Color = .clear
 }
 
 public extension WFButtonStyle where Self == WFButtonFavorite {

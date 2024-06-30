@@ -11,6 +11,7 @@ public struct WFButtonSecondary: WFButtonStyle {
     public var hover: WFButtonAppearance = WFButtonSecondaryHover()
     public var active: WFButtonAppearance = WFButtonSecondaryActive()
     public var disabled: WFButtonAppearance = WFButtonSecondaryDisabled()
+    public var loading: WFButtonAppearance = WFButtonSecondaryLoading()
 }
 
 private struct WFButtonSecondaryDefault: WFButtonAppearance {
@@ -31,6 +32,11 @@ private struct WFButtonSecondaryActive: WFButtonAppearance {
 private struct WFButtonSecondaryDisabled: WFButtonAppearance {
     var foregroundColor: Color = WFColor.accentPrimary.opacity(0.5)
     var backgroundColor: Color = WFColor.accentContainerPrimary.opacity(0.5)
+}
+
+private struct WFButtonSecondaryLoading: WFButtonAppearance {
+    var foregroundColor: Color = WFColor.accentPrimary.opacity(0.5)
+    var backgroundColor: Color = .clear
 }
 
 public extension WFButtonStyle where Self == WFButtonSecondary {

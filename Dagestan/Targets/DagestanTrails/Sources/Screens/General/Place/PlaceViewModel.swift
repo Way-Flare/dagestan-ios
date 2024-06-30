@@ -13,7 +13,7 @@ final class PlaceViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var place: Place
     @Published var isSelectedFavorite = false
-    @Published var isActive: Bool = false
+    @Published var isActive = false
 
     var currentFavoriteImage: Image {
         isSelectedFavorite ? Image(systemName: "heart.fill") : Image(systemName: "heart")
