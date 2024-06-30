@@ -6,14 +6,26 @@ struct PhoneMaskTextFieldView: View {
     @Binding var text: String
 
     let placeholder: String
+
     var isError = false
+    var textChangedBinding: Binding<String> {
+        Binding<String>(
+            get: {
+                FilterNumberPhone.format(phone: text)
+            },
+            set: {
+                text = FilterNumberPhone.extractNumbers(from: $0)
+            }
+        )
+    }
 
     var body: some View {
-        NumberPhoneMaskView(
-            text: $text,
-            isEditing: $isEditing,
-            placeholder: placeholder
+        TextFieldContainer(
+            placeholder,
+            text: textChangedBinding,
+            isEditing: $isEditing
         )
+        .overlay(eraseButton)
         .frame(height: Grid.pt44)
         .padding(.leading, Grid.pt12)
         .background(isError ? WFColor.errorContainerPrimary : WFColor.surfacePrimary)
@@ -22,6 +34,21 @@ struct PhoneMaskTextFieldView: View {
             width: Grid.pt1,
             color: isError ? WFColor.errorPrimary : isEditing ? WFColor.accentPrimary : WFColor.borderMuted
         )
+    }
+    
+    private var eraseButton: some View {
+        HStack {
+            Spacer()
+            Button {
+                text = !text.isEmpty ? "" : text
+            } label: {
+                Image(systemName: !text.isEmpty ? "multiply.circle.fill" : "person.fill")
+                    .frame(width: Grid.pt20, height: Grid.pt20)
+                    .foregroundStyle(WFColor.iconSoft)
+            }
+            .buttonStyle(.plain)
+            .padding(.trailing, Grid.pt12)
+        }
     }
 }
 

@@ -9,7 +9,7 @@ import CoreKit
 import DesignSystem
 import SwiftUI
 
-struct RegisterView: View {
+struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
     @ObservedObject var viewModel: RegisterViewModel
     @Binding var path: NavigationPath
 
