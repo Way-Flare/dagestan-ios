@@ -21,7 +21,7 @@ struct PhoneMaskTextFieldView: View {
 
     var body: some View {
         TextFieldContainer(
-            placeholder,g
+            placeholder,
             text: textChangedBinding,
             isEditing: $isEditing
         )
