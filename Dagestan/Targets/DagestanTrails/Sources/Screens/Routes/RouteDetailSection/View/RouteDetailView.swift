@@ -13,13 +13,12 @@ import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
-    @State var isBackdropVisible = false
 
     private let routeLayer = "route"
     private let routeFeature = "route-feature"
 
     var body: some View {
-        StretchableHeaderScrollView(showsBackdrop: $isBackdropVisible) {
+        StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
             if let images = viewModel.state.data?.images {
                 SliderView(images: images)
             }
@@ -59,7 +58,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
         .navigationBarBackButtonHidden(true)
-        .navigationTitle(isBackdropVisible ? viewModel.state.data?.title ?? "" : "")
+        .navigationTitle(viewModel.isBackdropVisible ? viewModel.state.data?.title ?? "" : "")
         .navigationBarItems(leading: BackButton())
     }
 

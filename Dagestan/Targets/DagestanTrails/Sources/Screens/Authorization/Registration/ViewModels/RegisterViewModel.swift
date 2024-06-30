@@ -8,25 +8,36 @@
 import CoreKit
 import SwiftUI
 
-@MainActor
-class RegisterViewModel: ObservableObject {
+protocol IRegisterViewModel: ObservableObject {
+    var phoneNumber: String { get set }
+    var code: String { get set }
+    var registrationState: LoadingState<Void> { get }
+    var verificationState: LoadingState<Void> { get }
+
+    func performAuthRequest() async
+    func performVerificationRequest() async
+}
+
+final class RegisterViewModel: IRegisterViewModel {
     private let authService: AuthService
-    let isRecovery: Bool
+    private let isRecovery: Bool
 
     @Published var phoneNumber = "" {
         didSet {
             registrationState = .idle
         }
     }
+
     @Published var code = ""
     @Published var registrationState: LoadingState<Void> = .idle
     @Published var verificationState: LoadingState<Void> = .idle
 
-    init(isRecovery: Bool = false, authService: AuthService) { // Временно
+    init(isRecovery: Bool = false, authService: AuthService) {
         self.authService = authService
         self.isRecovery = isRecovery
     }
 
+    @MainActor
     func performAuthRequest() async {
         withAnimation {
             registrationState = .loading
@@ -35,8 +46,8 @@ class RegisterViewModel: ObservableObject {
         do {
             try await Task.sleep(nanoseconds: 750_000_000)
             let _ = try await !isRecovery
-                              ? authService.registerSendVerification(phone: phoneNumber)
-                              : authService.resetPasswordSendVerification(phone: phoneNumber)
+                ? authService.registerSendVerification(phone: phoneNumber)
+                : authService.resetPasswordSendVerification(phone: phoneNumber)
 
             withAnimation {
                 registrationState = .loaded(())
@@ -52,14 +63,15 @@ class RegisterViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     func performVerificationRequest() async {
         guard let code = Int(code) else { return }
         verificationState = .loading
 
         do {
             let _ = try await isRecovery
-                              ? authService.registerConfirmVerification(phone: phoneNumber, code: code)
-                              : authService.resetPasswordConfirmVerification(phone: phoneNumber, code: code)
+                ? authService.registerConfirmVerification(phone: phoneNumber, code: code)
+                : authService.resetPasswordConfirmVerification(phone: phoneNumber, code: code)
             verificationState = .loaded(())
         } catch {
             verificationState = .failed("Произошла ошибка: \(error.localizedDescription)")

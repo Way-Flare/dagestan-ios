@@ -4,7 +4,26 @@ import SwiftUI
 @_spi(Experimental)
 import MapboxMaps
 
-final class MapViewModel: ObservableObject {
+protocol IMapViewModel: ObservableObject {
+    var viewport: Viewport { get set }
+    var places: [Place] { get set }
+    var filteredPlaces: [Place] { get }
+    var selectedPlace: Place? { get set }
+    var isPlaceViewVisible: Bool { get set }
+    var selectedTags: Set<TagPlace> { get set }
+    var service: IPlacesService { get }
+
+    func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat)
+    func loadPlaces()
+    func selectPlace(by feature: Feature)
+    func selectPlace(by id: Int)
+    func updateFilteredPlaces()
+    func toggleTag(_ tag: TagPlace)
+    func moveToDagestan()
+    func placesAsGeoJSON() -> Data?
+}
+
+final class MapViewModel: IMapViewModel {
     @Published var viewport: Viewport = .styleDefault
     @Published var places: [Place] = [] {
         didSet {
@@ -42,7 +61,7 @@ final class MapViewModel: ObservableObject {
         }
     }
 
-    private func loadPlaces() {
+    func loadPlaces() {
         Task { @MainActor [weak self] in
             guard let self else { return }
 
@@ -60,10 +79,9 @@ final class MapViewModel: ObservableObject {
     /// - Parameter feature: Признак, который содержит свойства, необходимые для идентификации места.
     func selectPlace(by feature: Feature) {
         guard let id = (feature.properties?["id"] as? Turf.JSONValue)?.intValue,
-              let selected = places.first(where: { $0.id == id }) else { return }
+              let selected = filteredPlaces.first(where: { $0.id == id }) else { return }
 
         withAnimation {
-            isPlaceViewVisible = true
             selectedPlace = selected
         }
     }
@@ -71,12 +89,8 @@ final class MapViewModel: ObservableObject {
     /// Выбирает место на основе переданного id.
     /// - Parameter id: Параметр необходимые для идентификации места.
     func selectPlace(by id: Int) {
-        if let currentSelected = selectedPlace, currentSelected.id == id {
-            isPlaceViewVisible = false
-            selectedPlace = nil
-        } else {
+        withAnimation {
             selectedPlace = filteredPlaces.first { $0.id == id }
-            isPlaceViewVisible = true
         }
     }
 

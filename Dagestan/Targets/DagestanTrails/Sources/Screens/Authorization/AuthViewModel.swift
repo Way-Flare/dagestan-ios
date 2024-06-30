@@ -8,10 +8,15 @@
 import CoreKit
 import SwiftUI
 
-@MainActor
-final class AuthorizationViewModel: ObservableObject {
-    private let authService: AuthService
+protocol IAuthorizationViewModel: ObservableObject {
+    var path: NavigationPath { get set }
+    var phoneNumber: String { get set }
+    var password: String { get set }
 
+    func login() async
+}
+
+final class AuthorizationViewModel: IAuthorizationViewModel {
     @Published var path = NavigationPath()
     @Published var state: LoadingState<Void> = .idle
     @Published var phoneNumber = "" {
@@ -28,11 +33,14 @@ final class AuthorizationViewModel: ObservableObject {
             }
         }
     }
+    
+    private let authService: AuthService
 
     init(authService: AuthService) {
         self.authService = authService
     }
-
+    
+    @MainActor
     func login() async {
         withAnimation {
             state = .loading

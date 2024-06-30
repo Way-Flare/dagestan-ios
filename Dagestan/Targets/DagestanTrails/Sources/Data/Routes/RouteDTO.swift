@@ -27,7 +27,7 @@ extension RouteDTO: Domainable {
         Route(
             id: id,
             title: title,
-            images: images.map { $0.asDomain() },
+            images: images.compactMap { $0.asDomain() },
             shortDescription: shortDescription,
             distance: distance,
             travelTime: travelTime,

@@ -9,7 +9,7 @@ import CoreKit
 import DesignSystem
 import SwiftUI
 
-struct RegisterView: View {
+struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
     @ObservedObject var viewModel: RegisterViewModel
     @Binding var path: NavigationPath
 
@@ -76,7 +76,7 @@ struct RegisterView: View {
                     await viewModel.performAuthRequest()
 
                     if !viewModel.registrationState.isError {
-                        path.append(NavigationRoute.verification(isRecovery: false))
+                        path.append(AuthNavigationRoute.verification(isRecovery: false))
                     }
                 }
             }

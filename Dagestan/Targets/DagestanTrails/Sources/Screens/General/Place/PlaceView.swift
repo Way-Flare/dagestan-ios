@@ -9,30 +9,38 @@ import DesignSystem
 import NukeUI
 import SwiftUI
 
+@MainActor
 struct PlaceView: View {
-    @Binding var isPlaceViewVisible: Bool
-    @StateObject private var viewModel: PlaceViewModel
-    let service: IPlacesService
+    @Binding private var place: Place?
     
-    init(service: IPlacesService, place: Place, isVisible: Binding<Bool>) {
-        self.service = service
-        self._viewModel = StateObject(wrappedValue: PlaceViewModel(place: place))
-        self._isPlaceViewVisible = isVisible
+    private let placeDetailViewModel: PlaceDetailViewModel
+    
+    private var formatter: TimeSuffixFormatter {
+        TimeSuffixFormatter(workTime: place?.workTime)
+    }
+
+    init(place: Binding<Place?>, service: IPlacesService) {
+        self._place = place
+        self.placeDetailViewModel = PlaceDetailViewModel(
+            service: service,
+            placeId: place.wrappedValue?.id ?? .zero
+        )
     }
 
     var body: some View {
-        NavigationView {
-            NavigationLink(destination: PlaceDetailView(placeId: viewModel.place.id, service: service), isActive: $viewModel.isActive) {
-                contentView
-                    .cornerStyle(.constant(Grid.pt16))
-                    .padding(.horizontal, Grid.pt12)
-                    .shadow(radius: Grid.pt4)
-                    .onTapGesture {
-                        viewModel.isActive = true
-                    }
+        if let place {
+            NavigationView {
+                NavigationLink(
+                    destination: PlaceDetailView(viewModel: placeDetailViewModel)
+                ) {
+                    contentView
+                        .cornerStyle(.constant(Grid.pt16))
+                        .padding(.horizontal, Grid.pt12)
+                        .shadow(radius: Grid.pt4)
+                }
             }
+            .frame(height: 302)
         }
-        .frame(height: 302)
     }
 
     private var contentView: some View {
@@ -45,14 +53,36 @@ struct PlaceView: View {
     }
 
     @ViewBuilder private var imageView: some View {
-        ZStack(alignment: .topTrailing) {
-            SliderView(images: viewModel.place.images)
-                .frame(height: 174)
-            buttonsView
+        if let place {
+            ZStack(alignment: .topTrailing) {
+                SliderView(images: place.images)
+                    .frame(height: 174)
+                buttonsView
+            }
+            .cornerStyle(.constant(Grid.pt4, .bottomCorners))
+            .frame(height: 174)
         }
-        .cornerStyle(.constant(Grid.pt4, .bottomCorners))
-        .frame(height: 174)
-
+    }
+    
+    private var buttonsView: some View {
+        HStack(spacing: Grid.pt8) {
+            Spacer()
+            WFButtonIcon(
+                icon: Image(systemName: "heart.fill"),
+                size: .l,
+                type: .favorite
+            ) {
+            }
+            .foregroundColor(.red)
+            WFButtonIcon(
+                icon: DagestanTrailsAsset.close.swiftUIImage,
+                size: .l,
+                type: .favorite
+            ) {
+                place = nil
+            }
+        }
+        .padding([.top, .trailing], Grid.pt12)
     }
 }
 
@@ -68,68 +98,49 @@ extension PlaceView {
         .padding(.horizontal, Grid.pt8)
     }
 
+    @ViewBuilder
     private var titleAndRatingView: some View {
-        HStack {
-            Text(viewModel.place.name)
-                .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeSemibold(size: Grid.pt18))
-                .lineLimit(1)
-            Spacer()
-            starRatingView
+        if let place {
+            HStack {
+                Text(place.name)
+                    .foregroundColor(WFColor.foregroundPrimary)
+                    .font(.manropeSemibold(size: Grid.pt18))
+                    .lineLimit(1)
+                Spacer()
+                starRatingView
+            }
         }
-        .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
     }
 
-    private var starRatingView: some View {
-        HStack(spacing: Grid.pt4) {
-            StarsView(amount: Int(viewModel.place.rating ?? .zero), size: .s, type: .review)
-            Text(String(viewModel.place.rating ?? .zero))
-                .font(.manropeRegular(size: Grid.pt14))
-                .foregroundStyle(WFColor.foregroundSoft)
+    @ViewBuilder private var starRatingView: some View {
+        if let place {
+            HStack(spacing: Grid.pt4) {
+                StarsView(amount: Int(place.rating ?? .zero), size: .s, type: .review)
+                Text(String(place.rating ?? .zero))
+                    .font(.manropeRegular(size: Grid.pt14))
+                    .foregroundStyle(WFColor.foregroundSoft)
+            }
         }
     }
 
     @ViewBuilder private var operatingHoursView: some View {
         Group {
-            Text(viewModel.formatter.operatingStatus)
-                .foregroundColor(viewModel.formatter.operatingStatusColor)
+            Text(formatter.operatingStatus)
+                .foregroundColor(formatter.operatingStatusColor)
             +
-            Text(viewModel.formatter.operatingStatusSuffix)
+            Text(formatter.operatingStatusSuffix)
                 .foregroundColor(WFColor.foregroundSoft)
         }
         .font(.manropeRegular(size: Grid.pt14))
-        .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
     }
 
     @ViewBuilder private var routeDescriptionView: some View {
-        if let shortDescription = viewModel.place.shortDescription {
+        if let shortDescription = place?.shortDescription {
             Text(shortDescription)
                 .font(.manropeRegular(size: Grid.pt14))
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
-                .skeleton(show: viewModel.isLoading, cornerStyle: .constant(Grid.pt4))
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-    }
-
-    private var buttonsView: some View {
-        HStack(spacing: Grid.pt8) {
-            Spacer()
-            WFButtonIcon(
-                icon: viewModel.currentFavoriteImage,
-                size: .l,
-                type: .favorite,
-                action: viewModel.onFavorite
-            )
-            .foregroundColor(viewModel.currentFavoriteColor)
-            WFButtonIcon(
-                icon: DagestanTrailsAsset.close.swiftUIImage,
-                size: .l,
-                type: .favorite
-            ) {
-                isPlaceViewVisible = false
-            }
-        }
-        .padding([.top, .trailing], Grid.pt12)
     }
 }

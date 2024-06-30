@@ -11,7 +11,7 @@ import Foundation
 public struct Route {
     let id: Int
     let title: String
-    let images: [URL?]
+    let images: [URL]
     let shortDescription: String?
     let distance: Double
     let travelTime: String

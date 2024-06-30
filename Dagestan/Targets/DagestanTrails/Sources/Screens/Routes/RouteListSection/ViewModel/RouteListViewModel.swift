@@ -9,6 +9,7 @@
 import SwiftUI
 
 protocol IRouteListViewModel: ObservableObject {
+    var path: NavigationPath { get set }
     var routes: [Route] { get }
     var service: IRouteService { get }
     
@@ -16,7 +17,9 @@ protocol IRouteListViewModel: ObservableObject {
 }
 
 class RouteListViewModel: IRouteListViewModel {
+    @Published var path = NavigationPath()
     @Published var routes: [Route] = []
+
     let service: IRouteService
 
     init(service: IRouteService) {

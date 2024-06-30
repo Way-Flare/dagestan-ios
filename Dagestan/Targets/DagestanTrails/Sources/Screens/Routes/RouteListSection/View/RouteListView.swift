@@ -29,6 +29,7 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                         }
                     }
                 }
+                .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal, Grid.pt12)
             }
             .scrollIndicators(.hidden)
@@ -39,8 +40,4 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
             }
         }
     }
-}
-
-#Preview {
-    RouteListView(viewModel: RouteListViewModel(service: MockRouteService()))
 }

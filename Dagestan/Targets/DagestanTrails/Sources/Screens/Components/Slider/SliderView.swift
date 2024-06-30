@@ -6,33 +6,32 @@
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
+import Combine
 import DesignSystem
 import NukeUI
 import SwiftUI
 
 @MainActor
 struct SliderView: View {
-    @StateObject private var viewModel: SliderViewModel
+    @State private var timer = Timer.publish(every: 0.15, on: .main, in: .common).autoconnect()
+    @State private var timerProgress: CGFloat = 0
+    private let images: [URL]
 
     init(images: [URL]) {
-        self._viewModel = StateObject(wrappedValue: SliderViewModel(images: images))
+        self.images = images
     }
 
     var body: some View {
         imageView
-            .onAppear {
-                viewModel.startTimer()
-            }
             .onDisappear {
-                viewModel.stopTimer()
+                stopTimer()
             }
     }
 
     @ViewBuilder private var imageView: some View {
-        if !viewModel.images.isEmpty,
-           let timer = viewModel.timer {
+        if !images.isEmpty {
             GeometryReader { geometry in
-                LazyImage(url: viewModel.images[viewModel.index]) { state in
+                LazyImage(url: images[index]) { state in
                     state.image?
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -41,7 +40,7 @@ struct SliderView: View {
                         .overlay(sliderView, alignment: .bottom)
                         .overlay(gestureOverlay)
                         .onReceive(timer) { _ in
-                            viewModel.animateTimerProgress()
+                            animateTimerProgress()
                         }
                         .skeleton(show: state.isLoading)
 
@@ -52,7 +51,7 @@ struct SliderView: View {
                     }
                 }
                 .onAppear {
-                    print("Attempting to load image from URL: \(viewModel.images[viewModel.index].absoluteString)")
+                    print("Attempting to load image from URL: \(images[index].absoluteString)")
                 }
             }
         } else {
@@ -61,15 +60,35 @@ struct SliderView: View {
                 .aspectRatio(contentMode: .fill)
         }
     }
+
+    private var index: Int {
+        min(Int(timerProgress), images.count - 1) % images.count
+    }
+
+    private func stopTimer() {
+        timer.upstream.connect().cancel()
+    }
+
+    private func animateTimerProgress() {
+        if timerProgress < CGFloat(images.count) {
+            withAnimation {
+                timerProgress += 0.02
+            }
+        }
+
+        if timerProgress >= CGFloat(images.count) {
+            timerProgress = 0
+        }
+    }
 }
 
 // MARK: - Slider with progress logic
 
 extension SliderView {
     @ViewBuilder private var sliderView: some View {
-        if viewModel.images.count > 1 {
+        if images.count > 1 {
             HStack(spacing: Grid.pt4) {
-                ForEach(0 ..< viewModel.images.count, id: \.self) { index in
+                ForEach(0 ..< images.count, id: \.self) { index in
                     progressCapsule(for: index)
                 }
             }
@@ -82,7 +101,7 @@ extension SliderView {
     private func progressCapsule(for index: Int) -> some View {
         GeometryReader { proxy in
             let width = proxy.size.width
-            let progress = viewModel.calculateProgress(for: index, width: width)
+            let progress = calculateProgress(for: index, width: width)
 
             Capsule()
                 .fill(Color.white.opacity(0.5))
@@ -105,11 +124,25 @@ extension SliderView {
         Rectangle()
             .fill(Color.black.opacity(0.01))
             .onTapGesture {
-                viewModel.updateTimerProgress(increment: increment)
+                updateTimerProgress(increment: increment)
             }
+    }
+
+    func calculateProgress(for index: Int, width: CGFloat) -> CGFloat {
+        let currentProgress = timerProgress - CGFloat(index)
+        let clampedProgress = min(max(currentProgress, 0), 1)
+        return width * clampedProgress
+    }
+
+    func updateTimerProgress(increment: CGFloat) {
+        let currentImageIndex = Int(timerProgress) % images.count
+        let newImageIndex = (currentImageIndex + Int(increment) + images.count) % images.count
+        if currentImageIndex != newImageIndex {
+            timerProgress = CGFloat(newImageIndex)
+        }
     }
 }
 
 #Preview {
-    SliderView(images: Place.mock.images)
+    SliderView(images: [])
 }
