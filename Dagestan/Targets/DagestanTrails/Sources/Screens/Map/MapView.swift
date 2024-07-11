@@ -65,8 +65,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
             if viewModel.selectedPlace == nil  {
                 tagsContainerView
             } else {
-                PlaceView(place: $viewModel.selectedPlace, service: viewModel.service)
-                    .padding(.bottom, Grid.pt12)
+                PlaceView(place: $viewModel.selectedPlace)
             }
         }
     }

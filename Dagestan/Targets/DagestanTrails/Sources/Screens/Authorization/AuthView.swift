@@ -8,12 +8,13 @@
 import CoreKit
 import DesignSystem
 import SwiftUI
+import SUINavigation
 
 struct AuthorizationView: View {
     @StateObject var authViewModel: AuthorizationViewModel
     @StateObject var registerViewModel: RegisterViewModel
     @StateObject var resetViewModel: RegisterViewModel
-    
+
     private let service: AuthService
 
     init(service: AuthService) {

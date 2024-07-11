@@ -10,6 +10,7 @@ import DesignSystem
 import SwiftUI
 
 protocol IPlaceViewModel: ObservableObject {
+    var coordinator: (any IPlaceCoordinator)? { get set }
     var place: Place? { get set }
     var isSelectedFavorite: Bool { get set }
     var isActive: Bool { get set }
@@ -25,6 +26,8 @@ final class PlaceViewModel: IPlaceViewModel {
     @Published var isSelectedFavorite = false
     @Published var isActive = false
 
+    var coordinator: (any IPlaceCoordinator)? = nil
+
     var currentFavoriteImage: Image {
         isSelectedFavorite ? Image(systemName: "heart.fill") : Image(systemName: "heart")
     }
@@ -35,6 +38,11 @@ final class PlaceViewModel: IPlaceViewModel {
     
     init(place: Place?) {
         self.place = place
+    }
+    
+    func showPlaceDetail() {
+        guard let id = place?.id else { return }
+        coordinator?.showPlaceDetail(placeId: id)
     }
 
     func onClose() {

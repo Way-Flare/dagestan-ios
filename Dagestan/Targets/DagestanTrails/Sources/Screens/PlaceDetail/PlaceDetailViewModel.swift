@@ -24,6 +24,7 @@ class MockPlaceService: IPlacesService {
 }
 
 protocol IPlaceDetailViewModel: ObservableObject {
+    var coordinator: (any IPlaceCoordinator)? { get set }
     var state: LoadingState<PlaceDetail> { get }
     var isVisibleSnackbar: Bool { get set }
     var isBackdropVisible: Bool { get set }
@@ -33,6 +34,8 @@ protocol IPlaceDetailViewModel: ObservableObject {
 }
 
 final class PlaceDetailViewModel: IPlaceDetailViewModel {
+    weak var coordinator: (any IPlaceCoordinator)? = nil
+    
     @Published var state: LoadingState<PlaceDetail> = .idle
     @Published var isVisibleSnackbar = false
     @Published var isBackdropVisible = false

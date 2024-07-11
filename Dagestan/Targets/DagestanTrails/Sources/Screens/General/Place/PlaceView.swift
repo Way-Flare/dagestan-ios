@@ -8,39 +8,67 @@
 import DesignSystem
 import NukeUI
 import SwiftUI
+import SUINavigation
+
+protocol IPlaceCoordinator: ObservableObject {
+    associatedtype PlaceDetailViewModel: IPlaceDetailViewModel
+
+    var navigationStorage: NavigationStorage? { get set }
+    var viewModel: PlaceDetailViewModel { get set }
+    var isDetailShown: Bool { get set }
+
+    func showPlaceDetail(placeId: Int)
+}
+
+final class PlaceCoordinator<PlaceDetailViewModel: IPlaceDetailViewModel>: IPlaceCoordinator {
+    @Published var isDetailShown = false
+    @Published var viewModel: PlaceDetailViewModel
+    
+    var navigationStorage: NavigationStorage?
+        
+    init(viewModel: PlaceDetailViewModel) {
+        self.viewModel = viewModel
+    }
+    
+    func showPlaceDetail(placeId: Int) {
+        isDetailShown = true
+    }
+}
+
+
 
 @MainActor
-struct PlaceView: View {
+struct PlaceView<Coordinator: IPlaceCoordinator>: View {
     @Binding private var place: Place?
     
-    private let placeDetailViewModel: PlaceDetailViewModel
-    
+    @StateObject private var coordinator: Coordinator
+    @OptionalEnvironmentObject private var navigationStorage: NavigationStorage?
+
     private var formatter: TimeSuffixFormatter {
         TimeSuffixFormatter(workTime: place?.workTime)
     }
 
-    init(place: Binding<Place?>, service: IPlacesService) {
-        self._place = place
-        self.placeDetailViewModel = PlaceDetailViewModel(
-            service: service,
-            placeId: place.wrappedValue?.id ?? .zero
+    init(place: Binding<Place?>) where Coordinator == PlaceCoordinator<PlaceDetailViewModel> {
+        _coordinator = StateObject(
+            wrappedValue: PlaceCoordinator<PlaceDetailViewModel>(
+                viewModel: PlaceDetailViewModel(service: MockPlaceService(), placeId: 1)
+            )
         )
+        self._place = place
     }
 
     var body: some View {
-        if let place {
-            NavigationView {
-                NavigationLink(
-                    destination: PlaceDetailView(viewModel: placeDetailViewModel)
-                ) {
-                    contentView
-                        .cornerStyle(.constant(Grid.pt16))
-                        .padding(.horizontal, Grid.pt12)
-                        .shadow(radius: Grid.pt4)
-                }
-            }
+        contentView
+            .cornerStyle(.constant(Grid.pt16))
+            .padding(.horizontal, Grid.pt12)
+            .shadow(radius: Grid.pt4)
             .frame(height: 302)
-        }
+            .onAppear {
+                coordinator.navigationStorage = navigationStorage
+            }
+            .navigation(isActive: $coordinator.isDetailShown) {
+                PlaceDetailView(viewModel: coordinator.viewModel)
+            }
     }
 
     private var contentView: some View {
@@ -57,13 +85,14 @@ struct PlaceView: View {
             ZStack(alignment: .topTrailing) {
                 SliderView(images: place.images)
                     .frame(height: 174)
+                
                 buttonsView
             }
             .cornerStyle(.constant(Grid.pt4, .bottomCorners))
             .frame(height: 174)
         }
     }
-    
+
     private var buttonsView: some View {
         HStack(spacing: Grid.pt8) {
             Spacer()
@@ -71,9 +100,8 @@ struct PlaceView: View {
                 icon: Image(systemName: "heart.fill"),
                 size: .l,
                 type: .favorite
-            ) {
-            }
-            .foregroundColor(.red)
+            ) {}
+                .foregroundColor(.red)
             WFButtonIcon(
                 icon: DagestanTrailsAsset.close.swiftUIImage,
                 size: .l,
@@ -127,8 +155,8 @@ extension PlaceView {
         Group {
             Text(formatter.operatingStatus)
                 .foregroundColor(formatter.operatingStatusColor)
-            +
-            Text(formatter.operatingStatusSuffix)
+                +
+                Text(formatter.operatingStatusSuffix)
                 .foregroundColor(WFColor.foregroundSoft)
         }
         .font(.manropeRegular(size: Grid.pt14))
@@ -141,6 +169,7 @@ extension PlaceView {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundColor(WFColor.foregroundPrimary)
         }
     }
 }

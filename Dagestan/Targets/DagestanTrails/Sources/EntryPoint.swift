@@ -1,5 +1,6 @@
 import CoreKit
 import DesignSystem
+import SUINavigation
 import SwiftUI
 
 @main
@@ -9,9 +10,11 @@ struct EntryPoint: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(networkService: networkService)
-                .environmentObject(timerViewModel)
-                .environment(\.colorScheme, .light)
+            NavigationViewStorage {
+                ContentView(networkService: networkService)
+            }
+            .environmentObject(timerViewModel)
+            .environment(\.colorScheme, .light)
         }
     }
 }
