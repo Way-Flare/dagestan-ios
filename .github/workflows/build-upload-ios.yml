@@ -1,0 +1,61 @@
+name: iOS binary build & upload
+ 
+on:
+ workflow_dispatch:
+ 
+jobs:
+ deploy:
+   runs-on: macos-latest
+   steps:
+     - uses: actions/checkout@v3
+ 
+     - name: Set up ruby env
+       uses: ruby/setup-ruby@v1
+       with:
+         ruby-version: 3.1
+         bundler-cache: true
+ 
+     - name: Decode signing certificate into a file
+       env:
+         CERTIFICATE_BASE64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
+       run: |
+         echo $CERTIFICATE_BASE64 | base64 --decode > signing-cert.p12
+
+     - name: Bundle install for iOS Gemfile
+       timeout-minutes: 5
+       run: cd Dagestan ; bundle install
+ 
+     - name: Install Fastlane
+       run: gem install fastlane
+
+     - name: Install mise
+       uses: jdx/mise-action@v2
+ 
+     - name: Install Tuist 4.7.0
+       run: mise install tuist@4.7.0
+
+     - name: Configure Mapbox credentials
+       run: |
+         touch ~/.netrc
+         echo "machine api.mapbox.com" > ~/.netrc
+         echo "login mapbox" >> ~/.netrc
+         echo "password ${{ secrets.MAPBOX_API_TOKEN }}" >> ~/.netrc
+
+     - name: Build & upload iOS binary
+       run: cd Dagestan ; bundle exec fastlane build_upload_testflight
+       env:
+         ASC_KEY_ID: ${{ secrets.KEY_ID }}
+         ASC_ISSUER_ID: ${{ secrets.ISSUER_ID }}
+         ASC_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+         TEAM_ID: ${{ secrets.TEAM_ID }}
+         SIGNING_KEY_PASSWORD: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
+         SIGNING_KEY_FILE_PATH: ${{ github.workspace }}/signing-cert.p12
+         PROJECT_PATH: ${{ github.workspace }}/Dagestan
+ 
+     - name: Upload app-store ipa and dsyms to artifacts
+       uses: actions/upload-artifact@v2
+       with:
+         name: app-store ipa & dsyms
+         path: |
+           ${{ github.workspace }}/Dagestan/*.ipa
+           ${{ github.workspace }}/Dagestan/*.app.dSYM.zip
