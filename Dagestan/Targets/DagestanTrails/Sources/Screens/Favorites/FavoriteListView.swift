@@ -8,7 +8,7 @@
 import DesignSystem
 import SwiftUI
 
-struct FavoritesView: View {
+struct FavoriteListView: View {
     @State var section: FavoriteSection = .places
     let favoritesCount = 5
 
@@ -63,11 +63,26 @@ struct FavoritesView: View {
     private func contentView(for section: FavoriteSection) -> some View {
         ScrollView {
             switch section {
-                case .places, .routes:
+                case .places:
                     LazyVStack(spacing: Grid.pt12) {
                         ForEach(0 ..< favoritesCount, id: \.self) { _ in
                             FavoriteCardView()
                                 .padding(.horizontal, Grid.pt12)
+                        }
+                    }
+                case .routes:
+                    LazyVStack(spacing: Grid.pt12) {
+                        ForEach(0 ..< favoritesCount, id: \.self) { _ in
+//                            NavigationLink(
+//                                destination: RouteDetailView(
+//                                    viewModel: RouteDetailViewModel(
+//                                        service: viewModel.service,
+//                                        id: route.id
+//                                    )
+//                                )
+//                            ) {
+                            RouteCardView(route: .mock)
+//                            }
                         }
                     }
             }
@@ -77,5 +92,5 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    FavoritesView()
+    FavoriteListView()
 }

@@ -13,7 +13,7 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
     @StateObject var viewModel: ViewModel
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 LazyVStack(spacing: Grid.pt12) {
                     ForEach(viewModel.routes, id: \.id) { route in

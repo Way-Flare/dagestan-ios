@@ -48,6 +48,7 @@ struct SliderView: View {
                         DagestanTrailsAsset.notAvaibleImage.swiftUIImage
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                            .allowsHitTesting(false)
                     }
                 }
                 .onAppear {
@@ -58,6 +59,7 @@ struct SliderView: View {
             DagestanTrailsAsset.notAvaibleImage.swiftUIImage
                 .resizable()
                 .aspectRatio(contentMode: .fill)
+                .allowsHitTesting(false)
         }
     }
 
