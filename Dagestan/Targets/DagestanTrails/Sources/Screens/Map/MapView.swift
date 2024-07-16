@@ -21,42 +21,44 @@ struct MapView<ViewModel: IMapViewModel>: View {
     @ObservedObject var viewModel: ViewModel
     
     var body: some View {
-        MapReader { proxy in
-            ZStack {
-                Map(viewport: $viewModel.viewport) {
-                    ForEvery(viewModel.filteredPlaces) { place in
-                        MapViewAnnotation(coordinate: place.coordinate) {
-                            AnnotationView(name: place.name, workingTime: place.workTime, tagPlace: place.tags?.first)
-                                .onTapGesture {
-                                    viewModel.selectPlace(by: place.id)
-                                }
+        NavigationStack {
+            MapReader { proxy in
+                ZStack {
+                    Map(viewport: $viewModel.viewport) {
+                        ForEvery(viewModel.filteredPlaces) { place in
+                            MapViewAnnotation(coordinate: place.coordinate) {
+                                AnnotationView(name: place.name, workingTime: place.workTime, tagPlace: place.tags?.first)
+                                    .onTapGesture {
+                                        viewModel.selectPlace(by: place.id)
+                                    }
+                            }
+                            .allowOverlap(true)
                         }
-                        .allowOverlap(true)
                     }
+                    .mapStyle(.streets)
+                    .onStyleLoaded { _ in setupMap(proxy) }
+                    .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
+                        handleTap(proxy: proxy, feature: feature, context: context)
+                    }
+                    .onLayerTapGesture(ItemId.point) { feature, _ in
+                        viewModel.selectPlace(by: feature.feature)
+                        return true
+                    }
+                    .onChange(of: viewModel.filteredPlaces) { _ in updatePlaces(proxy) }
                 }
-                .mapStyle(.streets)
-                .onStyleLoaded { _ in setupMap(proxy) }
-                .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
-                    handleTap(proxy: proxy, feature: feature, context: context)
+                .overlay(alignment: .bottom) { bottomContentContainerView }
+                .overlay(alignment: .trailing) {
+                    WFButtonIcon(
+                        icon: DagestanTrailsAsset.location.swiftUIImage,
+                        size: .m,
+                        type: .nature
+                    ) {
+                        viewModel.moveToDagestan()
+                    }
+                    .padding(.trailing, Grid.pt12)
                 }
-                .onLayerTapGesture(ItemId.point) { feature, _ in
-                    viewModel.selectPlace(by: feature.feature)
-                    return true
-                }
-                .onChange(of: viewModel.filteredPlaces) { _ in updatePlaces(proxy) }
+                .edgesIgnoringSafeArea(.top)
             }
-            .overlay(alignment: .bottom) { bottomContentContainerView }
-            .overlay(alignment: .trailing) {
-                WFButtonIcon(
-                    icon: DagestanTrailsAsset.location.swiftUIImage,
-                    size: .m,
-                    type: .nature
-                ) {
-                    viewModel.moveToDagestan()
-                }
-                .padding(.trailing, Grid.pt12)
-            }
-            .edgesIgnoringSafeArea(.top)
         }
     }
 

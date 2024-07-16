@@ -20,13 +20,14 @@ struct RouteCardView: View {
         }
         .background(.white)
         .cornerStyle(.constant(Grid.pt12))
-        .font(.manropeRegular(size: 14))
+        .font(.manropeRegular(size: Grid.pt14))
     }
     
     private var imageContainerView: some View {
         ZStack(alignment: .topTrailing) {
             SliderView(images: route.images)
-                .frame(height: 174)
+                .frame(height: Grid.pt174)
+                .clipped()
                 
             WFButtonIcon(
                 icon: DagestanTrailsAsset.heartFilled.swiftUIImage,
@@ -65,11 +66,7 @@ struct RouteCardView: View {
     
     private var ratingContainerView: some View {
         HStack(spacing: Grid.pt4) {
-            Image(systemName: "star.fill")
-                .resizable()
-                .frame(width: Grid.pt16, height: Grid.pt16)
-                .foregroundStyle(.yellow)
-            
+            StarsView(amount: 1, size: .s, type: .review)
             Text("333")
                 .foregroundStyle(WFColor.foregroundSoft)
         }

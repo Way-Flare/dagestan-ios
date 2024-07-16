@@ -29,15 +29,13 @@ struct PlaceView: View {
 
     var body: some View {
         if let place {
-            NavigationView {
-                NavigationLink(
-                    destination: PlaceDetailView(viewModel: placeDetailViewModel)
-                ) {
-                    contentView
-                        .cornerStyle(.constant(Grid.pt16))
-                        .padding(.horizontal, Grid.pt12)
-                        .shadow(radius: Grid.pt4)
-                }
+            NavigationLink(
+                destination: PlaceDetailView(viewModel: placeDetailViewModel)
+            ) {
+                contentView
+                    .cornerStyle(.constant(Grid.pt16))
+                    .padding(.horizontal, Grid.pt12)
+                    .shadow(radius: Grid.pt4)
             }
             .frame(height: 302)
         }

@@ -77,7 +77,7 @@ private extension ContentView {
         switch item {
             case .places: MapView(viewModel: mapViewModel)
             case .profile: AuthorizationView(service: authService)
-            case .favorite: FavoritesView()
+            case .favorite: FavoriteListView()
             case .routes: RouteListView(viewModel: routeViewModel)
             case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
         }
