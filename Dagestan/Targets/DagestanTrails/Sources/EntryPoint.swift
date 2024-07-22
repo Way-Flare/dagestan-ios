@@ -19,6 +19,7 @@ struct EntryPoint: App {
 struct ContentView: View {
     @StateObject private var mapViewModel: MapViewModel
     @StateObject private var routeViewModel: RouteListViewModel
+    @StateObject private var authViewModel: AuthorizationViewModel
     private let authService: AuthService
 
     // сделать бы норм инжект)
@@ -26,10 +27,12 @@ struct ContentView: View {
         FontManager.registerFonts()
         let placesService = PlacesService(networkService: networkService)
         let routeService = RouteService(networkService: networkService)
+        let authService = AuthService(networkService: networkService)
 
         self._mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
         self._routeViewModel = StateObject(wrappedValue: RouteListViewModel(service: routeService))
-        self.authService = AuthService(networkService: networkService)
+        self.authService = authService
+        self._authViewModel = StateObject(wrappedValue: AuthorizationViewModel(authService: authService))
     }
 
     var body: some View {
@@ -53,6 +56,7 @@ struct ContentView: View {
                         }
                         .font(.manropeRegular(size: Grid.pt12))
                     }
+                    .tag(tab.rawValue)
             }
         }
     }
@@ -76,7 +80,7 @@ private extension ContentView {
     func tabItemView(for item: TabItem) -> some View {
         switch item {
             case .places: MapView(viewModel: mapViewModel)
-            case .profile: AuthorizationView(service: authService)
+            case .profile: ProfileContainerView(authService: authService, authViewModel: authViewModel)
             case .favorite: FavoriteListView()
             case .routes: RouteListView(viewModel: routeViewModel)
             case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Security
 
 public protocol NetworkServiceProtocol: AnyObject {
     func execute<T: Decodable>(
@@ -20,6 +21,8 @@ public protocol NetworkServiceProtocol: AnyObject {
 }
 
 public final class DTNetworkService: NetworkServiceProtocol {
+    private let keychainService = KeychainService()
+    
     public init() {}
 
     public func execute<T: Decodable>(
@@ -52,29 +55,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw RequestError.noResponse
             }
-            switch httpResponse.statusCode {
-                case 200 ... 299:
-                    if data.isEmpty {
-                        if T.self == EmptyResponse.self,
-                           let emptyResponse = EmptyResponse() as? T {
-                            return emptyResponse
-                        } else {
-                            throw RequestError.emptyResponse
-                        }
-                    }
-
-                    guard let decodedResponse = try? decoder.decode(type, from: data) else {
-                        print("Ошибка декодирования")
-                        throw RequestError.failedDecode
-                    }
-
-                    return decodedResponse
-                default:
-                    guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {
-                        throw RequestError.unexpectedStatusCode
-                    }
-                    throw RequestError.serverError(decodedError)
-            }
+            return try await handleResponse(statusCode: httpResponse.statusCode, data: data, decoder: decoder, expecting: type)
         } catch let error as RequestError {
             throw error
         } catch {
@@ -111,4 +92,119 @@ public final class DTNetworkService: NetworkServiceProtocol {
 
         return urlRequest
     }
+
+    private func handleResponse<T: Decodable>(statusCode: Int, data: Data, decoder: JSONDecoder, expecting type: T.Type) async throws -> T {
+        switch statusCode {
+            case 200...299:
+                if data.isEmpty {
+                    if T.self == EmptyResponse.self, let emptyResponse = EmptyResponse() as? T {
+                        return emptyResponse
+                    } else {
+                        throw RequestError.emptyResponse
+                    }
+                }
+
+                guard let decodedResponse = try? decoder.decode(type, from: data) else {
+                    print("Ошибка декодирования")
+                    throw RequestError.failedDecode
+                }
+                return decodedResponse
+        case 401:
+            guard let data = keychainService.load(key: ConstantAccess.refreshTokenKey),
+                  let refresh = String(data: data, encoding: .utf8) else {
+                throw RequestError.unauthorized
+            }
+            
+            guard let accessTokenData = try await refreshToken(token: refresh).data(using: .utf8) else {
+                throw RequestError.unauthorized
+            }
+            keychainService.save(key: ConstantAccess.accessTokenKey, data: accessTokenData)
+            throw RequestError.unauthorized
+            default:
+                guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {
+                    throw RequestError.unexpectedStatusCode
+                }
+                throw RequestError.serverError(decodedError)
+        }
+    }
+    
+    func refreshToken(token: String) async throws -> String {
+        let endpoint = RefreshTokenEndpoint.refreshToken(token: token)
+        do {
+            let token = try await execute(endpoint, expecting: String.self)
+            return token
+        } catch {
+            throw error
+        }
+    }
+}
+
+public enum RefreshTokenEndpoint {
+    case refreshToken(token: String)
+}
+
+extension RefreshTokenEndpoint: ApiEndpoint {
+    public var path: String {
+        switch self {
+            case .refreshToken:
+                return "auth/refresh-token/"
+        }
+    }
+
+    public var method: CoreKit.Method {
+        return .post
+    }
+
+    public var headers: Headers? {
+        [
+            "Content-Type": "application/json",
+            "X-CSRFTOKEN": "1HjjnFKBPN8VN9QqntupPv85BCsufwRsAyUnvd91d06fNvm1FmAtailNqaecQCsb"
+        ]
+    }
+
+    public var body: Parameters? {
+        guard case let .refreshToken(token) = self else { return nil }
+        return ["access": token]
+    }
+}
+
+public protocol IKeychainService {
+    func save(key: String, data: Data) -> OSStatus
+    func load(key: String) -> Data?
+}
+
+
+public class KeychainService: IKeychainService {
+    public func save(key: String, data: Data) -> OSStatus {
+        let query = [
+            kSecClass as String: kSecClassGenericPassword as String,
+            kSecAttrAccount as String: key,
+            kSecValueData as String: data
+        ] as [String: Any]
+
+        SecItemDelete(query as CFDictionary)
+        return SecItemAdd(query as CFDictionary, nil)
+    }
+
+    public func load(key: String) -> Data? {
+        let query = [
+            kSecClass as String: kSecClassGenericPassword as String,
+            kSecAttrAccount as String: key,
+            kSecReturnData as String: kCFBooleanTrue as Any,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ] as [String: Any]
+
+        var dataTypeRef: AnyObject?
+        let status: OSStatus = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+        if status == noErr, let data = dataTypeRef as? Data {
+            return data
+        } else {
+            return nil
+        }
+    }
+}
+
+public enum ConstantAccess {
+    public static let accessTokenKey = "ACCESS_TOKEN_KEY"
+    public static let refreshTokenKey = "REFRESH_TOKEN_KEY"
 }

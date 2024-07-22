@@ -9,6 +9,7 @@ import CoreKit
 import SwiftUI
 
 protocol IAuthorizationViewModel: ObservableObject {
+    var isAuthorized: Bool { get set }
     var path: NavigationPath { get set }
     var phoneNumber: String { get set }
     var password: String { get set }
@@ -17,6 +18,7 @@ protocol IAuthorizationViewModel: ObservableObject {
 }
 
 final class AuthorizationViewModel: IAuthorizationViewModel {
+    @Published var isAuthorized = false
     @Published var path = NavigationPath()
     @Published var state: LoadingState<Void> = .idle
     @Published var phoneNumber = "" {
@@ -35,30 +37,46 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
     }
     
     private let authService: AuthService
+    private let keychainService: IKeychainService = KeychainService()
 
     init(authService: AuthService) {
         self.authService = authService
+        self.isAuthorized = keychainService.load(key: ConstantAccess.accessTokenKey) != nil
+
     }
     
     @MainActor
     func login() async {
-        withAnimation {
-            state = .loading
-        }
-        
+        withAnimation { state = .loading }
         do {
             try await Task.sleep(nanoseconds: 750_000_000)
-            let _ = try await authService.login(phone: phoneNumber, password: password)
-            withAnimation {
-                state = .loaded(())
-            }
+            let token = try await authService.login(phone: phoneNumber, password: password)
+            handleTokenWithKeychain(with: token)
+            withAnimation { state = .loaded(()) }
+            isAuthorized = true
         } catch let requestError as RequestError {
-            withAnimation {
-                state = .failed(requestError.message)
-            }
+            withAnimation { state = .failed(requestError.message) }
         } catch {
-            withAnimation {
-                state = .failed("Произошла ошибка: \(error.localizedDescription)")
+            withAnimation { state = .failed("Произошла ошибка: \(error.localizedDescription)") }
+        }
+    }
+    
+    private func handleTokenWithKeychain(with token: AuthToken) {
+        if let accessData = token.access.data(using: .utf8),
+           let refreshData = token.refresh.data(using: .utf8) {
+            let accessStatus = keychainService.save(key: ConstantAccess.accessTokenKey, data: accessData)
+            let refreshStatus = keychainService.save(key: ConstantAccess.refreshTokenKey, data: refreshData)
+                        
+            if accessStatus == noErr {
+                print("Access token saved")
+            } else {
+                print("Access token not saved")
+            }
+            
+            if refreshStatus == noErr {
+                print("Refresh token saved")
+            } else {
+                print("Refresh token not saved")
             }
         }
     }
