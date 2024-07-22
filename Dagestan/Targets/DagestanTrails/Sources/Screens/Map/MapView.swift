@@ -25,6 +25,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
             MapReader { proxy in
                 ZStack {
                     Map(viewport: $viewModel.viewport) {
+                        Puck2D(bearing: .heading)
                         ForEvery(viewModel.filteredPlaces) { place in
                             MapViewAnnotation(coordinate: place.coordinate) {
                                 AnnotationView(name: place.name, workingTime: place.workTime, tagPlace: place.tags?.first)
