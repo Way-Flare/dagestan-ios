@@ -24,7 +24,7 @@ protocol IMapViewModel: ObservableObject {
 }
 
 final class MapViewModel: IMapViewModel {
-    @Published var viewport: Viewport = .styleDefault
+    @Published var viewport: Viewport = .camera(center: Location.makhachkala, zoom: 5.5)
     @Published var places: [Place] = [] {
         didSet {
             filteredPlaces = places
@@ -160,5 +160,11 @@ extension MapViewModel {
             print("Error serializing geoJSON: \(error)")
             return nil
         }
+    }
+}
+
+extension MapViewModel {
+    enum Location {
+        static let makhachkala = CLLocationCoordinate2D(latitude: 42.9824, longitude: 47.5049)
     }
 }
