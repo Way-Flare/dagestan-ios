@@ -62,6 +62,10 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             .frame(maxWidth: .infinity)
             .frame(height: Grid.pt253)
             .cornerStyle(.constant(Grid.pt12))
+            .highPriorityGesture(
+                DragGesture(),
+                including: .subviews
+            )
         }
     }
 
