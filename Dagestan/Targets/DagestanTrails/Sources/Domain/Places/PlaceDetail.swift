@@ -17,7 +17,6 @@ struct PlaceDetail {
     let description: String?
     let images: [URL]
     let workTime: String?
-    let placeFeedbacks: [PlaceFeedback]
     let rating: Double
     let placeWays: [PlaceWay]
     let contacts: [Contact]
@@ -84,7 +83,6 @@ extension PlaceDetail {
             description: "Подробное описание местаnripwl bnwrpoi bnporwnbpiorenbpiwrenbpiwnrpbiwroepbnpwoier nbpiownerbiponerpbionrwepiobnopiwernpoie w fopweopfkopewopfopewkfopewkfopewop fweopfk opwekfopewkfopewkop fopwefkopewkopfwop kfopwekopf weopfopwek opfewopfkwopkfopwq ioegwepiolgjweipogjweioprgjoiergpiower ngpiernpren bwrnepi bwreiop bjwerpiobjwrepibjpweorjbpier2jbpior4piobwrpio b",
             images: Place.mock.images,
             workTime: "09:00 - 18:00",
-            placeFeedbacks: [.mock(), .mock(), .mock(), .mock()],
             rating: 5,
             placeWays: [.mock()],
             contacts: [.mock()],

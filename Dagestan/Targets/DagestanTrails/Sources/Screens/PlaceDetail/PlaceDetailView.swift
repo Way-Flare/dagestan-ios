@@ -33,13 +33,6 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                 )
                 mapContainerView
                 PlaceSendErrorView()
-                if let route = viewModel.state.data {
-                    PlaceReviewAndRatingView(
-                        rating: route.rating,
-                        reviewsCount: route.placeFeedbacks.count
-                    )
-                }
-                reviewContainerView
             }
             .padding(.horizontal, Grid.pt12)
             .padding(.bottom, Grid.pt82)
@@ -69,16 +62,6 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             .frame(maxWidth: .infinity)
             .frame(height: Grid.pt253)
             .cornerStyle(.constant(Grid.pt12))
-        }
-    }
-
-    @ViewBuilder private var reviewContainerView: some View {
-        if let feedbacks = viewModel.state.data?.placeFeedbacks {
-            VStack(spacing: Grid.pt24) {
-                ForEach(feedbacks, id: \.id) { feedback in
-                    UserReviewView(feedback: feedback)
-                }
-            }
         }
     }
 

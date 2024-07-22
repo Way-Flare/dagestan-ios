@@ -18,7 +18,6 @@ struct PlaceDetailDTO: Decodable {
     let description: String?
     let images: [ImageDTO]
     let workTime: String?
-    let placeFeedbacks: [PlaceFeedbackDTO]
     let rating: Double
     let placeWays: [PlaceWayDTO]
     let contacts: [ContactDTO]
@@ -78,7 +77,6 @@ extension PlaceDetailDTO: Domainable {
             description: description,
             images: images.compactMap { $0.asDomain() },
             workTime: workTime,
-            placeFeedbacks: placeFeedbacks.map { $0.asDomain() },
             rating: rating,
             placeWays: placeWays.map { $0.asDomain() },
             contacts: contacts.map { $0.asDomain() },
