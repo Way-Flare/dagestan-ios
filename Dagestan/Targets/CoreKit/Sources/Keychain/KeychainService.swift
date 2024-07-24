@@ -9,8 +9,10 @@
 import Foundation
 import Security
 
-class KeychainService: IKeychainService {
-    func save(key: String, data: Data) -> OSStatus {
+public class KeychainService: IKeychainService {
+    public init() {}
+    
+    public func save(key: String, data: Data) -> OSStatus {
         let query = [
             kSecClass as String: kSecClassGenericPassword as String,
             kSecAttrAccount as String: key,
@@ -21,7 +23,7 @@ class KeychainService: IKeychainService {
         return SecItemAdd(query as CFDictionary, nil)
     }
 
-    func load(key: String) -> Data? {
+    public func load(key: String) -> Data? {
         let query = [
             kSecClass as String: kSecClassGenericPassword as String,
             kSecAttrAccount as String: key,

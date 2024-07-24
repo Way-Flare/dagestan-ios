@@ -10,15 +10,15 @@ import DesignSystem
 import SwiftUI
 
 struct AuthorizationView: View {
-    @ObservedObject var authViewModel: AuthorizationViewModel
+    @StateObject var authViewModel: AuthorizationViewModel
     @StateObject var registerViewModel: RegisterViewModel
     @StateObject var resetViewModel: RegisterViewModel
     
     private let service: AuthService
 
-    init(service: AuthService, authViewModel: AuthorizationViewModel) {
+    init(service: AuthService, authStatus: AuthStatus) {
         self.service = service
-        self._authViewModel = ObservedObject(wrappedValue: authViewModel)
+        self._authViewModel = StateObject(wrappedValue: AuthorizationViewModel(authService: service, authStatus: authStatus))
         self._registerViewModel = StateObject(wrappedValue: RegisterViewModel(authService: service))
         self._resetViewModel = StateObject(wrappedValue: RegisterViewModel(isRecovery: true, authService: service))
     }

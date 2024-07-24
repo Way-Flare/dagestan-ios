@@ -17,6 +17,10 @@ protocol IAuthorizationViewModel: ObservableObject {
     func login() async
 }
 
+class AuthStatus: ObservableObject {
+    @Published var isAuthorized: Bool = false
+}
+
 final class AuthorizationViewModel: IAuthorizationViewModel {
     @Published var isAuthorized = false
     @Published var path = NavigationPath()
@@ -36,13 +40,13 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
         }
     }
     
-    private let authService: AuthService
+    private var authService: AuthService
     private let keychainService: IKeychainService = KeychainService()
+    private let authStatus: AuthStatus
 
-    init(authService: AuthService) {
+    init(authService: AuthService, authStatus: AuthStatus) {
         self.authService = authService
-        self.isAuthorized = keychainService.load(key: ConstantAccess.accessTokenKey) != nil
-
+        self.authStatus = authStatus
     }
     
     @MainActor
@@ -53,7 +57,6 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
             let token = try await authService.login(phone: phoneNumber, password: password)
             handleTokenWithKeychain(with: token)
             withAnimation { state = .loaded(()) }
-            isAuthorized = true
         } catch let requestError as RequestError {
             withAnimation { state = .failed(requestError.message) }
         } catch {

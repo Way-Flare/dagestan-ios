@@ -11,18 +11,18 @@ import CoreKit
 
 struct ProfileContainerView: View {
     let authService: AuthService
-    @ObservedObject var authViewModel: AuthorizationViewModel
+    @EnvironmentObject var authStatus: AuthStatus
 
     var body: some View {
-        if authViewModel.isAuthorized { // вот как узнать что авторизован
-            VStack {
+        VStack {
+            if authStatus.isAuthorized {
                 Text("Authed")
                 Button("Logout") {
-                    authViewModel.isAuthorized = false
+                    authStatus.isAuthorized = false
                 }
+            } else {
+                AuthorizationView(service: authService, authStatus: authStatus)
             }
-        } else {
-            AuthorizationView(service: authService, authViewModel: authViewModel)
         }
     }
 }

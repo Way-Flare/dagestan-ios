@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol IKeychainService {
+public protocol IKeychainService {
     func save(key: String, data: Data) -> OSStatus
     func load(key: String) -> Data?
 }
