@@ -62,30 +62,22 @@ struct FavoriteListView: View {
     @ViewBuilder
     private func contentView(for section: FavoriteSection) -> some View {
         ScrollView {
-            switch section {
-                case .places:
-                    LazyVStack(spacing: Grid.pt12) {
-                        ForEach(0 ..< favoritesCount, id: \.self) { _ in
-                            FavoriteCardView()
-                                .padding(.horizontal, Grid.pt12)
+            Group {
+                switch section {
+                    case .places:
+                        LazyVStack(spacing: Grid.pt12) {
+                            ForEach(0 ..< favoritesCount, id: \.self) { _ in
+                                FavoriteCardView()
+                            }
                         }
-                    }
-                case .routes:
-                    LazyVStack(spacing: Grid.pt12) {
-                        ForEach(0 ..< favoritesCount, id: \.self) { _ in
-//                            NavigationLink(
-//                                destination: RouteDetailView(
-//                                    viewModel: RouteDetailViewModel(
-//                                        service: viewModel.service,
-//                                        id: route.id
-//                                    )
-//                                )
-//                            ) {
-                            RouteCardView(route: .mock)
-//                            }
+                    case .routes:
+                        LazyVStack(spacing: Grid.pt12) {
+                            ForEach(0 ..< favoritesCount, id: \.self) { _ in                                RouteCardView(route: .mock)
+                            }
                         }
-                    }
+                }
             }
+            .padding(.horizontal, Grid.pt12)
         }
         .scrollIndicators(.hidden)
     }
