@@ -32,6 +32,7 @@ class PasswordViewModel: IPasswordViewModel {
     private let authService: AuthService
     private var isFirstInput = true
     private let alphabet = "abcdefghijklmnopqrstuvwxyz"
+    private let keychainService: IKeychainService
     // swiftlint:disable opening_brace
     // swiftlint:disable large_tuple
     private let rulesDescriptions: [(description: String, validator: (String) -> Bool, icon: Image)] = [
@@ -67,17 +68,33 @@ class PasswordViewModel: IPasswordViewModel {
     // swiftlint:enable large_tuple
     // swiftlint:enable opening_brace
 
-    init(authService: AuthService, phone: String) {
+    init(authService: AuthService, keychain: IKeychainService, phone: String) {
         self.authService = authService
         self.phone = phone
+        self.keychainService = keychain
         setupBindings()
     }
     
     func registerPhone() async {
         do {
-            let _ = try await authService.register(phone: phone, password: password, repeated: confirmPassword)
+            let token = try await authService.register(phone: phone, password: password, repeated: confirmPassword)
+            handleTokenWithKeychain(with: token)
+            
         } catch {
             print(error)
+        }
+    }
+
+    private func handleTokenWithKeychain(with token: String) {
+        if let accessData = token.data(using: .utf8) {
+            let accessStatus = keychainService.save(key: ConstantAccess.accessTokenKey, data: accessData)
+
+            if accessStatus == noErr {
+                print("Access token saved")
+                UserDefaults.standard.setValue(true, forKey: "isAuthorized")
+            } else {
+                print("Access token not saved")
+            }
         }
     }
 

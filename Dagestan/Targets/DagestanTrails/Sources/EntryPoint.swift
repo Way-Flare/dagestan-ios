@@ -20,7 +20,6 @@ struct ContentView: View {
     @StateObject private var mapViewModel: MapViewModel
     @StateObject private var routeViewModel: RouteListViewModel
     private let authService: AuthService
-    private let authStatus: AuthStatus
 
     // сделать бы норм инжект)
     init(networkService: NetworkServiceProtocol) {
@@ -28,12 +27,10 @@ struct ContentView: View {
         let placesService = PlacesService(networkService: networkService)
         let routeService = RouteService(networkService: networkService)
         let authService = AuthService(networkService: networkService)
-        let authStatus = AuthStatus()
 
         self._mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
         self._routeViewModel = StateObject(wrappedValue: RouteListViewModel(service: routeService))
         self.authService = authService
-        self.authStatus = authStatus
     }
 
     var body: some View {
@@ -81,10 +78,7 @@ private extension ContentView {
     func tabItemView(for item: TabItem) -> some View {
         switch item {
             case .places: MapView(viewModel: mapViewModel)
-            case .profile: 
-            ProfileContainerView(authService: authService)
-                .environmentObject(authStatus)
-
+            case .profile: ProfileContainerView(authService: authService)
             case .favorite: FavoriteListView()
             case .routes: RouteListView(viewModel: routeViewModel)
             case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()

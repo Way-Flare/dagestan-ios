@@ -13,12 +13,8 @@ protocol IAuthorizationViewModel: ObservableObject {
     var path: NavigationPath { get set }
     var phoneNumber: String { get set }
     var password: String { get set }
-
+    
     func login() async
-}
-
-class AuthStatus: ObservableObject {
-    @Published var isAuthorized: Bool = false
 }
 
 final class AuthorizationViewModel: IAuthorizationViewModel {
@@ -41,12 +37,11 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
     }
     
     private var authService: AuthService
-    private let keychainService: IKeychainService = KeychainService()
-    private let authStatus: AuthStatus
+    private let keychainService: IKeychainService
 
-    init(authService: AuthService, authStatus: AuthStatus) {
+    init(authService: AuthService, keychainService: IKeychainService) {
         self.authService = authService
-        self.authStatus = authStatus
+        self.keychainService = keychainService
     }
     
     @MainActor
@@ -72,6 +67,7 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
                         
             if accessStatus == noErr {
                 print("Access token saved")
+                UserDefaults.standard.setValue(true, forKey: "isAuthorized")
             } else {
                 print("Access token not saved")
             }
