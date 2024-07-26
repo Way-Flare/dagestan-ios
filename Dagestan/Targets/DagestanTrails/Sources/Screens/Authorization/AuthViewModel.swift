@@ -34,31 +34,46 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
         }
     }
     
-    private let authService: AuthService
+    private var authService: AuthService
+    private let keychainService: IKeychainService
 
-    init(authService: AuthService) {
+    init(authService: AuthService, keychainService: IKeychainService) {
         self.authService = authService
+        self.keychainService = keychainService
     }
     
     @MainActor
     func login() async {
-        withAnimation {
-            state = .loading
-        }
-        
+        withAnimation { state = .loading }
         do {
             try await Task.sleep(nanoseconds: 750_000_000)
-            let _ = try await authService.login(phone: phoneNumber, password: password)
-            withAnimation {
-                state = .loaded(())
-            }
+            let token = try await authService.login(phone: phoneNumber, password: password)
+            keychainService.handleToken(access: token.access, refresh: token.refresh)
+            withAnimation { state = .loaded(()) }
         } catch let requestError as RequestError {
-            withAnimation {
-                state = .failed(requestError.message)
-            }
+            withAnimation { state = .failed(requestError.message) }
         } catch {
-            withAnimation {
-                state = .failed("Произошла ошибка: \(error.localizedDescription)")
+            withAnimation { state = .failed("Произошла ошибка: \(error.localizedDescription)") }
+        }
+    }
+    
+    private func handleTokenWithKeychain(using token: AuthToken) {
+        if let accessData = token.access.data(using: .utf8),
+           let refreshData = token.refresh.data(using: .utf8) {
+            let accessStatus = keychainService.save(key: ConstantAccess.accessTokenKey, data: accessData)
+            let refreshStatus = keychainService.save(key: ConstantAccess.refreshTokenKey, data: refreshData)
+                        
+            if accessStatus == noErr {
+                print("Access token saved")
+                UserDefaults.standard.setValue(true, forKey: "isAuthorized")
+            } else {
+                print("Access token not saved")
+            }
+            
+            if refreshStatus == noErr {
+                print("Refresh token saved")
+            } else {
+                print("Refresh token not saved")
             }
         }
     }

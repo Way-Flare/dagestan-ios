@@ -15,10 +15,12 @@ struct AuthorizationView: View {
     @StateObject var resetViewModel: RegisterViewModel
     
     private let service: AuthService
+    private let keychain: IKeychainService
 
-    init(service: AuthService) {
+    init(service: AuthService, keychain: IKeychainService) {
+        self.keychain = keychain
         self.service = service
-        self._authViewModel = StateObject(wrappedValue: AuthorizationViewModel(authService: service))
+        self._authViewModel = StateObject(wrappedValue: AuthorizationViewModel(authService: service, keychainService: keychain))
         self._registerViewModel = StateObject(wrappedValue: RegisterViewModel(authService: service))
         self._resetViewModel = StateObject(wrappedValue: RegisterViewModel(isRecovery: true, authService: service))
     }
@@ -38,7 +40,12 @@ struct AuthorizationView: View {
                                 path: $authViewModel.path
                             )
                         case let .passwordCreation(phone):
-                            PasswordCreationView(service: service, phone: phone, path: $authViewModel.path)
+                        PasswordCreationView(
+                            service: service,
+                            keychain: keychain,
+                            phone: phone,
+                            path: $authViewModel.path
+                        )
                     }
                 }
         }

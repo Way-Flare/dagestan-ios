@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Security
 
 public protocol NetworkServiceProtocol: AnyObject {
     func execute<T: Decodable>(
@@ -20,6 +21,8 @@ public protocol NetworkServiceProtocol: AnyObject {
 }
 
 public final class DTNetworkService: NetworkServiceProtocol {
+    private let keychainService = KeychainService()
+    
     public init() {}
 
     public func execute<T: Decodable>(
@@ -52,29 +55,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw RequestError.noResponse
             }
-            switch httpResponse.statusCode {
-                case 200 ... 299:
-                    if data.isEmpty {
-                        if T.self == EmptyResponse.self,
-                           let emptyResponse = EmptyResponse() as? T {
-                            return emptyResponse
-                        } else {
-                            throw RequestError.emptyResponse
-                        }
-                    }
-
-                    guard let decodedResponse = try? decoder.decode(type, from: data) else {
-                        print("Ошибка декодирования")
-                        throw RequestError.failedDecode
-                    }
-
-                    return decodedResponse
-                default:
-                    guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {
-                        throw RequestError.unexpectedStatusCode
-                    }
-                    throw RequestError.serverError(decodedError)
-            }
+            return try await handleResponse(statusCode: httpResponse.statusCode, data: data, decoder: decoder, expecting: type)
         } catch let error as RequestError {
             throw error
         } catch {
@@ -111,4 +92,54 @@ public final class DTNetworkService: NetworkServiceProtocol {
 
         return urlRequest
     }
+
+    private func handleResponse<T: Decodable>(statusCode: Int, data: Data, decoder: JSONDecoder, expecting type: T.Type) async throws -> T {
+        switch statusCode {
+            case 200...299:
+                if data.isEmpty {
+                    if T.self == EmptyResponse.self, let emptyResponse = EmptyResponse() as? T {
+                        return emptyResponse
+                    } else {
+                        throw RequestError.emptyResponse
+                    }
+                }
+
+                guard let decodedResponse = try? decoder.decode(type, from: data) else {
+                    print("Ошибка декодирования")
+                    throw RequestError.failedDecode
+                }
+                return decodedResponse
+        case 401:
+            guard let data = keychainService.load(key: ConstantAccess.refreshTokenKey),
+                  let refresh = String(data: data, encoding: .utf8) else {
+                throw RequestError.unauthorized
+            }
+            
+            guard let accessTokenData = try await refreshToken(token: refresh).data(using: .utf8) else {
+                throw RequestError.unauthorized
+            }
+            keychainService.save(key: ConstantAccess.accessTokenKey, data: accessTokenData)
+            throw RequestError.unauthorized
+            default:
+                guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {
+                    throw RequestError.unexpectedStatusCode
+                }
+                throw RequestError.serverError(decodedError)
+        }
+    }
+    
+    func refreshToken(token: String) async throws -> String {
+        let endpoint = RefreshTokenEndpoint.refreshToken(token: token)
+        do {
+            let token = try await execute(endpoint, expecting: String.self)
+            return token
+        } catch {
+            throw error
+        }
+    }
+}
+
+public enum ConstantAccess {
+    public static let accessTokenKey = "ACCESS_TOKEN_KEY"
+    public static let refreshTokenKey = "REFRESH_TOKEN_KEY"
 }
