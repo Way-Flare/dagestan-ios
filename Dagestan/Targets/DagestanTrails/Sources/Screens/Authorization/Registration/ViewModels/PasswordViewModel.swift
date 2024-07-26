@@ -78,23 +78,9 @@ class PasswordViewModel: IPasswordViewModel {
     func registerPhone() async {
         do {
             let token = try await authService.register(phone: phone, password: password, repeated: confirmPassword)
-            handleTokenWithKeychain(with: token)
-            
+            keychainService.handleToken(access: token.access, refresh: token.refresh)
         } catch {
             print(error)
-        }
-    }
-
-    private func handleTokenWithKeychain(with token: String) {
-        if let accessData = token.data(using: .utf8) {
-            let accessStatus = keychainService.save(key: ConstantAccess.accessTokenKey, data: accessData)
-
-            if accessStatus == noErr {
-                print("Access token saved")
-                UserDefaults.standard.setValue(true, forKey: "isAuthorized")
-            } else {
-                print("Access token not saved")
-            }
         }
     }
 

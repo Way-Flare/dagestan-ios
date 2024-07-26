@@ -9,6 +9,7 @@
 import Foundation
 import Security
 
+
 public class KeychainService: IKeychainService {
     public init() {}
     
@@ -37,6 +38,27 @@ public class KeychainService: IKeychainService {
             return data
         } else {
             return nil
+        }
+    }
+    
+    public func handleToken(access: String, refresh: String) {
+        if let accessData = access.data(using: .utf8),
+           let refreshData = refresh.data(using: .utf8) {
+            let accessStatus = save(key: ConstantAccess.accessTokenKey, data: accessData)
+            let refreshStatus = save(key: ConstantAccess.refreshTokenKey, data: refreshData)
+
+            if accessStatus == noErr {
+                print("Access token saved")
+                UserDefaults.standard.setValue(true, forKey: "isAuthorized")
+            } else {
+                print("Access token not saved")
+            }
+
+            if refreshStatus == noErr {
+                print("Refresh token saved")
+            } else {
+                print("Refresh token not saved")
+            }
         }
     }
 }

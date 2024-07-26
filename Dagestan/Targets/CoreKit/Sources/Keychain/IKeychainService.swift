@@ -11,4 +11,5 @@ import Foundation
 public protocol IKeychainService {
     func save(key: String, data: Data) -> OSStatus
     func load(key: String) -> Data?
+    func handleToken(access: String, refresh: String)
 }

@@ -34,10 +34,10 @@ final class AuthService: IAuthService {
         }
     }
 
-    func register(phone: String, password: String, repeated: String) async throws -> String {
+    func register(phone: String, password: String, repeated: String) async throws -> AuthToken {
         let endpoint = AuthEndpoint.register(phone: phone, password: password, repeated: repeated)
         do {
-            let token = try await networkService.execute(endpoint, expecting: String.self)
+            let token = try await networkService.execute(endpoint, expecting: AuthToken.self)
             return token
         } catch {
             throw error

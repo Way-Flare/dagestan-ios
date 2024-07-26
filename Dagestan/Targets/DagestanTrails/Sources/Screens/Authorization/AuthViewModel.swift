@@ -9,16 +9,14 @@ import CoreKit
 import SwiftUI
 
 protocol IAuthorizationViewModel: ObservableObject {
-    var isAuthorized: Bool { get set }
     var path: NavigationPath { get set }
     var phoneNumber: String { get set }
     var password: String { get set }
-    
+
     func login() async
 }
 
 final class AuthorizationViewModel: IAuthorizationViewModel {
-    @Published var isAuthorized = false
     @Published var path = NavigationPath()
     @Published var state: LoadingState<Void> = .idle
     @Published var phoneNumber = "" {
@@ -50,7 +48,7 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
         do {
             try await Task.sleep(nanoseconds: 750_000_000)
             let token = try await authService.login(phone: phoneNumber, password: password)
-            handleTokenWithKeychain(with: token)
+            keychainService.handleToken(access: token.access, refresh: token.refresh)
             withAnimation { state = .loaded(()) }
         } catch let requestError as RequestError {
             withAnimation { state = .failed(requestError.message) }
@@ -59,7 +57,7 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
         }
     }
     
-    private func handleTokenWithKeychain(with token: AuthToken) {
+    private func handleTokenWithKeychain(using token: AuthToken) {
         if let accessData = token.access.data(using: .utf8),
            let refreshData = token.refresh.data(using: .utf8) {
             let accessStatus = keychainService.save(key: ConstantAccess.accessTokenKey, data: accessData)
