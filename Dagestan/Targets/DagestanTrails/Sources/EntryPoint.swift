@@ -81,7 +81,6 @@ private extension ContentView {
             case .profile: ProfileContainerView(authService: authService)
             case .favorite: FavoriteListView()
             case .routes: RouteListView(viewModel: routeViewModel)
-            case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
         }
     }
 }

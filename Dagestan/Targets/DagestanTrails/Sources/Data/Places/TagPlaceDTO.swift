@@ -16,6 +16,6 @@ public struct TagPlaceDTO: Decodable {
 
 extension TagPlaceDTO: Domainable {
     public func asDomain() -> TagPlace {
-        return TagPlace(rawValue: name) ?? .unknown
+        return TagPlace(rawValue: name)
     }
 }
