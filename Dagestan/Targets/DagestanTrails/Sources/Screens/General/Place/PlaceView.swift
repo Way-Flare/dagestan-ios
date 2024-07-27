@@ -37,7 +37,7 @@ struct PlaceView: View {
                     .padding(.horizontal, Grid.pt12)
                     .shadow(radius: Grid.pt4)
             }
-            .frame(height: 302)
+            .frame(height: 292)
         }
     }
 
@@ -54,11 +54,11 @@ struct PlaceView: View {
         if let place {
             ZStack(alignment: .topTrailing) {
                 SliderView(images: place.images)
-                    .frame(height: 174)
+                    .frame(height: 164)
                 buttonsView
             }
             .cornerStyle(.constant(Grid.pt4, .bottomCorners))
-            .frame(height: 174)
+            .frame(height: 164)
         }
     }
     
@@ -88,7 +88,7 @@ struct PlaceView: View {
 
 extension PlaceView {
     private var descriptionView: some View {
-        VStack(alignment: .leading, spacing: Grid.pt6) {
+        VStack(alignment: .leading, spacing: Grid.pt2) {
             titleAndRatingView
             operatingHoursView
             routeDescriptionView

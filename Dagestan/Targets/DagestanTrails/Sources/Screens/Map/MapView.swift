@@ -26,15 +26,6 @@ struct MapView<ViewModel: IMapViewModel>: View {
                 ZStack {
                     Map(viewport: $viewModel.viewport) {
                         Puck2D(bearing: .heading)
-                        ForEvery(viewModel.filteredPlaces) { place in
-                            MapViewAnnotation(coordinate: place.coordinate) {
-                                AnnotationView(name: place.name, workingTime: place.workTime, tagPlace: place.tags?.first)
-                                    .onTapGesture {
-                                        viewModel.selectPlace(by: place.id)
-                                    }
-                            }
-                            .allowOverlap(true)
-                        }
                     }
                     .mapStyle(.streets)
                     .onStyleLoaded { _ in setupMap(proxy) }
@@ -69,7 +60,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                 tagsContainerView
             } else {
                 PlaceView(place: $viewModel.selectedPlace, service: viewModel.service)
-                    .padding(.bottom, Grid.pt12)
+                    .padding(.bottom, Grid.pt8)
             }
         }
     }
@@ -137,9 +128,7 @@ extension MapView {
 
     private func setupClusteringLayer(_ map: MapboxMap) throws {
         let resize = CGSize(width: Grid.pt32, height: Grid.pt32)
-        guard let resizedImage = UIImage(named: "location")?
-            .withTintColor(.init(WFColor.iconAccent))
-            .resized(to: resize)
+        guard let resizedImage = UIImage(named: "pin")?.resized(to: resize)
         else { return }
 
         try map.addImage(resizedImage, id: "place-icon", sdf: true)
@@ -177,8 +166,17 @@ extension MapView {
 
     private func createUnclusteredLayer() -> SymbolLayer {
         var layer = SymbolLayer(id: ItemId.point, source: ItemId.source)
+
+        layer.textAnchor = .constant(.top)
+        layer.iconAnchor = .constant(.bottom)
+        layer.textField = .expression( Exp(.get) { "place_name" })
         layer.iconImage = .constant(.name("place-icon"))
-        layer.iconColor = .constant(StyleColor(UIColor(WFColor.iconAccent)))
+
+//        layer.textFont = .constant(["Arial Unicode MS Bold"])
+        layer.textAllowOverlap = .constant(true)
+        layer.iconAllowOverlap = .constant(true)
+        layer.textSize = .constant(12)
+
         layer.filter = Exp(.not) { Exp(.has) { "point_count" } }
         return layer
     }
