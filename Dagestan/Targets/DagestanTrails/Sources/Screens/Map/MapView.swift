@@ -127,11 +127,10 @@ extension MapView {
     }
 
     private func setupClusteringLayer(_ map: MapboxMap) throws {
-        let resize = CGSize(width: Grid.pt32, height: Grid.pt32)
-        guard let resizedImage = UIImage(named: "pin")?.resized(to: resize)
+        guard let locationIcon = UIImage(named: "Pinishe")
         else { return }
 
-        try map.addImage(resizedImage, id: "place-icon", sdf: true)
+        try map.addImage(locationIcon, id: "place-icon", sdf: false)
 
         var source = GeoJSONSource(id: ItemId.source)
         source.cluster = true
@@ -172,7 +171,6 @@ extension MapView {
         layer.textField = .expression( Exp(.get) { "place_name" })
         layer.iconImage = .constant(.name("place-icon"))
 
-//        layer.textFont = .constant(["Arial Unicode MS Bold"])
         layer.textAllowOverlap = .constant(true)
         layer.iconAllowOverlap = .constant(true)
         layer.textSize = .constant(12)
