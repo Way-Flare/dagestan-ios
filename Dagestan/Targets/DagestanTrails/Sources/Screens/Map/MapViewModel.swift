@@ -81,8 +81,9 @@ final class MapViewModel: IMapViewModel {
         guard let id = (feature.properties?["id"] as? Turf.JSONValue)?.intValue,
               let selected = filteredPlaces.first(where: { $0.id == id }) else { return }
 
-        withAnimation {
-            selectedPlace = selected
+        selectedPlace = selected
+        withViewportAnimation(.easeIn(duration: 0.3)) {
+            viewport = .camera(center: selectedPlace?.coordinate)
         }
     }
 
@@ -137,8 +138,8 @@ extension MapViewModel {
             ]
             let properties: [String: Any?] = [
                 "id": place.id,
-                "name": place.name,
-                "description": place.shortDescription
+                "place_name": place.name,
+                "description": place.shortDescription,
             ]
 
             return [

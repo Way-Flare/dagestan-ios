@@ -1,9 +1,9 @@
 {
-  "sourceLanguage" : "en",
+  "sourceLanguage" : "ru",
   "strings" : {
     "%@ / %@" : {
       "localizations" : {
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ / %2$@"
@@ -13,7 +13,7 @@
     },
     "%@км • %@ • %@ мест" : {
       "localizations" : {
-        "en" : {
+        "ru" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@км • %2$@ • %3$@ мест"

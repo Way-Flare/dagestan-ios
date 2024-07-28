@@ -48,7 +48,7 @@ struct RegisterVerificationView<RegisterViewModel: IRegisterViewModel>: View {
 
     private var enterCodeContainerView: some View {
         VStack(spacing: Grid.pt16) {
-            DagestanTrailsAsset.logo.swiftUIImage
+            DagestanTrailsAsset.logoDark.swiftUIImage
                 .resizable()
                 .frame(width: Grid.pt80, height: Grid.pt64)
                 .cornerStyle(.constant(Grid.pt16))
