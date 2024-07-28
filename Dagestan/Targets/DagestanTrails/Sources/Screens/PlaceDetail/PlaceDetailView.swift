@@ -27,12 +27,20 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                     isVisible: $viewModel.isVisibleSnackbar,
                     place: viewModel.state.data
                 )
-                PlaceRouteInfoView(
-                    type: .place(title: "Это место в маршрутах"),
-                    items: viewModel.state.data?.routes.map { $0.asDomain() }
-                )
+                if viewModel.state.data?.routes.count ?? 0 > 0 {
+                    PlaceRouteInfoView(
+                        type: .place(title: "Это место в маршрутах"),
+                        items: viewModel.state.data?.routes.map { $0.asDomain() }
+                    )
+                }
                 mapContainerView
                 PlaceSendErrorView()
+                if let place = viewModel.state.data {
+                    PlaceReviewAndRatingView(
+                        rating: place.rating,
+                        reviewsCount: place.feedbackCount
+                    )
+                }
             }
             .padding(.horizontal, Grid.pt12)
             .padding(.bottom, Grid.pt82)
@@ -65,6 +73,17 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             .disabled(true)
         }
     }
+    
+    // TODO: Вернуть в рамках DT-191
+//    @ViewBuilder private var reviewContainerView: some View {
+//        if let feedbacks = viewModel.state.data?.placeFeedbacks {
+//            VStack(spacing: Grid.pt24) {
+//                ForEach(feedbacks, id: \.id) { feedback in
+//                    UserReviewView(feedback: feedback)
+//                }
+//            }
+//        }
+//    }
 
     private var bottomContentContainerView: some View {
         VStack(spacing: .zero) {

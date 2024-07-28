@@ -22,6 +22,7 @@ struct PlaceDetailDTO: Decodable {
     let placeWays: [PlaceWayDTO]
     let contacts: [ContactDTO]
     let routes: [RouteDTO]
+    let feedbackCount: Int
 }
 
 extension PlaceDetailDTO {
@@ -80,7 +81,8 @@ extension PlaceDetailDTO: Domainable {
             rating: rating,
             placeWays: placeWays.map { $0.asDomain() },
             contacts: contacts.map { $0.asDomain() },
-            routes: routes.map { $0.asDomain() }
+            routes: routes.map { $0.asDomain() },
+            feedbackCount: feedbackCount
         )
     }
 }

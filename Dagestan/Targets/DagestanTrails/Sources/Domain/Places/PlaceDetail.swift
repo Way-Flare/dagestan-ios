@@ -21,6 +21,7 @@ struct PlaceDetail {
     let placeWays: [PlaceWay]
     let contacts: [Contact]
     let routes: [Route]
+    let feedbackCount: Int
 }
 
 extension PlaceDetail {
@@ -86,7 +87,8 @@ extension PlaceDetail {
             rating: 5,
             placeWays: [.mock()],
             contacts: [.mock()],
-            routes: [.mock()]
+            routes: [.mock()],
+            feedbackCount: 2
         )
     }
 }

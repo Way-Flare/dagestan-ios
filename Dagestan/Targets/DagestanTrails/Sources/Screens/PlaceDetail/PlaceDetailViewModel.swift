@@ -18,7 +18,7 @@ class MockPlaceService: IPlacesService {
     }
     
     func getPlace(id: Int) async throws -> PlaceDetail {
-        //        try await Task.sleep(nanoseconds: 2_000_000_000)
+        // try await Task.sleep(nanoseconds: 2_000_000_000)
         return PlaceDetail.mock()
     }
 }
@@ -37,7 +37,6 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     @Published var isVisibleSnackbar = false
     @Published var isBackdropVisible = false
 
-    
     lazy var formatter = TimeSuffixFormatter(workTime: state.data?.workTime)
 
     private let service: IPlacesService
