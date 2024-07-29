@@ -19,6 +19,7 @@ private enum ItemId {
 
 struct MapView<ViewModel: IMapViewModel>: View {
     @ObservedObject var viewModel: ViewModel
+    let routeService: IRouteService
     
     var body: some View {
         NavigationStack {
@@ -59,7 +60,11 @@ struct MapView<ViewModel: IMapViewModel>: View {
             if viewModel.selectedPlace == nil  {
                 tagsContainerView
             } else {
-                PlaceView(place: $viewModel.selectedPlace, service: viewModel.service)
+                PlaceView(
+                    place: $viewModel.selectedPlace,
+                    placeService: viewModel.service,
+                    routeService: routeService
+                )
                     .padding(.bottom, Grid.pt8)
             }
         }

@@ -14,15 +14,17 @@ struct PlaceView: View {
     @Binding private var place: Place?
     
     private let placeDetailViewModel: PlaceDetailViewModel
+    private let routeService: IRouteService
     
     private var formatter: TimeSuffixFormatter {
         TimeSuffixFormatter(workTime: place?.workTime)
     }
 
-    init(place: Binding<Place?>, service: IPlacesService) {
+    init(place: Binding<Place?>, placeService: IPlacesService, routeService: IRouteService) {
         self._place = place
+        self.routeService = routeService
         self.placeDetailViewModel = PlaceDetailViewModel(
-            service: service,
+            service: placeService,
             placeId: place.wrappedValue?.id ?? .zero
         )
     }
@@ -30,7 +32,7 @@ struct PlaceView: View {
     var body: some View {
         if let place {
             NavigationLink(
-                destination: PlaceDetailView(viewModel: placeDetailViewModel)
+                destination: PlaceDetailView(viewModel: placeDetailViewModel, routeService: routeService)
             ) {
                 contentView
                     .cornerStyle(.constant(Grid.pt16))

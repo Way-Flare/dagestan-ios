@@ -14,6 +14,7 @@ import MapboxMaps
 
 struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
+    let routeService: IRouteService
 
     var body: some View {
         StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
@@ -30,7 +31,9 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                 if viewModel.state.data?.routes.count ?? 0 > 0 {
                     PlaceRouteInfoView(
                         type: .place(title: "Это место в маршрутах"),
-                        items: viewModel.state.data?.routes.map { $0.asDomain() }
+                        items: viewModel.state.data?.routes.map { $0.asDomain() },
+                        routeService: routeService,
+                        placeService: viewModel.service
                     )
                 }
                 mapContainerView
@@ -99,8 +102,4 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             PlaceMakeRouteBottomView()
         }
     }
-}
-
-#Preview {
-    PlaceDetailView(viewModel: PlaceDetailViewModel(service: MockPlaceService(), placeId: 1))
 }

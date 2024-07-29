@@ -14,15 +14,21 @@ struct PlaceRouteInfoView: View {
     let items: [RoutePlaceModel]?
     let isRoutes: Bool
     let countRoutes: Int
+    let routeService: IRouteService?
+    let placeService: IPlacesService?
     
     init(
         type: InfoType,
-        items: [RoutePlaceModel]?
+        items: [RoutePlaceModel]?,
+        routeService: IRouteService? = nil,
+        placeService: IPlacesService? = nil
     ) {
         self.title = type.title
         self.items = items
         self.isRoutes = type.isRoutes
         self.countRoutes = type.countRoutes
+        self.routeService = routeService
+        self.placeService = placeService
     }
     
     var body: some View {
@@ -46,7 +52,12 @@ struct PlaceRouteInfoView: View {
                             .font(.manropeSemibold(size: 18))
                     }
                 }
-                RoutePlacesView(items: items, isRoutes: isRoutes)
+                RoutePlacesView(
+                    items: items,
+                    isRoutes: isRoutes,
+                    routeService: routeService,
+                    placeService: placeService
+                )
             }
         }
     }

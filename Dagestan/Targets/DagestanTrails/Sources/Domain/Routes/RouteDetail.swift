@@ -25,6 +25,7 @@ public struct RouteDetail {
 public extension RouteDetail {
     struct PlaceInRoute {
         let id: Int
+        let name: String
         let images: [URL]
         let workTime: String?
         let mainTag: TagPlace
@@ -37,8 +38,9 @@ extension RouteDetail.PlaceInRoute: Domainable {
     
     public func asDomain() -> DomainType {
         RoutePlaceModel(
+            id: id,
             icon: mainTag.icon,
-            title: "Каньон реки Сулак", // тут временно так как тут какая то херня с images не пон нах и что вооб
+            title: name, // тут временно так как тут какая то херня с images не пон нах и что вооб
             subtitle: workTime
         )
     }

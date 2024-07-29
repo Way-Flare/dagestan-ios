@@ -28,6 +28,7 @@ protocol IPlaceDetailViewModel: ObservableObject {
     var isVisibleSnackbar: Bool { get set }
     var isBackdropVisible: Bool { get set }
     var formatter: TimeSuffixFormatter { get }
+    var service: IPlacesService { get }
     
     func loadPlaceDetail()
 }
@@ -39,7 +40,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
 
     lazy var formatter = TimeSuffixFormatter(workTime: state.data?.workTime)
 
-    private let service: IPlacesService
+    let service: IPlacesService
     private let placeId: Int
     private var task: Task<Void, Error>?
 

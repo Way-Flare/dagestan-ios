@@ -13,10 +13,33 @@ struct RoutePlacesView: View {
     @State private var isExpanded = false
     let isRoutes: Bool
     let items: [RoutePlaceModel]
+    let routeService: IRouteService?
+    let placeService: IPlacesService?
 
-    init(items: [RoutePlaceModel], isRoutes: Bool = true) {
+    init(items: [RoutePlaceModel], isRoutes: Bool = true, routeService: IRouteService? = nil, placeService: IPlacesService? = nil) {
         self.items = items
         self.isRoutes = isRoutes
+        self.routeService = routeService
+        self.placeService = placeService
+    }
+    
+    @ViewBuilder
+    private func view(for item: RoutePlaceModel) -> some View {
+        if isRoutes {
+            if let routeService, let placeService {
+                PlaceDetailView(
+                    viewModel: PlaceDetailViewModel(service: placeService, placeId: item.id),
+                    routeService: routeService
+                )
+            }
+        } else {
+            if let routeService, let placeService {
+                RouteDetailView(
+                    viewModel: RouteDetailViewModel(service: routeService, id: item.id),
+                    placeService: placeService
+                )
+            }
+        }
     }
 
     var body: some View {
@@ -31,12 +54,13 @@ struct RoutePlacesView: View {
 
     @ViewBuilder private var itemsContainerView: some View {
         ForEach(Array(items.enumerated()), id: \.offset) { index, item in
-
             if isExpanded || index < 5 {
-                VStack(alignment: .leading, spacing: .zero) {
-                    numberedItemView(index: index, item: (item.title, item.subtitle))
-                    if (index < items.count - 1) && (isExpanded || index < 4) {
-                        dividerView
+                NavigationLink(destination: view(for: item)) {
+                    VStack(alignment: .leading, spacing: .zero) {
+                        numberedItemView(index: index, item: (item.title, item.subtitle))
+                        if (index < items.count - 1) && (isExpanded || index < 4) {
+                            dividerView
+                        }
                     }
                 }
             }
