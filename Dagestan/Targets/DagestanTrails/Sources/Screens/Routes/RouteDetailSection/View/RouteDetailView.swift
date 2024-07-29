@@ -13,6 +13,7 @@ import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
+    private let placeService: IPlacesService
 
     private let routeLayer = "route"
     private let routeFeature = "route-feature"
@@ -34,7 +35,9 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     ),
                     items: viewModel.state.data?.places.map {
                         $0.asDomain()
-                    }
+                    },
+                    routeService: viewModel.service,
+                    placeService: placeService
                 )
                 mapContainerView
                 PlaceSendErrorView()
@@ -52,7 +55,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         .overlay(alignment: .bottom) { PlaceMakeRouteBottomView() }
         .edgesIgnoringSafeArea(.top)
         .scrollIndicators(.hidden)
-        .onAppear {
+        .onViewDidLoad {
             viewModel.loadRouteDetail()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -115,8 +118,4 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         .cornerStyle(.constant(Grid.pt12))
         .disabled(true)
     }
-}
-
-#Preview {
-    RouteDetailView(viewModel: RouteDetailViewModel(service: MockRouteService(), id: 1))
 }

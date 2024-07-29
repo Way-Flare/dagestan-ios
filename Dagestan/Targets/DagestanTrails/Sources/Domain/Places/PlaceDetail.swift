@@ -65,6 +65,7 @@ extension PlaceDetail.Route: Domainable {
     
     func asDomain() -> DomainType {
         .init(
+            id: id,
             icon: TagPlace.nature.icon,
             title: title,
             subtitle: shortDescription

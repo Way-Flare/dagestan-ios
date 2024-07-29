@@ -25,6 +25,7 @@ struct RouteDetailDTO: Decodable {
 extension RouteDetailDTO {
     struct PlaceInRouteDTO: Decodable {
         let id: Int
+        let name: String
         let images: [ImageDTO]
         let workTime: String?
         let mainTag: TagPlaceDTO
@@ -59,6 +60,7 @@ extension RouteDetailDTO.PlaceInRouteDTO: Domainable {
     func asDomain() -> RouteDetail.PlaceInRoute {
         RouteDetail.PlaceInRoute(
             id: id,
+            name: name,
             images: images.compactMap { $0.asDomain() },
             workTime: workTime,
             mainTag: mainTag.asDomain(),

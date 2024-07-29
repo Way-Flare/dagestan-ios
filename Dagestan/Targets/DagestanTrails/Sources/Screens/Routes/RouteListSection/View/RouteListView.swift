@@ -11,6 +11,7 @@ import SwiftUI
 
 struct RouteListView<ViewModel: IRouteListViewModel>: View {
     @StateObject var viewModel: ViewModel
+    private let placeService: IPlacesService
 
     var body: some View {
         NavigationStack {
@@ -22,7 +23,8 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                                 viewModel: RouteDetailViewModel(
                                     service: viewModel.service,
                                     id: route.id
-                                )
+                                ),
+                                placeService: placeService
                             )
                         ) {
                             RouteCardView(route: route)

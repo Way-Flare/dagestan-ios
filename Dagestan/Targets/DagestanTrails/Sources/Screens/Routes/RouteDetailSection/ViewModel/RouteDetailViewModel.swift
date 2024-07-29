@@ -11,15 +11,15 @@ import CoreLocation
 protocol IRouteDetailViewModel: ObservableObject {
     var state: LoadingState<RouteDetail> { get }
     var routeCoordinates: [CLLocationCoordinate2D] { get }
+    var service: IRouteService { get }
     var isBackdropVisible: Bool { get set }
-
 
     func loadRouteDetail()
     func calculateCenterAndApproximateZoom() -> (center: CLLocationCoordinate2D, zoom: Double)
 }
 
 final class RouteDetailViewModel: IRouteDetailViewModel {
-    private let service: IRouteService
+    let service: IRouteService
     private let id: Int
 
     @Published var state: LoadingState<RouteDetail> = .idle

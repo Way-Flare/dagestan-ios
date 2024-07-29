@@ -75,13 +75,15 @@ final class MockRouteService: IRouteService {
             places: [
                 RouteDetail.PlaceInRoute(
                     id: 1,
+                    name: "easfkasf",
                     images: Place.mock.images,
                     workTime: "10:00 - 20:00",
                     mainTag: TagPlace.food,
                     sequence: 1
                 ),
                 RouteDetail.PlaceInRoute(
-                    id: 2,
+                    id: 2, 
+                    name: "qowfoqwfwqofiz",
                     images: Place.mock.images,
                     workTime: "13:00 - 20:00",
                     mainTag: TagPlace.landmark,

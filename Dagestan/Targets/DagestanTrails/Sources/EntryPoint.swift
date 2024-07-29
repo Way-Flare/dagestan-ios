@@ -77,10 +77,10 @@ private extension ContentView {
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-            case .places: MapView(viewModel: mapViewModel)
+            case .places: MapView(viewModel: mapViewModel, routeService: routeViewModel.service)
             case .profile: ProfileContainerView(authService: authService)
             case .favorite: FavoriteListView()
-            case .routes: RouteListView(viewModel: routeViewModel)
+            case .routes: RouteListView(viewModel: routeViewModel, placeService: mapViewModel.service)
         }
     }
 }
