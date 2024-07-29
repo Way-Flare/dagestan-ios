@@ -26,20 +26,6 @@ struct PlaceDetailDTO: Decodable {
 }
 
 extension PlaceDetailDTO {
-    struct PlaceFeedbackDTO: Decodable {
-        let id: Int
-        let images: [ImageDTO]
-        let user: UserDTO
-        let stars: Int
-        let comment: String?
-        let createdAt: String
-    }
-
-    struct UserDTO: Decodable {
-        let username: String
-        let avatar: String
-    }
-
     struct PlaceWayDTO: Decodable {
         let id: Int
         let info: String?
@@ -87,31 +73,7 @@ extension PlaceDetailDTO: Domainable {
     }
 }
 
-extension PlaceDetailDTO.PlaceFeedbackDTO: Domainable {
-    typealias DomainType = PlaceDetail.PlaceFeedback
 
-    func asDomain() -> PlaceDetail.PlaceFeedback {
-        PlaceDetail.PlaceFeedback(
-            id: id,
-            images: images.compactMap { $0.asDomain() },
-            user: user.asDomain(),
-            stars: stars,
-            comment: comment,
-            createdAt: createdAt
-        )
-    }
-}
-
-extension PlaceDetailDTO.UserDTO: Domainable {
-    typealias DomainType = PlaceDetail.User
-
-    func asDomain() -> PlaceDetail.User {
-        PlaceDetail.User(
-            username: username,
-            avatar: avatar
-        )
-    }
-}
 
 extension PlaceDetailDTO.PlaceWayDTO: Domainable {
     typealias DomainType = PlaceDetail.PlaceWay

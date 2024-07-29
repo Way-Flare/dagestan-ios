@@ -13,12 +13,16 @@ import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
+    @State private var scrollViewOffset: CGFloat = 0
 
     private let routeLayer = "route"
     private let routeFeature = "route-feature"
 
     var body: some View {
-        StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
+        StretchableHeaderScrollView(
+            showsBackdrop: $viewModel.isBackdropVisible,
+            scrollViewOffset: $scrollViewOffset
+        ) {
             if let images = viewModel.state.data?.images {
                 SliderView(images: images)
             }

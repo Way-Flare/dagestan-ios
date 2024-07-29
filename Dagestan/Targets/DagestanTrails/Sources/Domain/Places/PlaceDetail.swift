@@ -25,20 +25,6 @@ struct PlaceDetail {
 }
 
 extension PlaceDetail {
-    struct PlaceFeedback: Hashable {
-        let id: Int
-        let images: [URL]
-        let user: User
-        let stars: Int
-        let comment: String?
-        let createdAt: String
-    }
-
-    struct User: Hashable {
-        let username: String
-        let avatar: String
-    }
-
     struct PlaceWay {
         let id: Int
         let info: String?
@@ -93,9 +79,9 @@ extension PlaceDetail {
     }
 }
 
-extension PlaceDetail.PlaceFeedback {
-    static func mock() -> PlaceDetail.PlaceFeedback {
-        return PlaceDetail.PlaceFeedback(
+extension PlaceFeedback {
+    static func mock() -> PlaceFeedback {
+        return PlaceFeedback(
             id: Int.random(in: 1...100),
             images: Place.mock.images,
             user: .mock(),
@@ -106,9 +92,9 @@ extension PlaceDetail.PlaceFeedback {
     }
 }
 
-extension PlaceDetail.User {
-    static func mock() -> PlaceDetail.User {
-        return PlaceDetail.User(username: "user1", avatar: "https://example.com/avatar1.jpg")
+extension User {
+    static func mock() -> User {
+        return User(username: "user1", avatarURL: URL(string: "https://example.com/avatar1.jpg"))
     }
 }
 

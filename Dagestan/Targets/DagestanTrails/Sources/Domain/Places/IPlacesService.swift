@@ -15,4 +15,5 @@ protocol IPlacesService {
     /// Получение конкретного места
     /// - Returns: PlaceDetail - детальное место
     func getPlace(id: Int) async throws -> PlaceDetail
+    func getPlaceFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList
 }

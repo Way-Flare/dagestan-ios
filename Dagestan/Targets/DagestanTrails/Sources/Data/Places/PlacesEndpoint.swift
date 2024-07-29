@@ -11,6 +11,7 @@ import CoreKit
 enum PlacesEndpoint {
     case allPlaces
     case place(id: Int)
+    case placeFeedbacks(parameters: PlaceFeedbackParametersDTO)
 }
 
 extension PlacesEndpoint: ApiEndpoint {
@@ -21,6 +22,8 @@ extension PlacesEndpoint: ApiEndpoint {
                 return "places/all"
             case let .place(id):
                 return "places/\(id)/"
+            case .placeFeedbacks(let parameters):
+                return "places/\(parameters.id)/feedbacks/"
         }
     }
     
@@ -28,5 +31,21 @@ extension PlacesEndpoint: ApiEndpoint {
 
     var headers: Headers? {
         return nil
+    }
+
+    var query: Parameters? {
+        switch self {
+            case .placeFeedbacks(let parameters):
+                var query: [String: Int] = [:]
+                if let pageSize = parameters.pageSize {
+                    query["page_size"] = pageSize
+                }
+                if let pages = parameters.pages {
+                    query["pages"] = pages
+                }
+                return query
+            default:
+                return nil
+        }
     }
 }

@@ -10,26 +10,26 @@ import SwiftUI
 import DesignSystem
 
 struct UserReviewView: View {
-    let feedback: PlaceDetail.PlaceFeedback
+    let feedback: PlaceFeedback
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: Grid.pt8) {
+            HStack(spacing: Grid.pt8) {
                 WFAvatarView.initials(feedback.user.username, userId: String(feedback.id), size: .size44)
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Grid.pt4) {
                     Text(feedback.user.username)
-                        .font(.manropeRegular(size: 16))
+                        .font(.manropeRegular(size: Grid.pt16))
                         .foregroundStyle(WFColor.foregroundPrimary)
                     
-                    HStack(spacing: 8) {
+                    HStack(spacing: Grid.pt8) {
                         StarsView(amount: feedback.stars, size: .s)
                         Text(feedback.createdAt)
-                            .font(.manropeRegular(size: 14))
+                            .font(.manropeRegular(size: Grid.pt14))
                             .foregroundStyle(WFColor.foregroundSoft)
                     }
                 }
             }
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: Grid.pt12) {
                 if let comment = feedback.comment {
                     ExpandableTextView(text: comment) { isExpanded in
                         Text(isExpanded ? "Свернуть" : "Раскрыть")
@@ -39,9 +39,9 @@ struct UserReviewView: View {
                 }
                 
                 ImageCarousel(images: feedback.images)
-                    .frame(height: 96)
+                    .frame(height: Grid.pt96)
             }
-        }
+        }   
     }
 }
 

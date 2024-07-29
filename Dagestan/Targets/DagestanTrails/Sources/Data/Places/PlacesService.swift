@@ -45,4 +45,17 @@ final class PlacesService: IPlacesService {
             throw error
         }
     }
+
+    func getPlaceFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList {
+        let endpoint = PlacesEndpoint.placeFeedbacks(parameters: parameters)
+        // TODO: Надо бы добавить еще access token
+        do {
+            let placeFeedbackList = try await networkService.execute(endpoint, expecting: PlaceFeedbackListDTO.self)
+
+            return placeFeedbackList.asDomain()
+        } catch {
+            throw error
+        }
+
+    }
 }
