@@ -22,6 +22,7 @@ public enum AvatarSize {
     case size80
     case size88
     case size96
+    case size186
     
     public var value: CGFloat {
         switch self {
@@ -39,6 +40,7 @@ public enum AvatarSize {
             case .size80: return Grid.pt80
             case .size88: return Grid.pt88
             case .size96: return Grid.pt96
+            case .size186: return Grid.pt186
         }
     }
     
@@ -49,7 +51,7 @@ public enum AvatarSize {
             case .size32: return Grid.pt20
             case .size36, .size40, .size44: return Grid.pt24
             case .size48, .size56, .size64: return Grid.pt28
-            case .size72, .size80, .size88, .size96: return Grid.pt48
+            case .size72, .size80, .size88, .size96, .size186: return Grid.pt48
         }
     }
     
@@ -72,6 +74,7 @@ public enum AvatarSize {
             case .size64: return 21
             case .size72, .size80: return 26
             case .size88, .size96: return 30
+            case .size186: return 58
         }
     }
 }

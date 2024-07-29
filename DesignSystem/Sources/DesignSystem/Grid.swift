@@ -149,6 +149,8 @@ public extension Grid {
     static let pt180: CGFloat = 180.0
     /// 184 поинта
     static let pt184: CGFloat = 184.0
+    /// 186 поинтов
+    static let pt186: CGFloat = 186.0
     /// 188 поинтов
     static let pt188: CGFloat = 188.0
     /// 192 поинта

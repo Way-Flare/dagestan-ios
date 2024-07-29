@@ -21,7 +21,6 @@ public protocol NetworkServiceProtocol: AnyObject {
 }
 
 public final class DTNetworkService: NetworkServiceProtocol {
-    private let keychainService = KeychainService()
     
     public init() {}
 
@@ -52,6 +51,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
 
             let (data, response) = try await URLSession.shared.data(for: request)
+            print(request.allHTTPHeaderFields)
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw RequestError.noResponse
             }
@@ -86,7 +86,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
 
         // TODO: Constants.headers + enpoint.headers, когда добавим post запросы
 
-        urlRequest.timeoutInterval = 5.0
+        urlRequest.timeoutInterval = 30.0
         urlRequest.httpMethod = endpoint.method.rawValue
         urlRequest.allHTTPHeaderFields = endpoint.headers
 
@@ -110,7 +110,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
                 }
                 return decodedResponse
         case 401:
-            guard let data = keychainService.load(key: ConstantAccess.refreshTokenKey),
+            guard let data = KeychainService.load(key: ConstantAccess.refreshTokenKey),
                   let refresh = String(data: data, encoding: .utf8) else {
                 throw RequestError.unauthorized
             }
@@ -118,7 +118,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
             guard let accessTokenData = try await refreshToken(token: refresh).data(using: .utf8) else {
                 throw RequestError.unauthorized
             }
-            keychainService.save(key: ConstantAccess.accessTokenKey, data: accessTokenData)
+            let _ = KeychainService.save(key: ConstantAccess.accessTokenKey, data: accessTokenData)
             throw RequestError.unauthorized
             default:
                 guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {

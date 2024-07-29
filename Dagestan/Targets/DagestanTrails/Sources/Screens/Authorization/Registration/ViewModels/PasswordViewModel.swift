@@ -32,7 +32,6 @@ class PasswordViewModel: IPasswordViewModel {
     private let authService: AuthService
     private var isFirstInput = true
     private let alphabet = "abcdefghijklmnopqrstuvwxyz"
-    private let keychainService: IKeychainService
     // swiftlint:disable opening_brace
     // swiftlint:disable large_tuple
     private let rulesDescriptions: [(description: String, validator: (String) -> Bool, icon: Image)] = [
@@ -68,17 +67,16 @@ class PasswordViewModel: IPasswordViewModel {
     // swiftlint:enable large_tuple
     // swiftlint:enable opening_brace
 
-    init(authService: AuthService, keychain: IKeychainService, phone: String) {
+    init(authService: AuthService, phone: String) {
         self.authService = authService
         self.phone = phone
-        self.keychainService = keychain
         setupBindings()
     }
     
     func registerPhone() async {
         do {
             let token = try await authService.register(phone: phone, password: password, repeated: confirmPassword)
-            keychainService.handleToken(access: token.access, refresh: token.refresh)
+            KeychainService.handleToken(access: token.access, refresh: token.refresh)
         } catch {
             print(error)
         }

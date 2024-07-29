@@ -10,19 +10,16 @@ import SwiftUI
 import CoreKit
 
 struct ProfileContainerView: View {
-    @AppStorage("isAuthorized") var isAuthorized: Bool = false
+    @AppStorage("isAuthorized")
+    var isAuthorized = false
     let authService: AuthService
-    private let keychainService = KeychainService()
 
     var body: some View {
         VStack {
             if isAuthorized {
-                Text("Authed")
-                Button("Logout") {
-                    isAuthorized = false
-                }
+                ProfileView()
             } else {
-                AuthorizationView(service: authService, keychain: keychainService)
+                AuthorizationView(service: authService)
             }
         }
     }

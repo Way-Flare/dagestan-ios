@@ -44,6 +44,20 @@ extension View {
 }
 
 extension View {
+    func setCustomNavigationBarTitle(title: String) -> some View {
+        self
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(title)
+                        .font(.manropeExtrabold(size: Grid.pt20))
+                        .foregroundColor(WFColor.foregroundPrimary)
+                }
+            }
+    }
+}
+
+extension View {
     func placeholder(when show: Bool, with text: String) -> some View {
         overlay(
             Group {
