@@ -17,49 +17,19 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     let routeService: IRouteService
 
     var body: some View {
-        StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
-            if let images = viewModel.state.data?.images {
-                SliderView(images: images)
+        getContentView()
+            .font(.manropeRegular(size: Grid.pt14))
+            .overlay(alignment: .bottom) { bottomContentContainerView.isHidden(viewModel.state.isLoading) }
+            .edgesIgnoringSafeArea(.top)
+            .scrollIndicators(.hidden)
+            .onViewDidLoad {
+                viewModel.loadPlaceDetail()
             }
-        } content: {
-            VStack(alignment: .leading, spacing: Grid.pt16) {
-                PlaceDetailInfoView(place: viewModel.state.data, formatter: viewModel.formatter)
-                PlaceContactInformationView(
-                    isVisible: $viewModel.isVisibleSnackbar,
-                    place: viewModel.state.data
-                )
-                if viewModel.state.data?.routes.count ?? 0 > 0 {
-                    PlaceRouteInfoView(
-                        type: .place(title: "Это место в маршрутах"),
-                        items: viewModel.state.data?.routes.map { $0.asDomain() },
-                        routeService: routeService,
-                        placeService: viewModel.service
-                    )
-                }
-                mapContainerView
-                PlaceSendErrorView()
-                if let place = viewModel.state.data {
-                    PlaceReviewAndRatingView(
-                        rating: place.rating,
-                        reviewsCount: place.feedbackCount
-                    )
-                }
-            }
-            .padding(.horizontal, Grid.pt12)
-            .padding(.bottom, Grid.pt82)
-        }
-        .font(.manropeRegular(size: Grid.pt14))
-        .overlay(alignment: .bottom) { bottomContentContainerView }
-        .edgesIgnoringSafeArea(.top)
-        .scrollIndicators(.hidden)
-        .onViewDidLoad {
-            viewModel.loadPlaceDetail()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
-        .navigationBarBackButtonHidden(true)
-        .navigationTitle(viewModel.isBackdropVisible ? viewModel.state.data?.name ?? "" : "")
-        .navigationBarItems(leading: BackButton())
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
+            .navigationBarBackButtonHidden(true)
+            .navigationTitle(viewModel.isBackdropVisible ? viewModel.state.data?.name ?? "" : "")
+            .setCustomBackButton()
     }
 
     @ViewBuilder private var mapContainerView: some View {
@@ -76,7 +46,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             .disabled(true)
         }
     }
-    
+
     // TODO: Вернуть в рамках DT-191
 //    @ViewBuilder private var reviewContainerView: some View {
 //        if let feedbacks = viewModel.state.data?.placeFeedbacks {
@@ -100,6 +70,44 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                     .padding(Grid.pt8)
             }
             PlaceMakeRouteBottomView()
+        }
+    }
+
+    @ViewBuilder func getContentView() -> some View {
+        if let place = viewModel.state.data {
+            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
+                if let images = viewModel.state.data?.images {
+                    SliderView(images: images)
+                }
+            } content: {
+                VStack(alignment: .leading, spacing: Grid.pt16) {
+                    PlaceDetailInfoView(place: viewModel.state.data, formatter: viewModel.formatter)
+                    PlaceContactInformationView(
+                        isVisible: $viewModel.isVisibleSnackbar,
+                        place: viewModel.state.data
+                    )
+                    if viewModel.state.data?.routes.count ?? 0 > 0 {
+                        PlaceRouteInfoView(
+                            type: .place(title: "Это место в маршрутах"),
+                            items: viewModel.state.data?.routes.map { $0.asDomain() },
+                            routeService: routeService,
+                            placeService: viewModel.service
+                        )
+                    }
+                    mapContainerView
+                    PlaceSendErrorView()
+                    if let place = viewModel.state.data {
+                        PlaceReviewAndRatingView(
+                            rating: place.rating,
+                            reviewsCount: place.feedbackCount
+                        )
+                    }
+                }
+                .padding(.horizontal, Grid.pt12)
+                .padding(.bottom, Grid.pt82)
+            }
+        } else {
+            ShimmerPlaceDetailView()
         }
     }
 }

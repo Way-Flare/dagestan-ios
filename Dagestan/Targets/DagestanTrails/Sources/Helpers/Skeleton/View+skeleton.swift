@@ -11,7 +11,7 @@ import DesignSystem
 extension View {
     func skeleton(
         show loading: Bool = true,
-        cornerStyle: CornerStyle = .constant(16)
+        cornerStyle: CornerStyle = .constant(0)
     ) -> some View {
         modifier(
             SkeletonModifier(isLoading: loading, cornerStyle: cornerStyle)

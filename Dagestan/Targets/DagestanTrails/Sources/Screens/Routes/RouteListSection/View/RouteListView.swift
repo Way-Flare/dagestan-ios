@@ -11,13 +11,25 @@ import SwiftUI
 
 struct RouteListView<ViewModel: IRouteListViewModel>: View {
     @StateObject var viewModel: ViewModel
-    private let placeService: IPlacesService
+    let placeService: IPlacesService
 
     var body: some View {
         NavigationStack {
+            getContentView()
+                .scrollIndicators(.hidden)
+                .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
+                .navigationTitle("Маршруты")
+                .task {
+                    await viewModel.fetchRoutes()
+                }
+        }
+    }
+
+    @ViewBuilder func getContentView() -> some View {
+        if let routes = viewModel.state.data {
             ScrollView {
                 LazyVStack(spacing: Grid.pt12) {
-                    ForEach(viewModel.routes, id: \.id) { route in
+                    ForEach(routes, id: \.id) { route in
                         NavigationLink(
                             destination: RouteDetailView(
                                 viewModel: RouteDetailViewModel(
@@ -34,12 +46,8 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal, Grid.pt12)
             }
-            .scrollIndicators(.hidden)
-            .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
-            .navigationTitle("Маршруты")
-            .task {
-                await viewModel.fetchRoutes()
-            }
+        } else {
+            ShimmerRouteListView()
         }
     }
 }

@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "ru",
   "strings" : {
-    "[username]" : {
-
-    },
     "%@ / %@" : {
       "localizations" : {
         "ru" : {
