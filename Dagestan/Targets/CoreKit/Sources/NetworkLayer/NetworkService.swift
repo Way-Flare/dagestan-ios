@@ -77,7 +77,6 @@ public final class DTNetworkService: NetworkServiceProtocol {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
 
             let (data, response) = try await URLSession.shared.data(for: request)
-            print(request.allHTTPHeaderFields)
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw RequestError.noResponse
             }
@@ -118,6 +117,10 @@ public final class DTNetworkService: NetworkServiceProtocol {
         urlRequest.timeoutInterval = 30.0
         urlRequest.httpMethod = endpoint.method.rawValue
         urlRequest.allHTTPHeaderFields = endpoint.headers
+        if let keychainData = KeychainService.load(key: ConstantAccess.accessTokenKey),
+           let accessToken = String(data: keychainData, encoding: .utf8) {
+            urlRequest.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        }
 
         return urlRequest
     }
@@ -171,6 +174,13 @@ public final class DTNetworkService: NetworkServiceProtocol {
         }
     }
 
+    /// Функция принимает токен обновления и пытается получить новый токен доступа с использованием указанного конечного точка API для обновления токена.
+    /// В случае успеха возвращает новый токен доступа. В случае неудачи выбрасывает ошибку.
+    ///
+    /// - Parameter token: Токен обновления, используемый для запроса нового токена доступа.
+    /// - Returns: Строка, представляющая новый токен доступа.
+    /// - Throws: Ошибка типа `Error`, указывающая причины сбоя, такие как проблемы с сетью,
+    ///           ошибки декодирования или недействительные токены.
     func refreshToken(token: String) async throws -> String {
         let endpoint = RefreshTokenEndpoint.refreshToken(token: token)
         do {

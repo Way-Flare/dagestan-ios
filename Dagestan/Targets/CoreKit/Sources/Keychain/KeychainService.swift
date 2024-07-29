@@ -24,6 +24,11 @@ public class KeychainService: IKeychainService {
     }
 
     public static func load(key: String) -> Data? {
+        guard let isAuthed = UserDefaults.standard.value(forKey: "isAuthorized") as? Bool,
+              isAuthed else {
+            delete(key: key)
+            return nil
+        }
         let query = [
             kSecClass as String: kSecClassGenericPassword as String,
             kSecAttrAccount as String: key,
@@ -60,4 +65,13 @@ public class KeychainService: IKeychainService {
             }
         }
     }
+    
+    private static func delete(key: String) {
+          let query = [
+              kSecClass as String: kSecClassGenericPassword as String,
+              kSecAttrAccount as String: key
+          ] as [String : Any]
+          
+          SecItemDelete(query as CFDictionary)
+      }
 }

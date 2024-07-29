@@ -25,7 +25,7 @@ struct ProfileView: View {
                             profileCircle,
                             alignment: .top
                         )
-                        .offset(y: -24)
+                        .offset(y: -Grid.pt24)
                 }
             }
             .coordinateSpace(name: "pullToResize")
@@ -38,18 +38,18 @@ struct ProfileView: View {
     }
 
     private var profileCircle: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: Grid.pt8) {
             getUserPhotoImageView()
 
             Text(viewModel.profileState.data?.username ?? "[username]")
                 .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeSemibold(size: 18))
+                .font(.manropeSemibold(size: Grid.pt18))
         }
-        .offset(y: -65)
+        .offset(y: -Grid.pt65)
     }
 
     private var menuSection: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: Grid.pt10) {
             ForEach(MenuItemType.allCases, id: \.self) { item in
                 NavigationLink(destination: getDestination(for: item)) {
                     getMenuView(for: item)
@@ -57,10 +57,10 @@ struct ProfileView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 79)
-        .padding(.horizontal, 12)
+        .padding(.top, Grid.pt79)
+        .padding(.horizontal, Grid.pt12)
         .background(WFColor.surfaceSecondary)
-        .cornerRadius(12)
+        .cornerRadius(Grid.pt12)
     }
 }
 
@@ -90,33 +90,33 @@ extension ProfileView {
 
 extension ProfileView {
     func getReviewsCell() -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Grid.pt10) {
             DagestanTrailsAsset.starOutline.swiftUIImage
                 .resizable()
-                .frame(width: 28, height: 28)
-                .padding(.trailing, 10)
+                .frame(width: Grid.pt28, height: Grid.pt28)
+                .padding(.trailing, Grid.pt10)
                 .foregroundColor(.green)
             Text("Мои отзывы")
                 .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: 16))
+                .font(.manropeRegular(size: Grid.pt16))
             Spacer()
             chevron
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(WFColor.surfacePrimary)
-        .cornerRadius(10)
+        .cornerRadius(Grid.pt10)
     }
 
     func getAccountCell() -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Grid.pt10) {
             DagestanTrailsAsset.profileCircle.swiftUIImage
                 .resizable()
-                .frame(width: 28, height: 28)
-                .padding(.trailing, 10).foregroundColor(.green)
+                .frame(width: Grid.pt28, height: Grid.pt28)
+                .padding(.trailing, Grid.pt10).foregroundColor(.green)
             Text("Управление аккаунтом")
                 .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: 16))
+                .font(.manropeRegular(size: Grid.pt16))
             Spacer()
             chevron
         }
@@ -130,20 +130,20 @@ extension ProfileView {
         Button {
             showingAlert = true
         } label: {
-            HStack(spacing: 10) {
+            HStack(spacing: Grid.pt10) {
                 DagestanTrailsAsset.logout.swiftUIImage
                     .resizable()
-                    .frame(width: 28, height: 28)
-                    .padding(.trailing, 10).foregroundColor(.green)
+                    .frame(width: Grid.pt28, height: Grid.pt28)
+                    .padding(.trailing, Grid.pt10).foregroundColor(.green)
                 Text("Выйти")
                     .foregroundColor(WFColor.foregroundPrimary)
-                    .font(.manropeRegular(size: 16))
+                    .font(.manropeRegular(size: Grid.pt16))
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .background(WFColor.surfacePrimary)
-        .cornerRadius(10)
+        .cornerRadius(Grid.pt10)
         .alert(isPresented: $showingAlert) {
             getAlert()
         }
@@ -168,7 +168,7 @@ extension ProfileView {
         Image(systemName: "chevron.right")
             .resizable()
             .scaledToFit()
-            .frame(width: 7, height: 12)
+            .frame(width: Grid.pt7, height: Grid.pt12)
             .foregroundColor(WFColor.iconPrimary)
             .bold()
     }
@@ -176,7 +176,7 @@ extension ProfileView {
     var person: some View {
         Image(systemName: "person")
             .resizable()
-            .frame(width: 28, height: 28)
+            .frame(width: Grid.pt28, height: Grid.pt28)
             .foregroundStyle(WFColor.iconSoft)
     }
 
@@ -186,22 +186,22 @@ extension ProfileView {
             LazyImage(url: url) { state in
                 state.image?
                     .resizable()
-                    .frame(width: 96, height: 96)
+                    .frame(width: Grid.pt96, height: Grid.pt96)
                     .overlay(
                         Circle()
-                            .strokeBorder(WFColor.surfaceSecondary, lineWidth: 2)
+                            .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
                     )
                     .clipShape(Circle())
-                    .shadow(radius: 10)
+                    .shadow(radius: Grid.pt10)
             }
         } else {
             Circle()
                 .fill(WFColor.surfacePrimary)
-                .frame(width: 96, height: 96)
+                .frame(width: Grid.pt96, height: Grid.pt96)
                 .overlay(person)
                 .overlay(
                     Circle()
-                        .strokeBorder(WFColor.surfaceSecondary, lineWidth: 2)
+                        .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
                 )
         }
     }

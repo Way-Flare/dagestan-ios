@@ -61,74 +61,74 @@ extension AccountManagerView {
         HStack(spacing: 10) {
             DagestanTrailsAsset.profileCircle.swiftUIImage
                 .resizable()
-                .frame(width: 28, height: 28)
+                .frame(width: Grid.pt28, height: Grid.pt28)
                 .foregroundColor(.green)
-                .padding(.trailing, 10)
+                .padding(.trailing, Grid.pt16)
             Text("Имя пользователя")
                 .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: 16))
+                .font(.manropeRegular(size: Grid.pt16))
             Spacer()
             chevron
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(WFColor.surfacePrimary)
-        .cornerRadius(10)
+        .cornerRadius(Grid.pt10)
     }
 
     func getUserPhotoCell() -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Grid.pt10) {
             DagestanTrailsAsset.imageLinear.swiftUIImage
                 .resizable()
-                .frame(width: 28, height: 28)
+                .frame(width: Grid.pt28, height: Grid.pt28)
                 .foregroundColor(.green)
-                .padding(.trailing, 10)
+                .padding(.trailing, Grid.pt10)
             Text("Фото профиля")
                 .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: 16))
+                .font(.manropeRegular(size: Grid.pt16))
             Spacer()
             chevron
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(WFColor.surfacePrimary)
-        .cornerRadius(10)
+        .cornerRadius(Grid.pt10)
     }
 
     func getChangeEmailCell() -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Grid.pt10) {
             DagestanTrailsAsset.smsLinear.swiftUIImage
                 .resizable()
-                .frame(width: 28, height: 28)
-                .padding(.trailing, 10)
+                .frame(width: Grid.pt28, height: Grid.pt28)
+                .padding(.trailing, Grid.pt10)
             Text("Изменить электронную почту")
                 .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: 16))
+                .font(.manropeRegular(size: Grid.pt16))
             Spacer()
             chevron
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(WFColor.surfacePrimary)
-        .cornerRadius(10)
+        .cornerRadius(Grid.pt10)
     }
 
     func getDeleteAccountCell() -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Grid.pt10) {
             DagestanTrailsAsset.profileRemoveLinear.swiftUIImage
                 .resizable()
-                .frame(width: 28, height: 28)
-                .padding(.trailing, 10)
+                .frame(width: Grid.pt28, height: Grid.pt28)
+                .padding(.trailing, Grid.pt10)
             Text("Удалить аккаунт")
                 .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: 16))
+                .font(.manropeRegular(size: Grid.pt16))
             Spacer()
             chevron
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(WFColor.surfacePrimary)
-        .cornerRadius(10)
+        .cornerRadius(Grid.pt10)
         .onTapGesture {
             self.showAlert = true
         }
@@ -149,6 +149,8 @@ extension AccountManagerView {
     }
 }
 
+// MARK: - MenuItemType
+
 extension AccountManagerView {
     enum MenuItemType: CaseIterable {
         case username
@@ -158,12 +160,14 @@ extension AccountManagerView {
     }
 }
 
+// MARK: - Chevrone
+
 extension AccountManagerView {
     var chevron: some View {
         Image(systemName: "chevron.right")
             .resizable()
             .scaledToFit()
-            .frame(width: 7, height: 12)
+            .frame(width: Grid.pt7, height: Grid.pt12)
             .foregroundColor(WFColor.iconPrimary)
             .bold()
     }

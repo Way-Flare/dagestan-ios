@@ -35,8 +35,7 @@ extension ProfileEndpoint: ApiEndpoint {
         }
         
         var parameters = [
-            "Content-Type": "application/json",
-            "Authorization": "Bearer \(token)"
+            "Content-Type": "application/json"
         ]
         
         if case .patchProfile(let request) = self {
