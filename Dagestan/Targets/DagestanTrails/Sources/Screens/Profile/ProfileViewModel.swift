@@ -7,7 +7,7 @@
 //
 
 import CoreKit
-import Foundation
+import UIKit
 
 class ProfileViewModel: ObservableObject {
     @Published var offset: CGFloat = .zero
@@ -19,7 +19,6 @@ class ProfileViewModel: ObservableObject {
     
     init(service: IProfileService = ProfileService(networkService: DTNetworkService())) {
         self.service = service
-        loadProfile()
     }
     
     func loadProfile() {
@@ -37,7 +36,7 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    func patchProfile(with request: ProfileRequestDTO) {
+    func patchProfile(with request: ProfileEndpoint.PatchType) {
         Task { @MainActor [weak self] in
             guard let self else { return }
             
@@ -52,13 +51,14 @@ class ProfileViewModel: ObservableObject {
     
     func deleteProfile() {
         profileState = .loading
-
+        
         Task { @MainActor [weak self] in
             guard let self else { return }
 
             do {
                 try await service.deleteProfile()
                 profileState = .idle
+                UserDefaults.standard.setValue(false, forKey: "isAuthorized")
             } catch {
                 profileState = .failed(error.localizedDescription)
             }

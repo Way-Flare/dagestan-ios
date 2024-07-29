@@ -11,13 +11,13 @@ import Foundation
 
 enum ProfileEndpoint {
     case getProfile
-    case patchProfile(request: ProfileRequestDTO)
+    case patchProfile(request: PatchType)
     case deleteProfile
 }
 
 extension ProfileEndpoint: ApiEndpoint {
     var path: String {
-        "profile"
+        "profile/"
     }
 
     var method: CoreKit.Method {
@@ -34,22 +34,46 @@ extension ProfileEndpoint: ApiEndpoint {
             return nil
         }
         
-        return [
+        var parameters = [
             "Content-Type": "application/json",
             "Authorization": "Bearer \(token)"
         ]
+        
+        if case .patchProfile(let request) = self {
+            parameters["field-modify"] = request.value
+        }
+        
+        return parameters
     }
 
     var body: Parameters? {
-        var parameters: Parameters?
-
-        switch self {
-            case let .patchProfile(request):
-                parameters = request.toDict()
-            default:
-                parameters = nil
+        if case .patchProfile(let request) = self {
+            switch request {
+                case .name(let value):
+                    return ["username": value]
+                case .email(let value):
+                    return ["email": value]
+                case .photo(let value):
+                    return ["avatar": value]
+            }
         }
+        
+        return nil
+    }
+}
 
-        return parameters
+extension ProfileEndpoint {
+    enum PatchType: Decodable {
+        case name(value: String)
+        case email(value: String)
+        case photo(value: Data)
+        
+        var value: String {
+            switch self {
+                case .name: return "username"
+                case .email: return "email"
+                case .photo: return "avatar"
+            }
+        }
     }
 }

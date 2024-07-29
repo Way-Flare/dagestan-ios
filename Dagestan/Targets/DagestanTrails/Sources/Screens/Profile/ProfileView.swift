@@ -7,13 +7,13 @@
 //
 
 import DesignSystem
-import SwiftUI
 import NukeUI
+import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("isAuthorized") var isAuthorized = false
     @State private var showingAlert = false
-    @StateObject var viewModel = ProfileViewModel()
+    @ObservedObject var viewModel: ProfileViewModel
 
     var body: some View {
         NavigationStack {
@@ -31,6 +31,9 @@ struct ProfileView: View {
             .coordinateSpace(name: "pullToResize")
             .ignoresSafeArea()
             .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
+            .onAppear {
+                viewModel.loadProfile()
+            }
         }
     }
 
@@ -68,7 +71,7 @@ extension ProfileView {
     func getDestination(for item: MenuItemType) -> some View {
         switch item {
             case .reviews: Text("Some")
-            case .account: AccountManagerView(viewModel: viewModel)
+            case .account: AccountManagerView().environmentObject(viewModel)
             case .logout: EmptyView()
         }
     }
@@ -82,6 +85,7 @@ extension ProfileView {
         }
     }
 }
+
 // MARK: - Cells
 
 extension ProfileView {
@@ -168,25 +172,28 @@ extension ProfileView {
             .foregroundColor(WFColor.iconPrimary)
             .bold()
     }
-    
+
     var person: some View {
         Image(systemName: "person")
             .resizable()
             .frame(width: 28, height: 28)
             .foregroundStyle(WFColor.iconSoft)
     }
-    
+
     @ViewBuilder
     func getUserPhotoImageView() -> some View {
         if let url = viewModel.profileState.data?.avatar {
-            LazyImage(url: url)
-                .frame(width: 96, height: 96)
-                .clipShape(Circle())
-                .shadow(radius: 10)
-                .overlay(
-                    Circle()
-                        .strokeBorder(WFColor.surfaceSecondary, lineWidth: 2)
-                )
+            LazyImage(url: url) { state in
+                state.image?
+                    .resizable()
+                    .frame(width: 96, height: 96)
+                    .overlay(
+                        Circle()
+                            .strokeBorder(WFColor.surfaceSecondary, lineWidth: 2)
+                    )
+                    .clipShape(Circle())
+                    .shadow(radius: 10)
+            }
         } else {
             Circle()
                 .fill(WFColor.surfacePrimary)
@@ -206,8 +213,4 @@ extension ProfileView {
         case account
         case logout
     }
-}
-
-#Preview {
-    ProfileView()
 }

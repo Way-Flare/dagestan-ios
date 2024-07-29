@@ -11,7 +11,7 @@ import SwiftUI
 
 struct AccountManagerView: View {
     @State private var showAlert = false
-    @ObservedObject var viewModel: ProfileViewModel
+    @EnvironmentObject var viewModel: ProfileViewModel
 
     var body: some View {
         VStack(spacing: Grid.pt10) {

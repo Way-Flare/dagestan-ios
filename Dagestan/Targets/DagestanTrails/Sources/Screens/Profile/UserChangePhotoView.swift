@@ -115,6 +115,10 @@ extension UserChangePhotoView {
                     print("Image saved successfully")
                     DispatchQueue.main.async {
                         self.pickerImage = Image(uiImage: uiImage)
+
+                        if let data = uiImage.jpegData(compressionQuality: 0.0) {
+                            viewModel.patchProfile(with: .photo(value: data))
+                        }
                     }
                 }
             } catch {

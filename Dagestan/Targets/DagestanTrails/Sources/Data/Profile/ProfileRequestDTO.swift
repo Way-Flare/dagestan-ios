@@ -9,13 +9,11 @@
 import Foundation
 
 struct ProfileRequestDTO {
-    let avatar: String
     let username: String
     let email: String
 
     func toDict() -> [String: Any] {
         return [
-            "avatar": avatar,
             "username": username,
             "email": email
         ]

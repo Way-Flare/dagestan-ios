@@ -12,12 +12,13 @@ import CoreKit
 struct ProfileContainerView: View {
     @AppStorage("isAuthorized")
     var isAuthorized = false
+    @StateObject var viewModel = ProfileViewModel()
     let authService: AuthService
 
     var body: some View {
         VStack {
             if isAuthorized {
-                ProfileView()
+                ProfileView(viewModel: viewModel)
             } else {
                 AuthorizationView(service: authService)
             }

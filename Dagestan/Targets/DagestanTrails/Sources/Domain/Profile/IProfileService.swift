@@ -10,6 +10,6 @@ import Foundation
 
 protocol IProfileService {
     func getProfile() async throws -> Profile
-    func patchProfile(request: ProfileRequestDTO) async throws -> Profile
+    func patchProfile(request: ProfileEndpoint.PatchType) async throws -> Profile
     func deleteProfile() async throws
 }

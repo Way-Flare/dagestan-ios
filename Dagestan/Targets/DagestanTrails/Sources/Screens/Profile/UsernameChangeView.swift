@@ -49,18 +49,11 @@ extension UsernameChangeView {
             size: .l,
             type: .primary
         ) {
-            if let profile = viewModel.profileState.data {
-                let newUsername = isUserChange ? viewModel.username : profile.username
-                let newEmail = isUserChange ? profile.email : viewModel.email
-                
-                let request = ProfileRequestDTO(
-                    avatar: profile.avatar?.absoluteString ?? "",
-                    username: newUsername ?? "username",
-                    email: newEmail ?? ""
-                )
-                
-                viewModel.patchProfile(with: request)
-            }
+            viewModel.patchProfile(
+                with: isUserChange
+                      ? .name(value: viewModel.username)
+                      : .email(value: viewModel.email)
+            )
         }
     }
 
