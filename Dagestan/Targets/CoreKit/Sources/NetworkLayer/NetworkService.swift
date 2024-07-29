@@ -11,6 +11,12 @@ import Security
 public protocol NetworkServiceProtocol: AnyObject {
     func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
+        media: Data?,
+        expecting type: T.Type
+    ) async throws -> T
+
+    func execute<T: Decodable>(
+        _ endpoint: ApiEndpoint,
         expecting type: T.Type
     ) async throws -> T
 
@@ -20,11 +26,29 @@ public protocol NetworkServiceProtocol: AnyObject {
     ) async throws -> T
 }
 
-public final class DTNetworkService: NetworkServiceProtocol {
-    private let keychainService = KeychainService()
-    
-    public init() {}
+extension NetworkServiceProtocol {
+    func execute<T: Decodable>(
+        _ endpoint: ApiEndpoint,
+        media: Data? = nil,
+        expecting type: T.Type
+    ) async throws -> T {
+        return try await execute(endpoint, media: media, expecting: type)
+    }
 
+    public func execute<T: Decodable>(
+        _ endpoint: ApiEndpoint,
+        expecting type: T.Type
+    ) async throws -> T {
+        return try await execute(endpoint, media: nil, expecting: type)
+    }
+}
+
+public final class DTNetworkService: NetworkServiceProtocol {
+    private var boundary: String
+
+    public init() {
+        self.boundary = "Boundary-\(UUID().uuidString)"
+    }
     public func execute<T: Decodable>(
         _ request: URLRequest,
         expecting type: T.Type
@@ -34,9 +58,10 @@ public final class DTNetworkService: NetworkServiceProtocol {
 
     public func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
+        media: Data? = nil,
         expecting type: T.Type
     ) async throws -> T {
-        guard let urlRequest = self.request(from: endpoint) else {
+        guard let urlRequest = self.request(from: endpoint, media: media) else {
             throw RequestError.invalidURL
         }
 
@@ -63,7 +88,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
         }
     }
 
-    private func request(from endpoint: ApiEndpoint) -> URLRequest? {
+    private func request(from endpoint: ApiEndpoint, media: Data? = nil) -> URLRequest? {
         var urlRequest = URLRequest(url: endpoint.url)
 
         if let query = endpoint.query,
@@ -75,7 +100,10 @@ public final class DTNetworkService: NetworkServiceProtocol {
             urlRequest.url = urlComponents.url
         }
 
-        if let body = endpoint.body {
+        if let media {
+            urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = createBodyWithParams(using: media)
+        } else if let body = endpoint.body {
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
                 urlRequest.httpBody = jsonData
@@ -86,16 +114,33 @@ public final class DTNetworkService: NetworkServiceProtocol {
 
         // TODO: Constants.headers + enpoint.headers, когда добавим post запросы
 
-        urlRequest.timeoutInterval = 5.0
+        urlRequest.timeoutInterval = 30.0
         urlRequest.httpMethod = endpoint.method.rawValue
         urlRequest.allHTTPHeaderFields = endpoint.headers
+        if let keychainData = KeychainService.load(key: ConstantAccess.accessTokenKey),
+           let accessToken = String(data: keychainData, encoding: .utf8) {
+            urlRequest.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        }
 
         return urlRequest
     }
 
+    private func createBodyWithParams(using data: Data) -> Data {
+        var body = Data()
+        let mimetype = "image/jpg"
+        let filename = String(Int(Date().timeIntervalSince1970)) + "Img.jpg"
+        body.appendString(string: "--\(boundary)\r\n")
+        body.appendString(string: "Content-Disposition: form-data; name=\"avatar\"; filename=\"\(filename)\"\r\n")
+        body.appendString(string: "Content-Type: \(mimetype)\r\n\r\n")
+        body.append(data)
+        body.appendString(string: "\r\n")
+        body.appendString(string: "--\(boundary)--\r\n")
+        return body
+    }
+
     private func handleResponse<T: Decodable>(statusCode: Int, data: Data, decoder: JSONDecoder, expecting type: T.Type) async throws -> T {
         switch statusCode {
-            case 200...299:
+            case 200 ... 299:
                 if data.isEmpty {
                     if T.self == EmptyResponse.self, let emptyResponse = EmptyResponse() as? T {
                         return emptyResponse
@@ -109,17 +154,18 @@ public final class DTNetworkService: NetworkServiceProtocol {
                     throw RequestError.failedDecode
                 }
                 return decodedResponse
-        case 401:
-            guard let data = keychainService.load(key: ConstantAccess.refreshTokenKey),
-                  let refresh = String(data: data, encoding: .utf8) else {
+            case 401:
+                guard let data = KeychainService.load(key: ConstantAccess.refreshTokenKey),
+                      let refresh = String(data: data, encoding: .utf8)
+                else {
+                    throw RequestError.unauthorized
+                }
+
+                guard let accessTokenData = try await refreshToken(token: refresh).data(using: .utf8) else {
+                    throw RequestError.unauthorized
+                }
+                let _ = KeychainService.save(key: ConstantAccess.accessTokenKey, data: accessTokenData)
                 throw RequestError.unauthorized
-            }
-            
-            guard let accessTokenData = try await refreshToken(token: refresh).data(using: .utf8) else {
-                throw RequestError.unauthorized
-            }
-            keychainService.save(key: ConstantAccess.accessTokenKey, data: accessTokenData)
-            throw RequestError.unauthorized
             default:
                 guard let decodedError = try? decoder.decode(ServerError.self, from: data) else {
                     throw RequestError.unexpectedStatusCode
@@ -127,7 +173,14 @@ public final class DTNetworkService: NetworkServiceProtocol {
                 throw RequestError.serverError(decodedError)
         }
     }
-    
+
+    /// Функция принимает токен обновления и пытается получить новый токен доступа с использованием указанного конечного точка API для обновления токена.
+    /// В случае успеха возвращает новый токен доступа. В случае неудачи выбрасывает ошибку.
+    ///
+    /// - Parameter token: Токен обновления, используемый для запроса нового токена доступа.
+    /// - Returns: Строка, представляющая новый токен доступа.
+    /// - Throws: Ошибка типа `Error`, указывающая причины сбоя, такие как проблемы с сетью,
+    ///           ошибки декодирования или недействительные токены.
     func refreshToken(token: String) async throws -> String {
         let endpoint = RefreshTokenEndpoint.refreshToken(token: token)
         do {

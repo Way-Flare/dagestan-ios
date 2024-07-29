@@ -24,6 +24,7 @@ public enum Method: String {
     case get
     case post
     case patch
+    case delete
 }
 
 public enum Version: String {

@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol IKeychainService {
-    func save(key: String, data: Data) -> OSStatus
-    func load(key: String) -> Data?
-    func handleToken(access: String, refresh: String)
+    static func save(key: String, data: Data) -> OSStatus
+    static func load(key: String) -> Data?
+    static func handleToken(access: String, refresh: String)
 }

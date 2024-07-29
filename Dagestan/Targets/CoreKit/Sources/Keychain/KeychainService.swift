@@ -9,11 +9,10 @@
 import Foundation
 import Security
 
-
 public class KeychainService: IKeychainService {
     public init() {}
     
-    public func save(key: String, data: Data) -> OSStatus {
+    public static func save(key: String, data: Data) -> OSStatus {
         let query = [
             kSecClass as String: kSecClassGenericPassword as String,
             kSecAttrAccount as String: key,
@@ -24,7 +23,12 @@ public class KeychainService: IKeychainService {
         return SecItemAdd(query as CFDictionary, nil)
     }
 
-    public func load(key: String) -> Data? {
+    public static func load(key: String) -> Data? {
+        guard let isAuthed = UserDefaults.standard.value(forKey: "isAuthorized") as? Bool,
+              isAuthed else {
+            delete(key: key)
+            return nil
+        }
         let query = [
             kSecClass as String: kSecClassGenericPassword as String,
             kSecAttrAccount as String: key,
@@ -41,7 +45,7 @@ public class KeychainService: IKeychainService {
         }
     }
     
-    public func handleToken(access: String, refresh: String) {
+    public static func handleToken(access: String, refresh: String) {
         if let accessData = access.data(using: .utf8),
            let refreshData = refresh.data(using: .utf8) {
             let accessStatus = save(key: ConstantAccess.accessTokenKey, data: accessData)
@@ -61,4 +65,13 @@ public class KeychainService: IKeychainService {
             }
         }
     }
+    
+    private static func delete(key: String) {
+          let query = [
+              kSecClass as String: kSecClassGenericPassword as String,
+              kSecAttrAccount as String: key
+          ] as [String : Any]
+          
+          SecItemDelete(query as CFDictionary)
+      }
 }

@@ -35,11 +35,9 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
     }
     
     private var authService: AuthService
-    private let keychainService: IKeychainService
 
-    init(authService: AuthService, keychainService: IKeychainService) {
+    init(authService: AuthService) {
         self.authService = authService
-        self.keychainService = keychainService
     }
     
     @MainActor
@@ -48,7 +46,7 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
         do {
             try await Task.sleep(nanoseconds: 750_000_000)
             let token = try await authService.login(phone: phoneNumber, password: password)
-            keychainService.handleToken(access: token.access, refresh: token.refresh)
+            KeychainService.handleToken(access: token.access, refresh: token.refresh)
             withAnimation { state = .loaded(()) }
         } catch let requestError as RequestError {
             withAnimation { state = .failed(requestError.message) }
@@ -60,8 +58,8 @@ final class AuthorizationViewModel: IAuthorizationViewModel {
     private func handleTokenWithKeychain(using token: AuthToken) {
         if let accessData = token.access.data(using: .utf8),
            let refreshData = token.refresh.data(using: .utf8) {
-            let accessStatus = keychainService.save(key: ConstantAccess.accessTokenKey, data: accessData)
-            let refreshStatus = keychainService.save(key: ConstantAccess.refreshTokenKey, data: refreshData)
+            let accessStatus = KeychainService.save(key: ConstantAccess.accessTokenKey, data: accessData)
+            let refreshStatus = KeychainService.save(key: ConstantAccess.refreshTokenKey, data: refreshData)
                         
             if accessStatus == noErr {
                 print("Access token saved")
