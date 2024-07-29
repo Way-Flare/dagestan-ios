@@ -13,7 +13,7 @@ import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
-    let placeService: IPlacesService
+    private let placeService: IPlacesService
 
     private let routeLayer = "route"
     private let routeFeature = "route-feature"

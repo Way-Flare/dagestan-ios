@@ -11,7 +11,7 @@ import SwiftUI
 
 struct RouteListView<ViewModel: IRouteListViewModel>: View {
     @StateObject var viewModel: ViewModel
-    let placeService: IPlacesService
+    private let placeService: IPlacesService
 
     var body: some View {
         NavigationStack {

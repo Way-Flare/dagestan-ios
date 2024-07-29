@@ -40,7 +40,7 @@ extension RouteDetail.PlaceInRoute: Domainable {
         RoutePlaceModel(
             id: id,
             icon: mainTag.icon,
-            title: name, // тут временно так как тут какая то херня с images не пон нах и что вооб
+            title: name,
             subtitle: workTime
         )
     }
