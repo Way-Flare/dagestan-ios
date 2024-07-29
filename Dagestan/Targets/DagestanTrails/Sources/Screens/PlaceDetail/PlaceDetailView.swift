@@ -52,7 +52,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         .overlay(alignment: .bottom) { bottomContentContainerView }
         .edgesIgnoringSafeArea(.top)
         .scrollIndicators(.hidden)
-        .onAppear {
+        .onViewDidLoad {
             viewModel.loadPlaceDetail()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

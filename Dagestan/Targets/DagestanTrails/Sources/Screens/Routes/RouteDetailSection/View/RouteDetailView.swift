@@ -55,7 +55,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         .overlay(alignment: .bottom) { PlaceMakeRouteBottomView() }
         .edgesIgnoringSafeArea(.top)
         .scrollIndicators(.hidden)
-        .onAppear {
+        .onViewDidLoad {
             viewModel.loadRouteDetail()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
