@@ -22,6 +22,10 @@ public protocol NetworkServiceProtocol: AnyObject {
 
 public final class DTNetworkService: NetworkServiceProtocol {
     
+    private var boundary: String {
+        return "Boundary-\(UUID().uuidString)"
+    }
+    
     public init() {}
 
     public func execute<T: Decodable>(
@@ -63,7 +67,7 @@ public final class DTNetworkService: NetworkServiceProtocol {
         }
     }
 
-    private func request(from endpoint: ApiEndpoint) -> URLRequest? {
+    private func request(from endpoint: ApiEndpoint, media: Data? = nil) -> URLRequest? {
         var urlRequest = URLRequest(url: endpoint.url)
 
         if let query = endpoint.query,
@@ -74,13 +78,17 @@ public final class DTNetworkService: NetworkServiceProtocol {
             urlComponents.queryItems = queryItems
             urlRequest.url = urlComponents.url
         }
-
-        if let body = endpoint.body {
-            do {
-                let jsonData = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
-                urlRequest.httpBody = jsonData
-            } catch {
-                print(error.localizedDescription)
+        
+        if let media {
+            
+        } else {
+            if let body = endpoint.body {
+                do {
+                    let jsonData = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
+                    urlRequest.httpBody = jsonData
+                } catch {
+                    print(error.localizedDescription)
+                }
             }
         }
 

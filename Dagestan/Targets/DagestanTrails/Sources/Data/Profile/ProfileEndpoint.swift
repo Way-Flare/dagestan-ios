@@ -16,10 +16,6 @@ enum ProfileEndpoint {
 }
 
 extension ProfileEndpoint: ApiEndpoint {
-    private var boundary: String {
-        return "Boundary-\(UUID().uuidString)"
-    }
-
     var path: String {
         "profile"
     }
@@ -39,7 +35,7 @@ extension ProfileEndpoint: ApiEndpoint {
         }
         
         return [
-            "Content-Type": "multipart/form-data; boundary=\(boundary)",
+            "Content-Type": "application/json",
             "Authorization": "Bearer \(token)"
         ]
     }
