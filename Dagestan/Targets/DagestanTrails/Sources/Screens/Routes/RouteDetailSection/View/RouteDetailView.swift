@@ -13,56 +13,22 @@ import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
-    private let placeService: IPlacesService
+    let placeService: IPlacesService
 
     private let routeLayer = "route"
     private let routeFeature = "route-feature"
 
     var body: some View {
-        StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
-            if let images = viewModel.state.data?.images {
-                SliderView(images: images)
+        getContentView()
+            .font(.manropeRegular(size: Grid.pt14))
+            .onViewDidLoad {
+                viewModel.loadRouteDetail()
             }
-        } content: {
-            VStack(alignment: .leading, spacing: Grid.pt16) {
-                routeInfoContainerView
-                expandableTextContainerView
-
-                PlaceRouteInfoView(
-                    type: .route(
-                        title: "Места в маршруте",
-                        count: viewModel.state.data?.places.count ?? 0
-                    ),
-                    items: viewModel.state.data?.places.map {
-                        $0.asDomain()
-                    },
-                    routeService: viewModel.service,
-                    placeService: placeService
-                )
-                mapContainerView
-                PlaceSendErrorView()
-                if let route = viewModel.state.data {
-                    PlaceReviewAndRatingView(
-                        rating: route.rating,
-                        reviewsCount: route.feedbackCount
-                    )
-                }
-            }
-            .padding(.horizontal, Grid.pt12)
-            .padding(.bottom, Grid.pt82)
-        }
-        .font(.manropeRegular(size: Grid.pt14))
-        .overlay(alignment: .bottom) { PlaceMakeRouteBottomView() }
-        .edgesIgnoringSafeArea(.top)
-        .scrollIndicators(.hidden)
-        .onViewDidLoad {
-            viewModel.loadRouteDetail()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
-        .navigationBarBackButtonHidden(true)
-        .navigationTitle(viewModel.isBackdropVisible ? viewModel.state.data?.title ?? "" : "")
-        .navigationBarItems(leading: BackButton())
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
+            .navigationBarBackButtonHidden(true)
+            .navigationTitle(viewModel.isBackdropVisible ? viewModel.state.data?.title ?? "" : "")
+            .setCustomBackButton()
     }
 
     @ViewBuilder private var routeInfoContainerView: some View {
@@ -87,6 +53,49 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     .underline()
             }
             .foregroundStyle(WFColor.foregroundPrimary)
+        }
+    }
+
+    @ViewBuilder 
+    func getContentView() -> some View {
+        if let route = viewModel.state.data {
+            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
+                if let images = viewModel.state.data?.images {
+                    SliderView(images: images)
+                }
+            } content: {
+                VStack(alignment: .leading, spacing: Grid.pt16) {
+                    routeInfoContainerView
+                    expandableTextContainerView
+
+                    PlaceRouteInfoView(
+                        type: .route(
+                            title: "Места в маршруте",
+                            count: viewModel.state.data?.places.count ?? 0
+                        ),
+                        items: viewModel.state.data?.places.map {
+                            $0.asDomain()
+                        },
+                        routeService: viewModel.service,
+                        placeService: placeService
+                    )
+                    mapContainerView
+                    PlaceSendErrorView()
+                    if let route = viewModel.state.data {
+                        PlaceReviewAndRatingView(
+                            rating: route.rating,
+                            reviewsCount: route.feedbackCount
+                        )
+                    }
+                }
+                .padding(.horizontal, Grid.pt12)
+                .padding(.bottom, Grid.pt82)
+            }
+            .overlay(alignment: .bottom) { PlaceMakeRouteBottomView().isHidden(viewModel.state.isLoading) }
+            .edgesIgnoringSafeArea(.top)
+            .scrollIndicators(.hidden)
+        } else {
+            ShimmerRouteDetailView()
         }
     }
 

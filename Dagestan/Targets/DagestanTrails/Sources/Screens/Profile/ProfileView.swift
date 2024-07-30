@@ -41,9 +41,18 @@ struct ProfileView: View {
         VStack(spacing: Grid.pt8) {
             getUserPhotoImageView()
 
-            Text(viewModel.profileState.data?.username ?? "[username]")
-                .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeSemibold(size: Grid.pt18))
+            if let username = viewModel.profileState.data?.username {
+                Text(username)
+                    .foregroundColor(WFColor.foregroundPrimary)
+                    .font(.manropeSemibold(size: Grid.pt18))
+            } else {
+                Rectangle()
+                    .fill()
+                    .frame(width: 62, height: 24)
+                    .skeleton()
+                    .cornerStyle(.constant(8))
+                    
+            }
         }
         .offset(y: -Grid.pt65)
     }
@@ -182,27 +191,31 @@ extension ProfileView {
 
     @ViewBuilder
     func getUserPhotoImageView() -> some View {
-        if let url = viewModel.profileState.data?.avatar {
-            LazyImage(url: url) { state in
-                state.image?
-                    .resizable()
+        if viewModel.profileState.isLoading {
+            ShimmerCircleView()
+        } else {
+            if let url = viewModel.profileState.data?.avatar {
+                LazyImage(url: url) { state in
+                    state.image?
+                        .resizable()
+                        .frame(width: Grid.pt96, height: Grid.pt96)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
+                        )
+                        .clipShape(Circle())
+                        .shadow(radius: Grid.pt10)
+                }
+            } else {
+                Circle()
+                    .fill(WFColor.surfacePrimary)
                     .frame(width: Grid.pt96, height: Grid.pt96)
+                    .overlay(person)
                     .overlay(
                         Circle()
                             .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
                     )
-                    .clipShape(Circle())
-                    .shadow(radius: Grid.pt10)
             }
-        } else {
-            Circle()
-                .fill(WFColor.surfacePrimary)
-                .frame(width: Grid.pt96, height: Grid.pt96)
-                .overlay(person)
-                .overlay(
-                    Circle()
-                        .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
-                )
         }
     }
 }

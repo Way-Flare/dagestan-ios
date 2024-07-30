@@ -10,7 +10,7 @@ import SwiftUI
 
 protocol IRouteListViewModel: ObservableObject {
     var path: NavigationPath { get set }
-    var routes: [Route] { get }
+    var state: LoadingState<[Route]> { get }
     var service: IRouteService { get }
     
     func fetchRoutes() async
@@ -18,7 +18,7 @@ protocol IRouteListViewModel: ObservableObject {
 
 class RouteListViewModel: IRouteListViewModel {
     @Published var path = NavigationPath()
-    @Published var routes: [Route] = []
+    @Published var state: LoadingState<[Route]> = .idle
 
     let service: IRouteService
 
@@ -28,10 +28,13 @@ class RouteListViewModel: IRouteListViewModel {
 
     @MainActor
     func fetchRoutes() async {
+        state = .loading
+        
         do {
             let fetchedRoutes = try await service.getAllRoutes()
-            self.routes = fetchedRoutes
+            state = .loaded(fetchedRoutes)
         } catch {
+            state = .failed(error.localizedDescription)
             print("Ошибка при получении данных: \(error)")
         }
     }

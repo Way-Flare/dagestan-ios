@@ -43,6 +43,7 @@ struct RouteCardView: View {
         VStack(alignment: .leading, spacing: Grid.pt6) {
             HStack(spacing: Grid.pt12) {
                 titleContainerView
+                Spacer()
                 ratingContainerView
             }
             
