@@ -32,7 +32,9 @@ struct ProfileView: View {
             .ignoresSafeArea()
             .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
             .onAppear {
-                viewModel.loadProfile()
+                if viewModel.profileState.data == nil {
+                    viewModel.loadProfile()
+                }
             }
         }
     }
@@ -50,8 +52,16 @@ struct ProfileView: View {
                     .fill()
                     .frame(width: 62, height: 24)
                     .skeleton()
-                    .cornerStyle(.constant(8))
-                    
+                    .cornerStyle(.constant(Grid.pt8))
+                    .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
+                        Button("Да", role: .cancel) {
+                            viewModel.loadProfile()
+                        }
+                        Button("Нет", role: .destructive) {}
+                    }  message: {
+                        Text("Повторить попытку?")
+                    }
+
             }
         }
         .offset(y: -Grid.pt65)
@@ -69,7 +79,7 @@ struct ProfileView: View {
         .padding(.top, Grid.pt79)
         .padding(.horizontal, Grid.pt12)
         .background(WFColor.surfaceSecondary)
-        .cornerRadius(Grid.pt12)
+        .cornerRadius(Grid.pt24)
     }
 }
 

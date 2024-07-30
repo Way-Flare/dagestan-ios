@@ -9,9 +9,11 @@
 import CoreKit
 import UIKit
 
-class ProfileViewModel: ObservableObject {
+// TODO: Запихать под протокол
+final class ProfileViewModel: ObservableObject {
     @Published var offset: CGFloat = .zero
     @Published var profileState: LoadingState<Profile> = .idle
+    @Published var isShowAlert: Bool = false
     @Published var username = ""
     @Published var email = ""
     
@@ -23,7 +25,8 @@ class ProfileViewModel: ObservableObject {
     
     func loadProfile() {
         profileState = .loading
-        
+        isShowAlert = false
+
         Task { @MainActor [weak self] in
             guard let self else { return }
 
@@ -32,6 +35,7 @@ class ProfileViewModel: ObservableObject {
                 profileState = .loaded(profile)
             } catch {
                 profileState = .failed(error.localizedDescription)
+                isShowAlert = true
             }
         }
     }
@@ -51,7 +55,7 @@ class ProfileViewModel: ObservableObject {
     
     func deleteProfile() {
         profileState = .loading
-        
+
         Task { @MainActor [weak self] in
             guard let self else { return }
 

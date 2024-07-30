@@ -10,6 +10,8 @@ protocol IMapViewModel: ObservableObject {
     var filteredPlaces: [Place] { get }
     var selectedPlace: Place? { get set }
     var isPlaceViewVisible: Bool { get set }
+    var isShowAlert: Bool { get set }
+    var isLoading: Bool { get set }
     var selectedTags: Set<TagPlace> { get set }
     var service: IPlacesService { get }
 
@@ -31,6 +33,8 @@ final class MapViewModel: IMapViewModel {
         }
     }
 
+    @Published var isShowAlert: Bool = false
+    @Published var isLoading: Bool = false
     @Published var filteredPlaces: [Place] = []
     @Published var selectedPlace: Place?
     @Published var isPlaceViewVisible = true
@@ -64,13 +68,18 @@ final class MapViewModel: IMapViewModel {
     func loadPlaces() {
         Task { @MainActor [weak self] in
             guard let self else { return }
+            isShowAlert = false
+            isLoading = true
 
             do {
                 let places = try await service.getAllPlaces()
                 self.places = places
-                print(places)
+                updateFilteredPlaces()
+                isLoading = false
             } catch {
                 print("Failed to load landmarks: \(error.localizedDescription)")
+                isShowAlert = true
+                isLoading = false
             }
         }
     }
@@ -103,8 +112,6 @@ final class MapViewModel: IMapViewModel {
                 !selectedTags.isDisjoint(with: place.tags ?? [])
             }
         }
-
-        filteredPlaces.forEach { print($0.name) }
     }
 
     func toggleTag(_ tag: TagPlace) {

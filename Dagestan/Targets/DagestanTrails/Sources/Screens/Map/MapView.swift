@@ -38,6 +38,10 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         return true
                     }
                     .onChange(of: viewModel.filteredPlaces) { _ in updatePlaces(proxy) }
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    }
                 }
                 .overlay(alignment: .bottom) { bottomContentContainerView }
                 .overlay(alignment: .trailing) {
@@ -51,6 +55,13 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     .padding(.trailing, Grid.pt12)
                 }
                 .edgesIgnoringSafeArea(.top)
+                .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
+                    Button("Да", role: .cancel) {
+                        viewModel.loadPlaces()
+                    }
+                }  message: {
+                    Text("Повторить попытку?")
+                }
             }
         }
     }
