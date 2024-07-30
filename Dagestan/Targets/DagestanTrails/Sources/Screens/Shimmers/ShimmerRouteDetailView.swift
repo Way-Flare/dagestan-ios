@@ -1,5 +1,5 @@
 //
-//  ShimmerDetailView.swift
+//  ShimmerRouteDetailView.swift
 //  DagestanTrails
 //
 //  Created by Рассказов Глеб on 30.07.2024.
