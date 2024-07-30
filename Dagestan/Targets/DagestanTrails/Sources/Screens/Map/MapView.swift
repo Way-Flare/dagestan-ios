@@ -68,15 +68,20 @@ struct MapView<ViewModel: IMapViewModel>: View {
 
     private var bottomContentContainerView: some View {
         Group {
-            if viewModel.selectedPlace == nil  {
+            if viewModel.selectedPlace == nil {
                 tagsContainerView
             } else {
                 PlaceView(
                     place: $viewModel.selectedPlace,
+                    isLoading: viewModel.favoriteState.isLoading,
                     placeService: viewModel.service,
                     routeService: routeService
-                )
-                    .padding(.bottom, Grid.pt8)
+                ) {
+                    if let id = viewModel.selectedPlace?.id {
+                        viewModel.setFavorite(by: id)
+                    }
+                }
+                .padding(.bottom, Grid.pt8)
             }
         }
     }

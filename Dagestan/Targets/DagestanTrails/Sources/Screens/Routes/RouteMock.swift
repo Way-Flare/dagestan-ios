@@ -79,7 +79,8 @@ final class MockRouteService: IRouteService {
                     images: Place.mock.images,
                     workTime: "10:00 - 20:00",
                     mainTag: TagPlace.food,
-                    sequence: 1
+                    sequence: 1,
+                    isFavorite: false
                 ),
                 RouteDetail.PlaceInRoute(
                     id: 2, 
@@ -87,13 +88,15 @@ final class MockRouteService: IRouteService {
                     images: Place.mock.images,
                     workTime: "13:00 - 20:00",
                     mainTag: TagPlace.landmark,
-                    sequence: 2
+                    sequence: 2,
+                    isFavorite: true
                 )
             ],
             distance: 45.32,
             travelTime: "3д 12ч",
             feedbackCount: 0,
-            rating: 5.0
+            rating: 5.0,
+            isFavorite: true
         )
     }
     // swiftlint: enable line_length

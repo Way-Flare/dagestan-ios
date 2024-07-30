@@ -14,6 +14,7 @@ import MapboxMaps
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
     let placeService: IPlacesService
+    let onFavoriteAction: (() -> Void)?
 
     private let routeLayer = "route"
     private let routeFeature = "route-feature"
@@ -75,7 +76,8 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                         ),
                         items: route.places.map { $0.asDomain() },
                         routeService: viewModel.service,
-                        placeService: placeService
+                        placeService: placeService,
+                        onFavoriteAction: onFavoriteAction
                     )
                     mapContainerView
                     PlaceSendErrorView()
@@ -89,7 +91,11 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                 .padding(.horizontal, Grid.pt12)
                 .padding(.bottom, Grid.pt82)
             }
-            .overlay(alignment: .bottom) { PlaceMakeRouteBottomView().isHidden(viewModel.state.isLoading) }
+            .overlay(alignment: .bottom) {
+                if let isFavorite = viewModel.state.data?.isFavorite {
+                    PlaceMakeRouteBottomView(isFavorite: isFavorite).isHidden(viewModel.state.isLoading)
+                }
+            }
             .edgesIgnoringSafeArea(.top)
             .scrollIndicators(.hidden)
         } else if viewModel.state.isError {

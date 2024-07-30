@@ -20,6 +20,7 @@ struct RouteDetailDTO: Decodable {
     let travelTime: String
     let feedbackCount: Int
     let rating: Double
+    let isFavorite: Bool
 }
 
 extension RouteDetailDTO {
@@ -30,6 +31,7 @@ extension RouteDetailDTO {
         let workTime: String?
         let mainTag: TagPlaceDTO
         let sequence: Int
+        let isFavorite: Bool
     }
 }
 
@@ -49,7 +51,8 @@ extension RouteDetailDTO: Domainable {
             distance: distance,
             travelTime: travelTime,
             feedbackCount: feedbackCount,
-            rating: rating
+            rating: rating,
+            isFavorite: isFavorite
         )
     }
 }
@@ -64,7 +67,8 @@ extension RouteDetailDTO.PlaceInRouteDTO: Domainable {
             images: images.compactMap { $0.asDomain() },
             workTime: workTime,
             mainTag: mainTag.asDomain(),
-            sequence: sequence
+            sequence: sequence,
+            isFavorite: isFavorite
         )
     }
 }

@@ -15,6 +15,7 @@ import MapboxMaps
 struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
     let routeService: IRouteService
+    let onFavoriteAction: (() -> Void)?
 
     var body: some View {
         getContentView()
@@ -62,18 +63,21 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
 //        }
 //    }
 
+    @ViewBuilder
     private var bottomContentContainerView: some View {
-        VStack(spacing: .zero) {
-            if viewModel.isVisibleSnackbar {
-                WFSnackbar(status: .success(text: "Скопировано!"))
-                    .onTapGesture {
-                        withAnimation(.interactiveSpring) {
-                            viewModel.isVisibleSnackbar = false
+        if let isFavorite = viewModel.state.data?.isFavorite {
+            VStack(spacing: .zero) {
+                if viewModel.isVisibleSnackbar {
+                    WFSnackbar(status: .success(text: "Скопировано!"))
+                        .onTapGesture {
+                            withAnimation(.interactiveSpring) {
+                                viewModel.isVisibleSnackbar = false
+                            }
                         }
-                    }
-                    .padding(Grid.pt8)
+                        .padding(Grid.pt8)
+                }
+                PlaceMakeRouteBottomView(isFavorite: isFavorite, onFavoriteAction: onFavoriteAction)
             }
-            PlaceMakeRouteBottomView()
         }
     }
 
@@ -95,7 +99,8 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                             type: .place(title: "Это место в маршрутах"),
                             items: place.routes.map { $0.asDomain() },
                             routeService: routeService,
-                            placeService: viewModel.service
+                            placeService: viewModel.service,
+                            onFavoriteAction: onFavoriteAction
                         )
                     }
                     mapContainerView

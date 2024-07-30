@@ -15,28 +15,28 @@ struct RoutePlacesView: View {
     let items: [RoutePlaceModel]
     let routeService: IRouteService?
     let placeService: IPlacesService?
-
-    init(items: [RoutePlaceModel], isRoutes: Bool = true, routeService: IRouteService? = nil, placeService: IPlacesService? = nil) {
-        self.items = items
-        self.isRoutes = isRoutes
-        self.routeService = routeService
-        self.placeService = placeService
-    }
+    let onFavoriteAction: (() -> Void)?
     
     @ViewBuilder
     private func view(for item: RoutePlaceModel) -> some View {
         if isRoutes {
             if let routeService, let placeService {
                 PlaceDetailView(
-                    viewModel: PlaceDetailViewModel(service: placeService, placeId: item.id),
-                    routeService: routeService
+                    viewModel: PlaceDetailViewModel(
+                        service: placeService,
+                        placeId: item.id,
+                        isFavorite: item.isFavorite
+                    ),
+                    routeService: routeService,
+                    onFavoriteAction: onFavoriteAction
                 )
             }
         } else {
             if let routeService, let placeService {
                 RouteDetailView(
                     viewModel: RouteDetailViewModel(service: routeService, id: item.id),
-                    placeService: placeService
+                    placeService: placeService,
+                    onFavoriteAction: onFavoriteAction
                 )
             }
         }
@@ -144,8 +144,4 @@ struct RoutePlacesView: View {
             }
         }
     }
-}
-
-#Preview {
-    RoutePlacesView(items: PlaceDetail.mock().routes.map { $0.asDomain() }, isRoutes: false)
 }

@@ -12,6 +12,7 @@ import SwiftUI
 @MainActor
 struct RouteCardView: View {
     let route: Route
+    let onFavoriteAction: (() -> Void)?
     
     var body: some View {
         VStack(alignment: .leading) {

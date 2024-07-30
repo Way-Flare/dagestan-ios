@@ -80,7 +80,10 @@ private extension ContentView {
             case .places: MapView(viewModel: mapViewModel, routeService: routeViewModel.service)
             case .profile: ProfileContainerView(authService: authService)
             case .favorite: FavoriteListView()
-            case .routes: RouteListView(viewModel: routeViewModel, placeService: mapViewModel.service)
+            case .routes:
+                RouteListView(viewModel: routeViewModel, placeService: mapViewModel.service) {
+                    print("ROUTE FAVORITE")
+                }
         }
     }
 }

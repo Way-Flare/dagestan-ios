@@ -14,6 +14,7 @@ protocol IMapViewModel: ObservableObject {
     var isLoading: Bool { get set }
     var selectedTags: Set<TagPlace> { get set }
     var service: IPlacesService { get }
+    var favoriteState: LoadingState<Bool> { get set }
 
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat)
     func loadPlaces()
@@ -23,6 +24,7 @@ protocol IMapViewModel: ObservableObject {
     func toggleTag(_ tag: TagPlace)
     func moveToDagestan()
     func placesAsGeoJSON() -> Data?
+    func setFavorite(by id: Int)
 }
 
 final class MapViewModel: IMapViewModel {
@@ -39,6 +41,7 @@ final class MapViewModel: IMapViewModel {
     @Published var selectedPlace: Place?
     @Published var isPlaceViewVisible = true
     @Published var selectedTags: Set<TagPlace> = []
+    @Published var favoriteState: LoadingState<Bool> = .idle
 
     let service: IPlacesService
     private var task: Task<Void, Error>?
@@ -103,6 +106,34 @@ final class MapViewModel: IMapViewModel {
             selectedPlace = filteredPlaces.first { $0.id == id }
         }
     }
+    
+    func setFavorite(by id: Int) {
+        favoriteState = .loading
+        
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let status = try await service.setFavorite(by: id)
+                self.updateFavoriteStatus(for: id, to: status)
+                favoriteState = .loaded(status)
+            } catch {
+                favoriteState = .failed(error.localizedDescription)
+                print("Failed to set favorite: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func updateFavoriteStatus(for id: Int, to status: Bool) {
+        if let index = places.firstIndex(where: { $0.id == id }) {
+            var updatedPlace = places[index]
+            updatedPlace = updatedPlace.withFavoriteStatus(status)
+            places[index] = updatedPlace
+
+            if selectedPlace?.id == id {
+                selectedPlace = updatedPlace
+            }
+        }
+    }
 
     func updateFilteredPlaces() {
         if selectedTags.isEmpty {
@@ -146,7 +177,7 @@ extension MapViewModel {
             let properties: [String: Any?] = [
                 "id": place.id,
                 "place_name": place.name,
-                "description": place.shortDescription,
+                "description": place.shortDescription
             ]
 
             return [

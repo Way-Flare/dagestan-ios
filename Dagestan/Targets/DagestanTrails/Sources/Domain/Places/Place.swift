@@ -5,8 +5,18 @@
 //  Created by Рассказов Глеб on 19.04.2024.
 //
 
-import CoreLocation
 import CoreKit
+import CoreLocation
+
+//
+//  Place.swift
+//  DagestanTrails
+//
+//  Created by Рассказов Глеб on 19.04.2024.
+//
+
+import CoreKit
+import CoreLocation
 
 public struct Place: Identifiable {
     public let id: Int
@@ -18,7 +28,8 @@ public struct Place: Identifiable {
     public let workTime: String?
     public let tags: [TagPlace]?
     public let feedbackCount: Int?
-    
+    public let isFavorite: Bool
+
     public init(
         id: Int,
         coordinate: CLLocationCoordinate2D,
@@ -28,7 +39,8 @@ public struct Place: Identifiable {
         rating: Double? = nil,
         workTime: String? = nil,
         tags: [TagPlace]? = nil,
-        feedbackCount: Int?
+        feedbackCount: Int?,
+        isFavorite: Bool
     ) {
         self.id = id
         self.coordinate = coordinate
@@ -39,8 +51,24 @@ public struct Place: Identifiable {
         self.workTime = workTime
         self.tags = tags
         self.feedbackCount = feedbackCount
+        self.isFavorite = isFavorite
     }
-    
+
+    func withFavoriteStatus(_ status: Bool) -> Place {
+        return Place(
+            id: id,
+            coordinate: coordinate,
+            name: name,
+            shortDescription: shortDescription,
+            images: images,
+            rating: rating,
+            workTime: workTime,
+            tags: tags,
+            feedbackCount: feedbackCount,
+            isFavorite: status
+        )
+    }
+
     static let mock: Place = .init(
         id: 19245,
         coordinate: .init(latitude: 42.9849, longitude: 47.5047),
@@ -55,13 +83,14 @@ public struct Place: Identifiable {
         rating: 4.85,
         workTime: "10:00 - 20:00",
         tags: [.landmark],
-        feedbackCount: 3
+        feedbackCount: 3,
+        isFavorite: true
     )
 }
 
 extension Place: Equatable {
     public static func == (lhs: Place, rhs: Place) -> Bool {
         return lhs.id == rhs.id && lhs.coordinate.latitude == rhs.coordinate.latitude &&
-               lhs.coordinate.longitude == rhs.coordinate.longitude && lhs.name == rhs.name
+            lhs.coordinate.longitude == rhs.coordinate.longitude && lhs.name == rhs.name
     }
 }

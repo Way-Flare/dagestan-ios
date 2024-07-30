@@ -45,4 +45,21 @@ final class PlacesService: IPlacesService {
             throw error
         }
     }
+    
+    func setFavorite(by id: Int) async throws -> Bool {
+        let endpoint = PlacesEndpoint.favorite(id: id)
+        
+        do {
+            let statusCode = try await networkService.execute(endpoint)
+            if statusCode == 201 {
+                return true
+            } else if statusCode == 204 {
+                return false
+            } else {
+                throw RequestError.unknown
+            }
+        } catch {
+            throw error
+        }
+    }
 }

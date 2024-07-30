@@ -12,6 +12,7 @@ import SwiftUI
 struct RouteListView<ViewModel: IRouteListViewModel>: View {
     @StateObject var viewModel: ViewModel
     let placeService: IPlacesService
+    let onFavoriteAction: (() -> Void)?
 
     var body: some View {
         NavigationStack {
@@ -36,10 +37,11 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                                     service: viewModel.service,
                                     id: route.id
                                 ),
-                                placeService: placeService
+                                placeService: placeService,
+                                onFavoriteAction: onFavoriteAction
                             )
                         ) {
-                            RouteCardView(route: route)
+                            RouteCardView(route: route, onFavoriteAction)
                         }
                     }
                 }
