@@ -13,7 +13,7 @@ protocol IRouteListViewModel: ObservableObject {
     var state: LoadingState<[Route]> { get }
     var service: IRouteService { get }
     
-    func fetchRoutes() async
+    func fetchRoutes()
 }
 
 class RouteListViewModel: IRouteListViewModel {
@@ -27,15 +27,18 @@ class RouteListViewModel: IRouteListViewModel {
     }
 
     @MainActor
-    func fetchRoutes() async {
+    func fetchRoutes() {
         state = .loading
-        
-        do {
-            let fetchedRoutes = try await service.getAllRoutes()
-            state = .loaded(fetchedRoutes)
-        } catch {
-            state = .failed(error.localizedDescription)
-            print("Ошибка при получении данных: \(error)")
+
+        Task {
+            do {
+                let fetchedRoutes = try await service.getAllRoutes()
+                state = .loaded(fetchedRoutes)
+            } catch {
+                state = .failed(error.localizedDescription)
+                print("Ошибка при получении данных: \(error)")
+            }
         }
     }
+
 }

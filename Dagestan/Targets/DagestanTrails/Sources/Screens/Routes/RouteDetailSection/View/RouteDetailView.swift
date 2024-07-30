@@ -71,11 +71,9 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     PlaceRouteInfoView(
                         type: .route(
                             title: "Места в маршруте",
-                            count: viewModel.state.data?.places.count ?? 0
+                            count: route.places.count
                         ),
-                        items: viewModel.state.data?.places.map {
-                            $0.asDomain()
-                        },
+                        items: route.places.map { $0.asDomain() },
                         routeService: viewModel.service,
                         placeService: placeService
                     )
@@ -94,6 +92,10 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             .overlay(alignment: .bottom) { PlaceMakeRouteBottomView().isHidden(viewModel.state.isLoading) }
             .edgesIgnoringSafeArea(.top)
             .scrollIndicators(.hidden)
+        } else if viewModel.state.isError {
+            FailedLoadingView {
+                viewModel.loadRouteDetail()
+            }
         } else {
             ShimmerRouteDetailView()
         }

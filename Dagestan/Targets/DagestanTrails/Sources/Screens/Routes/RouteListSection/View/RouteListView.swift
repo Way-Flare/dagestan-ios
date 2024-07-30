@@ -19,8 +19,8 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                 .scrollIndicators(.hidden)
                 .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
                 .navigationTitle("Маршруты")
-                .task {
-                    await viewModel.fetchRoutes()
+                .onViewDidLoad {
+                    viewModel.fetchRoutes()
                 }
         }
     }
@@ -45,6 +45,10 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal, Grid.pt12)
+            }
+        } else if viewModel.state.isError {
+            FailedLoadingView {
+                viewModel.fetchRoutes()
             }
         } else {
             ShimmerRouteListView()

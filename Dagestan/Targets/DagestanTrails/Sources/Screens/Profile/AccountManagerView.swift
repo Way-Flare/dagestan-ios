@@ -144,7 +144,7 @@ extension AccountManagerView {
             primaryButton: .destructive(Text("Удалить")) {
                 viewModel.deleteProfile()
             },
-            secondaryButton: .cancel()
+            secondaryButton: .cancel(Text("Нет"))
         )
     }
 }

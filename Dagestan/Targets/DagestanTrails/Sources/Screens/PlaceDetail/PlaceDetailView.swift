@@ -19,7 +19,11 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     var body: some View {
         getContentView()
             .font(.manropeRegular(size: Grid.pt14))
-            .overlay(alignment: .bottom) { bottomContentContainerView.isHidden(viewModel.state.isLoading) }
+            .overlay(alignment: .bottom) {
+                if  viewModel.state.data != nil {
+                    bottomContentContainerView.isHidden(viewModel.state.isLoading)
+                }
+            }
             .edgesIgnoringSafeArea(.top)
             .scrollIndicators(.hidden)
             .onViewDidLoad {
@@ -81,30 +85,32 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                 }
             } content: {
                 VStack(alignment: .leading, spacing: Grid.pt16) {
-                    PlaceDetailInfoView(place: viewModel.state.data, formatter: viewModel.formatter)
+                    PlaceDetailInfoView(place: place, formatter: viewModel.formatter)
                     PlaceContactInformationView(
                         isVisible: $viewModel.isVisibleSnackbar,
-                        place: viewModel.state.data
+                        place: place
                     )
                     if viewModel.state.data?.routes.count ?? 0 > 0 {
                         PlaceRouteInfoView(
                             type: .place(title: "Это место в маршрутах"),
-                            items: viewModel.state.data?.routes.map { $0.asDomain() },
+                            items: place.routes.map { $0.asDomain() },
                             routeService: routeService,
                             placeService: viewModel.service
                         )
                     }
                     mapContainerView
                     PlaceSendErrorView()
-                    if let place = viewModel.state.data {
-                        PlaceReviewAndRatingView(
-                            rating: place.rating,
-                            reviewsCount: place.feedbackCount
-                        )
-                    }
+                    PlaceReviewAndRatingView(
+                        rating: place.rating,
+                        reviewsCount: place.feedbackCount
+                    )
                 }
                 .padding(.horizontal, Grid.pt12)
                 .padding(.bottom, Grid.pt82)
+            }
+        } else if viewModel.state.isError {
+            FailedLoadingView {
+                viewModel.loadPlaceDetail()
             }
         } else {
             ShimmerPlaceDetailView()
