@@ -8,9 +8,9 @@
 import CoreKit
 
 final class AuthService: IAuthService {
-    private let networkService: NetworkServiceProtocol
+    private let networkService: INetworkService
 
-    init(networkService: NetworkServiceProtocol) {
+    init(networkService: INetworkService) {
         self.networkService = networkService
     }
 

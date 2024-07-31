@@ -19,47 +19,8 @@ final class MockRouteService: IRouteService {
                 distance: 10,
                 travelTime: "1 hour",
                 feedbackCount: 10,
-                rating: 4.5
-            ),
-            Route(
-                id: 2,
-                title: "Route 2",
-                images: [],
-                shortDescription: "Short description",
-                distance: 10,
-                travelTime: "1 hour",
-                feedbackCount: 10,
-                rating: 4.5
-            ),
-            Route(
-                id: 3,
-                title: "Route 3",
-                images: [],
-                shortDescription: "Short description",
-                distance: 10,
-                travelTime: "1 hour",
-                feedbackCount: 10,
-                rating: 4.5
-            ),
-            Route(
-                id: 4,
-                title: "Route 4",
-                images: [],
-                shortDescription: "Short description",
-                distance: 10,
-                travelTime: "1 hour",
-                feedbackCount: 10,
-                rating: 4.5
-            ),
-            Route(
-                id: 5,
-                title: "Route 5",
-                images: [],
-                shortDescription: "Short description",
-                distance: 10,
-                travelTime: "1 hour",
-                feedbackCount: 10,
-                rating: 4.5
+                rating: 4.5,
+                isFavorite: true
             )
         ]
     }

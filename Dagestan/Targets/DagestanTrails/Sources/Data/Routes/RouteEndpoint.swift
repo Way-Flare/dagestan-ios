@@ -15,9 +15,9 @@ public enum RouteEndpoint: ApiEndpoint {
     public var path: String {
         switch self {
             case .allRoutes:
-                "routes/all"
+                "routes/all/"
             case let .route(id):
-                "routes/\(id)"
+                "routes/\(id)/"
         }
     }
     

@@ -74,7 +74,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                 PlaceView(
                     place: $viewModel.selectedPlace,
                     isLoading: viewModel.favoriteState.isLoading,
-                    placeService: viewModel.service,
+                    placeService: viewModel.placeService,
                     routeService: routeService
                 ) {
                     if let id = viewModel.selectedPlace?.id {

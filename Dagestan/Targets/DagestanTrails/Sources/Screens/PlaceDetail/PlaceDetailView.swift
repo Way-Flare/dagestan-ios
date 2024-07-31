@@ -100,7 +100,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                             items: place.routes.map { $0.asDomain() },
                             routeService: routeService,
                             placeService: viewModel.service,
-                            onFavoriteAction: onFavoriteAction
+                            onFavoriteAction: onFavoriteAction // тут баг если будет ебейшая иерархия place/route пофикшу позже
                         )
                     }
                     mapContainerView

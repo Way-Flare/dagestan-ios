@@ -54,7 +54,7 @@ public struct Place: Identifiable {
         self.isFavorite = isFavorite
     }
 
-    func withFavoriteStatus(_ status: Bool) -> Place {
+    func withFavoriteStatus(to status: Bool) -> Place {
         return Place(
             id: id,
             coordinate: coordinate,

@@ -80,14 +80,14 @@ struct PlaceView: View {
         HStack(spacing: Grid.pt8) {
             Spacer()
             WFButtonIcon(
-                icon: place?.isFavorite == true ? Image(systemName: "heart.fill") : Image(systemName: "heart"),
+                icon: place?.isFavorite == true ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
                 size: .l,
                 state: isLoading ? .loading : .default,
                 type: .favorite
             ) {
                 onFavoriteAction?()
             }
-            .foregroundColor(place?.isFavorite == true ? .red : .white)
+            .foregroundColor(place?.isFavorite == true ? WFColor.errorSoft : WFColor.iconOnAccent)
             WFButtonIcon(
                 icon: DagestanTrailsAsset.close.swiftUIImage,
                 size: .l,
@@ -137,7 +137,7 @@ extension PlaceView {
         }
     }
 
-    @ViewBuilder private var operatingHoursView: some View {
+    private var operatingHoursView: some View {
         Group {
             Text(formatter.operatingStatus)
                 .foregroundColor(formatter.operatingStatusColor)

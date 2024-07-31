@@ -12,7 +12,6 @@ import SwiftUI
 struct RouteListView<ViewModel: IRouteListViewModel>: View {
     @StateObject var viewModel: ViewModel
     let placeService: IPlacesService
-    let onFavoriteAction: (() -> Void)?
 
     var body: some View {
         NavigationStack {
@@ -20,35 +19,39 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                 .scrollIndicators(.hidden)
                 .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
                 .navigationTitle("Маршруты")
-                .onViewDidLoad {
+                .onAppear {
                     viewModel.fetchRoutes()
                 }
         }
     }
 
     @ViewBuilder func getContentView() -> some View {
-        if let routes = viewModel.state.data {
+        if let routes = viewModel.routeState.data {
             ScrollView {
                 LazyVStack(spacing: Grid.pt12) {
                     ForEach(routes, id: \.id) { route in
                         NavigationLink(
                             destination: RouteDetailView(
                                 viewModel: RouteDetailViewModel(
-                                    service: viewModel.service,
+                                    service: viewModel.routeService,
                                     id: route.id
                                 ),
                                 placeService: placeService,
-                                onFavoriteAction: onFavoriteAction
+                                onFavoriteAction: {
+                                    viewModel.setFavorite(by: route.id)
+                                }
                             )
                         ) {
-                            RouteCardView(route: route, onFavoriteAction: onFavoriteAction)
+                            RouteCardView(route: route, isLoading: viewModel.favoriteState.isLoading) {
+                                viewModel.setFavorite(by: route.id)
+                            }
                         }
                     }
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal, Grid.pt12)
             }
-        } else if viewModel.state.isError {
+        } else if viewModel.routeState.isError {
             FailedLoadingView {
                 viewModel.fetchRoutes()
             }

@@ -10,9 +10,9 @@ import CoreKit
 import Foundation
 
 class ProfileService: IProfileService {
-    private let networkService: NetworkServiceProtocol
+    private let networkService: INetworkService
 
-    init(networkService: NetworkServiceProtocol) {
+    init(networkService: INetworkService) {
         self.networkService = networkService
     }
 

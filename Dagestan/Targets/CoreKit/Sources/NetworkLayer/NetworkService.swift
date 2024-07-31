@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-public protocol NetworkServiceProtocol: AnyObject {
+public protocol INetworkService: AnyObject {
     func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
         media: Data?,
@@ -28,7 +28,7 @@ public protocol NetworkServiceProtocol: AnyObject {
     func execute(_ endpoint: ApiEndpoint) async throws -> Int
 }
 
-extension NetworkServiceProtocol {
+extension INetworkService {
     func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
         media: Data? = nil,
@@ -45,7 +45,7 @@ extension NetworkServiceProtocol {
     }
 }
 
-public final class DTNetworkService: NetworkServiceProtocol {
+public final class DTNetworkService: INetworkService {
     private var boundary: String
 
     public init() {

@@ -10,9 +10,9 @@ import CoreKit
 
 /// Сервис для работы с точками/местами
 final class PlacesService: IPlacesService {
-    private let networkService: NetworkServiceProtocol
+    private let networkService: INetworkService
     
-    init(networkService: NetworkServiceProtocol) {
+    init(networkService: INetworkService) {
         self.networkService = networkService
     }
     

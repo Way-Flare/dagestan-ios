@@ -10,35 +10,68 @@ import SwiftUI
 
 protocol IRouteListViewModel: ObservableObject {
     var path: NavigationPath { get set }
-    var state: LoadingState<[Route]> { get }
-    var service: IRouteService { get }
+    var routeState: LoadingState<[Route]> { get }
+    var favoriteState: LoadingState<Bool> { get }
+    var routeService: IRouteService { get }
     
     func fetchRoutes()
+    func setFavorite(by id: Int)
 }
 
 class RouteListViewModel: IRouteListViewModel {
     @Published var path = NavigationPath()
-    @Published var state: LoadingState<[Route]> = .idle
+    @Published var routeState: LoadingState<[Route]> = .idle
+    @Published var favoriteState: LoadingState<Bool> = .idle
 
-    let service: IRouteService
+    let routeService: IRouteService
+    let favoriteService: IFavoriteService
 
-    init(service: IRouteService) {
-        self.service = service
+    init(routeService: IRouteService, favoriteService: IFavoriteService) {
+        self.routeService = routeService
+        self.favoriteService = favoriteService
     }
 
-    @MainActor
     func fetchRoutes() {
-        state = .loading
+        routeState = .loading
 
-        Task {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            
             do {
-                let fetchedRoutes = try await service.getAllRoutes()
-                state = .loaded(fetchedRoutes)
+                let fetchedRoutes = try await routeService.getAllRoutes()
+                routeState = .loaded(fetchedRoutes)
             } catch {
-                state = .failed(error.localizedDescription)
+                routeState = .failed(error.localizedDescription)
                 print("Ошибка при получении данных: \(error)")
             }
         }
     }
-
+    
+    func setFavorite(by id: Int) {
+        favoriteState = .loading
+        
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let status = try await favoriteService.setFavorite(by: id, fromPlace: false)
+                self.updateFavoriteStatus(for: id, to: status)
+                favoriteState = .loaded(status)
+            } catch {
+                favoriteState = .failed(error.localizedDescription)
+                print("Failed to set favorite: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func updateFavoriteStatus(for id: Int, to status: Bool) {
+        if let routes = routeState.data {
+            if let index = routes.firstIndex(where: { $0.id == id }) {
+                var updatedRoutes = routes
+                var updatedRoute = updatedRoutes[index]
+                updatedRoute = updatedRoute.withFavoriteStatus(to: status)
+                updatedRoutes[index] = updatedRoute
+                routeState = .loaded(updatedRoutes)
+            }
+        }
+    }
 }

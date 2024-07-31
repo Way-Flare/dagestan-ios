@@ -10,9 +10,9 @@ import CoreKit
 import Foundation
 
 public final class RouteService: IRouteService {
-    let networkService: NetworkServiceProtocol
+    let networkService: INetworkService
     
-    public init(networkService: NetworkServiceProtocol) {
+    public init(networkService: INetworkService) {
         self.networkService = networkService
     }
     

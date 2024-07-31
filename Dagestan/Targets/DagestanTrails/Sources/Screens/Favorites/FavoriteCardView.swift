@@ -10,6 +10,14 @@ import DesignSystem
 import SwiftUI
 
 struct FavoriteCardView: View {
+    let place: Place
+    let isLoading: Bool
+    let onFavoriteAction: (() -> Void)?
+    
+    private var formatter: TimeSuffixFormatter {
+        TimeSuffixFormatter(workTime: place.workTime)
+    }
+    
     var body: some View {
         VStack {
             imageContainerView
@@ -20,24 +28,25 @@ struct FavoriteCardView: View {
         .font(.manropeRegular(size: Grid.pt14))
     }
     
+    @MainActor
     private var imageContainerView: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                Image("phoot")
-                    .resizable()
+                SliderView(images: place.images)
                     .frame(height: Grid.pt174)
                     .cornerStyle(.constant(Grid.pt12, .topCorners))
                     .cornerStyle(.constant(Grid.pt4, .bottomCorners))
                 
                 WFButtonIcon(
-                    icon: DagestanTrailsAsset.heartFilled.swiftUIImage,
+                    icon: place.isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
                     size: .m,
+                    state: isLoading ? .loading : .default,
                     type: .favorite
                 ) {
-                    
+                    onFavoriteAction?()
                 }
-                    .foregroundColor(WFColor.errorSoft)
-                    .padding([.top, .trailing], Grid.pt12)
+                .foregroundColor(place.isFavorite ? WFColor.errorSoft : WFColor.iconOnAccent)
+                .padding([.top, .trailing], Grid.pt12)
             }
         }
     }
@@ -46,14 +55,12 @@ struct FavoriteCardView: View {
         VStack(alignment: .leading, spacing: Grid.pt6) {
             HStack(spacing: Grid.pt12) {
                 titleContainerView
-                ratingContainerView
+                Spacer()
+                starRatingView
             }
             
-            Text("Открыто • до 21:00")
-                .foregroundStyle(WFColor.foregroundSoft)
-
-            Text("Маршрут 'Дагестанский квест': Погрузитесь в магию Дагестана, начав магию Дагестана, начав магию Дагестана, начав магию ")
-                .foregroundStyle(WFColor.iconPrimary)
+            operatingHoursView
+            routeDescriptionView
         }
         .padding([.top, .horizontal], Grid.pt8)
         .padding(.bottom, Grid.pt12)
@@ -66,27 +73,41 @@ struct FavoriteCardView: View {
                 .frame(width: Grid.pt20, height: Grid.pt20)
                 .foregroundStyle(WFColor.iconSoft)
             
-            Text("Склон горы Тарки-Тау  Смотровая площадка")
+            Text(place.name)
                 .foregroundStyle(WFColor.foregroundPrimary)
                 .font(.manropeSemibold(size: Grid.pt16))
                 .lineLimit(1)
         }
     }
     
-    private var ratingContainerView: some View {
+    private var operatingHoursView: some View {
+        Group {
+            Text(formatter.operatingStatus)
+                .foregroundColor(formatter.operatingStatusColor)
+                +
+                Text(formatter.operatingStatusSuffix)
+                .foregroundColor(WFColor.foregroundSoft)
+        }
+        .font(.manropeRegular(size: Grid.pt14))
+    }
+    
+    @ViewBuilder private var routeDescriptionView: some View {
+        if let shortDescription = place.shortDescription {
+            Text(shortDescription)
+                .font(.manropeRegular(size: Grid.pt14))
+                .lineLimit(3)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundStyle(WFColor.foregroundPrimary)
+        }
+    }
+    
+    private var starRatingView: some View {
         HStack(spacing: Grid.pt4) {
-            Image(systemName: "star.fill")
-                .resizable()
-                .frame(width: Grid.pt16, height: Grid.pt16)
-                .foregroundStyle(.yellow)
-            
-            Text("4.3")
+            StarsView(amount: Int(place.rating ?? .zero), size: .s, type: .review)
+            Text(String(place.rating ?? .zero))
+                .font(.manropeRegular(size: Grid.pt14))
                 .foregroundStyle(WFColor.foregroundSoft)
         }
     }
-}
-
-#Preview {
-    FavoriteCardView()
-        .padding(.horizontal, Grid.pt12)
 }

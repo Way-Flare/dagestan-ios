@@ -93,7 +93,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             }
             .overlay(alignment: .bottom) {
                 if let isFavorite = viewModel.state.data?.isFavorite {
-                    PlaceMakeRouteBottomView(isFavorite: isFavorite).isHidden(viewModel.state.isLoading)
+                    PlaceMakeRouteBottomView(isFavorite: isFavorite, onFavoriteAction: onFavoriteAction).isHidden(viewModel.state.isLoading)
                 }
             }
             .edgesIgnoringSafeArea(.top)
