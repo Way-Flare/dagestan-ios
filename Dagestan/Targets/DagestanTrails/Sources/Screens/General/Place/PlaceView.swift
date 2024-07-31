@@ -87,7 +87,7 @@ struct PlaceView: View {
             ) {
                 onFavoriteAction?()
             }
-            .foregroundColor(place?.isFavorite == true ? WFColor.errorSoft : WFColor.iconOnAccent)
+            .foregroundColor(place?.isFavorite == true ? WFColor.errorSoft : WFColor.iconInverted)
             WFButtonIcon(
                 icon: DagestanTrailsAsset.close.swiftUIImage,
                 size: .l,
