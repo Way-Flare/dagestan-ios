@@ -41,7 +41,7 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                                 onFavoriteAction: onFavoriteAction
                             )
                         ) {
-                            RouteCardView(route: route, onFavoriteAction)
+                            RouteCardView(route: route, onFavoriteAction: onFavoriteAction)
                         }
                     }
                 }

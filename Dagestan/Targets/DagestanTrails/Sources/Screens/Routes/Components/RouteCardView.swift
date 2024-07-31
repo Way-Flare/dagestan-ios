@@ -34,7 +34,9 @@ struct RouteCardView: View {
                 icon: DagestanTrailsAsset.heartFilled.swiftUIImage,
                 size: .m,
                 type: .favorite
-            ) {}
+            ) {
+                onFavoriteAction?()
+            }
                 .foregroundColor(WFColor.errorSoft)
                 .padding([.top, .trailing], Grid.pt12)
         }

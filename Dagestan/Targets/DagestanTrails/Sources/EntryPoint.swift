@@ -79,7 +79,9 @@ private extension ContentView {
         switch item {
             case .places: MapView(viewModel: mapViewModel, routeService: routeViewModel.service)
             case .profile: ProfileContainerView(authService: authService)
-            case .favorite: FavoriteListView()
+            case .favorite: FavoriteListView {
+                print("fiaf")
+            }
             case .routes:
                 RouteListView(viewModel: routeViewModel, placeService: mapViewModel.service) {
                     print("ROUTE FAVORITE")

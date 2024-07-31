@@ -11,6 +11,7 @@ import SwiftUI
 struct FavoriteListView: View {
     @State var section: FavoriteSection = .places
     let favoritesCount = 5
+    let onFavoriteAction: (() -> Void)?
 
     var body: some View {
         ZStack {
@@ -72,7 +73,7 @@ struct FavoriteListView: View {
                         }
                     case .routes:
                         LazyVStack(spacing: Grid.pt12) {
-                            ForEach(0 ..< favoritesCount, id: \.self) { _ in                                RouteCardView(route: .mock)
+                            ForEach(0 ..< favoritesCount, id: \.self) { _ in                                RouteCardView(route: .mock, onFavoriteAction: onFavoriteAction)
                             }
                         }
                 }
@@ -81,8 +82,4 @@ struct FavoriteListView: View {
         }
         .scrollIndicators(.hidden)
     }
-}
-
-#Preview {
-    FavoriteListView()
 }
