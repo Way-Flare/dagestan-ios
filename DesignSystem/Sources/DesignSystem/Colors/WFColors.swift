@@ -115,6 +115,7 @@ public struct WFColor {
     // MARK: - Info
     public static let iconPrimary: Color = .dsColor(named: "iconPrimary")
     public static let iconAccent: Color = .dsColor(named: "iconAccent")
+    public static let iconOnAccent: Color = .dsColor(named: "iconOnAccent")
     public static let iconSoft: Color = .dsColor(named: "iconSoft")
     public static let iconMuted: Color = .dsColor(named: "iconMuted")
     public static let iconDisabled: Color = .dsColor(named: "iconDisabled")
