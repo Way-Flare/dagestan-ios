@@ -52,7 +52,13 @@ final class MapViewModel: IMapViewModel {
     init(placeService: IPlacesService, favoriteService: IFavoriteService) {
         self.placeService = placeService
         self.favoriteService = favoriteService
-        
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleFavoriteUpdate(_:)),
+            name: .didUpdateFavorites,
+            object: nil
+        )
         loadPlaces()
     }
 
@@ -108,10 +114,10 @@ final class MapViewModel: IMapViewModel {
             selectedPlace = filteredPlaces.first { $0.id == id }
         }
     }
-    
+
     func setFavorite(by id: Int) {
         favoriteState = .loading
-        
+
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -134,6 +140,14 @@ final class MapViewModel: IMapViewModel {
             if selectedPlace?.id == id {
                 selectedPlace = updatedPlace
             }
+        }
+    }
+
+    @objc private func handleFavoriteUpdate(_ notification: Notification) {
+        guard let updater = notification.object as? FavoriteUpdater else { return }
+
+        if updater.type == .places {
+            updateFavoriteStatus(for: updater.id, to: updater.status)
         }
     }
 
@@ -208,4 +222,8 @@ extension MapViewModel {
     enum Location {
         static let makhachkala = CLLocationCoordinate2D(latitude: 42.9824, longitude: 47.5049)
     }
+}
+
+extension Notification.Name {
+    static let didUpdateFavorites = Notification.Name("didUpdateFavorites")
 }

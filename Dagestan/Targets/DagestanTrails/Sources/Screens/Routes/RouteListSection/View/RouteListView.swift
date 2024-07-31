@@ -19,7 +19,7 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                 .scrollIndicators(.hidden)
                 .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
                 .navigationTitle("Маршруты")
-                .onAppear {
+                .onViewDidLoad {
                     viewModel.fetchRoutes()
                 }
         }

@@ -13,7 +13,7 @@ protocol IRouteListViewModel: ObservableObject {
     var routeState: LoadingState<[Route]> { get }
     var favoriteState: LoadingState<Bool> { get }
     var routeService: IRouteService { get }
-    
+
     func fetchRoutes()
     func setFavorite(by id: Int)
 }
@@ -29,6 +29,13 @@ class RouteListViewModel: IRouteListViewModel {
     init(routeService: IRouteService, favoriteService: IFavoriteService) {
         self.routeService = routeService
         self.favoriteService = favoriteService
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleFavoriteUpdate(_:)),
+            name: .didUpdateFavorites,
+            object: nil
+        )
     }
 
     func fetchRoutes() {
@@ -36,7 +43,7 @@ class RouteListViewModel: IRouteListViewModel {
 
         Task { @MainActor [weak self] in
             guard let self else { return }
-            
+
             do {
                 let fetchedRoutes = try await routeService.getAllRoutes()
                 routeState = .loaded(fetchedRoutes)
@@ -46,10 +53,10 @@ class RouteListViewModel: IRouteListViewModel {
             }
         }
     }
-    
+
     func setFavorite(by id: Int) {
         favoriteState = .loading
-        
+
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -62,7 +69,7 @@ class RouteListViewModel: IRouteListViewModel {
             }
         }
     }
-    
+
     private func updateFavoriteStatus(for id: Int, to status: Bool) {
         if let routes = routeState.data {
             if let index = routes.firstIndex(where: { $0.id == id }) {
@@ -72,6 +79,14 @@ class RouteListViewModel: IRouteListViewModel {
                 updatedRoutes[index] = updatedRoute
                 routeState = .loaded(updatedRoutes)
             }
+        }
+    }
+
+    @objc private func handleFavoriteUpdate(_ notification: Notification) {
+        guard let updater = notification.object as? FavoriteUpdater else { return }
+
+        if updater.type == .routes {
+            updateFavoriteStatus(for: updater.id, to: updater.status)
         }
     }
 }

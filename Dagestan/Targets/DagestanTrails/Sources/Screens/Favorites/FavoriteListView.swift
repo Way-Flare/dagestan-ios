@@ -8,6 +8,12 @@
 import DesignSystem
 import SwiftUI
 
+struct FavoriteUpdater {
+    let type: FavoriteSection
+    let id: Int
+    let status: Bool
+}
+
 protocol IFavoriteListViewModel: ObservableObject {
     func loadPlaces()
     func loadRoutes()
@@ -42,7 +48,7 @@ class FavoriteListViewModel: IFavoriteListViewModel {
 
             do {
                 let fetchedPlaces = try await placeService.getAllPlaces()
-                self.placesState = .loaded(fetchedPlaces.filter { $0.isFavorite }.reversed())
+                self.placesState = .loaded(fetchedPlaces.filter { $0.isFavorite })
             } catch {
                 self.placesState = .failed(error.localizedDescription)
                 print("Ошибка при получении данных: \(error)")
@@ -58,7 +64,7 @@ class FavoriteListViewModel: IFavoriteListViewModel {
 
             do {
                 let fetchedRoutes = try await routeService.getAllRoutes()
-                self.routesState = .loaded(fetchedRoutes.filter { $0.isFavorite }.reversed())
+                self.routesState = .loaded(fetchedRoutes.filter { $0.isFavorite })
             } catch {
                 self.routesState = .failed(error.localizedDescription)
                 print("Ошибка при получении данных: \(error)")
@@ -75,6 +81,9 @@ class FavoriteListViewModel: IFavoriteListViewModel {
                 let status = try await favoriteService.setFavorite(by: id, fromPlace: section == .places)
                 self.favoriteState = .loaded(status)
                 updateFavoriteStatus(for: id, to: status)
+                
+                NotificationCenter.default.post(name: .didUpdateFavorites, object: FavoriteUpdater(type: section, id: id, status: status))
+
             } catch {
                 self.favoriteState = .failed(error.localizedDescription)
                 print("Failed to set favorite: \(error.localizedDescription)")
