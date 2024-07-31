@@ -13,7 +13,8 @@ protocol IMapViewModel: ObservableObject {
     var isShowAlert: Bool { get set }
     var isLoading: Bool { get set }
     var selectedTags: Set<TagPlace> { get set }
-    var service: IPlacesService { get }
+    var placeService: IPlacesService { get }
+    var favoriteState: LoadingState<Bool> { get set }
 
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat)
     func loadPlaces()
@@ -23,6 +24,7 @@ protocol IMapViewModel: ObservableObject {
     func toggleTag(_ tag: TagPlace)
     func moveToDagestan()
     func placesAsGeoJSON() -> Data?
+    func setFavorite(by id: Int)
 }
 
 final class MapViewModel: IMapViewModel {
@@ -33,21 +35,30 @@ final class MapViewModel: IMapViewModel {
         }
     }
 
-    @Published var isShowAlert: Bool = false
-    @Published var isLoading: Bool = false
+    @Published var isShowAlert = false
+    @Published var isLoading = false
     @Published var filteredPlaces: [Place] = []
     @Published var selectedPlace: Place?
     @Published var isPlaceViewVisible = true
     @Published var selectedTags: Set<TagPlace> = []
+    @Published var favoriteState: LoadingState<Bool> = .idle
 
-    let service: IPlacesService
+    let placeService: IPlacesService
+    let favoriteService: IFavoriteService
     private var task: Task<Void, Error>?
 
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками
-    init(service: IPlacesService) {
-        self.service = service
+    init(placeService: IPlacesService, favoriteService: IFavoriteService) {
+        self.placeService = placeService
+        self.favoriteService = favoriteService
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleFavoriteUpdate(_:)),
+            name: .didUpdateFavorites,
+            object: nil
+        )
         loadPlaces()
     }
 
@@ -72,7 +83,7 @@ final class MapViewModel: IMapViewModel {
             isLoading = true
 
             do {
-                let places = try await service.getAllPlaces()
+                let places = try await placeService.getAllPlaces()
                 self.places = places
                 updateFilteredPlaces()
                 isLoading = false
@@ -101,6 +112,42 @@ final class MapViewModel: IMapViewModel {
     func selectPlace(by id: Int) {
         withAnimation {
             selectedPlace = filteredPlaces.first { $0.id == id }
+        }
+    }
+
+    func setFavorite(by id: Int) {
+        favoriteState = .loading
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let status = try await favoriteService.setFavorite(by: id, fromPlace: true)
+                self.updateFavoriteStatus(for: id, to: status)
+                favoriteState = .loaded(status)
+            } catch {
+                favoriteState = .failed(error.localizedDescription)
+                print("Failed to set favorite: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func updateFavoriteStatus(for id: Int, to status: Bool) {
+        if let index = places.firstIndex(where: { $0.id == id }) {
+            var updatedPlace = places[index]
+            updatedPlace = updatedPlace.withFavoriteStatus(to: status)
+            places[index] = updatedPlace
+
+            if selectedPlace?.id == id {
+                selectedPlace = updatedPlace
+            }
+        }
+    }
+
+    @objc private func handleFavoriteUpdate(_ notification: Notification) {
+        guard let updater = notification.object as? FavoriteUpdater else { return }
+
+        if updater.type == .places {
+            updateFavoriteStatus(for: updater.id, to: updater.status)
         }
     }
 
@@ -146,7 +193,7 @@ extension MapViewModel {
             let properties: [String: Any?] = [
                 "id": place.id,
                 "place_name": place.name,
-                "description": place.shortDescription,
+                "description": place.shortDescription
             ]
 
             return [
@@ -175,4 +222,8 @@ extension MapViewModel {
     enum Location {
         static let makhachkala = CLLocationCoordinate2D(latitude: 42.9824, longitude: 47.5049)
     }
+}
+
+extension Notification.Name {
+    static let didUpdateFavorites = Notification.Name("didUpdateFavorites")
 }

@@ -6,30 +6,13 @@
 //
 
 import Foundation
-
-class MockPlaceService: IPlacesService {
-    func getAllPlaces() async throws -> [Place] {
-        [
-            Place.mock,
-            Place.mock,
-            Place.mock,
-            Place.mock
-        ]
-    }
-    
-    func getPlace(id: Int) async throws -> PlaceDetail {
-        // try await Task.sleep(nanoseconds: 2_000_000_000)
-        return PlaceDetail.mock()
-    }
-}
-
 protocol IPlaceDetailViewModel: ObservableObject {
     var state: LoadingState<PlaceDetail> { get }
     var isVisibleSnackbar: Bool { get set }
     var isBackdropVisible: Bool { get set }
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
-    
+
     func loadPlaceDetail()
 }
 
@@ -37,6 +20,8 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     @Published var state: LoadingState<PlaceDetail> = .idle
     @Published var isVisibleSnackbar = false
     @Published var isBackdropVisible = false
+    @Published var isFavorite: Bool
+    @Published var favoriteState: LoadingState<Bool> = .idle
 
     lazy var formatter = TimeSuffixFormatter(workTime: state.data?.workTime)
 
@@ -47,9 +32,10 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками
     /// - Parameter placeId: Id - для получения детальной информации о месте.
-    init(service: IPlacesService, placeId: Int) {
+    init(service: IPlacesService, placeId: Int, isFavorite: Bool) {
         self.service = service
         self.placeId = placeId
+        self.isFavorite = isFavorite
     }
 
     deinit {

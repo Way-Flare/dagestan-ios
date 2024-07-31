@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-public protocol NetworkServiceProtocol: AnyObject {
+public protocol INetworkService: AnyObject {
     func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
         media: Data?,
@@ -24,9 +24,11 @@ public protocol NetworkServiceProtocol: AnyObject {
         _ request: URLRequest,
         expecting type: T.Type
     ) async throws -> T
+
+    func execute(_ endpoint: ApiEndpoint) async throws -> Int
 }
 
-extension NetworkServiceProtocol {
+extension INetworkService {
     func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
         media: Data? = nil,
@@ -43,12 +45,13 @@ extension NetworkServiceProtocol {
     }
 }
 
-public final class DTNetworkService: NetworkServiceProtocol {
+public final class DTNetworkService: INetworkService {
     private var boundary: String
 
     public init() {
         self.boundary = "Boundary-\(UUID().uuidString)"
     }
+
     public func execute<T: Decodable>(
         _ request: URLRequest,
         expecting type: T.Type
@@ -66,6 +69,21 @@ public final class DTNetworkService: NetworkServiceProtocol {
         }
 
         return try await load(urlRequest, expecting: type)
+    }
+    
+    public func execute(_ endpoint: ApiEndpoint) async throws -> Int {
+        guard let urlRequest = self.request(from: endpoint) else {
+            throw RequestError.invalidURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw RequestError.noResponse
+        }
+
+
+        return httpResponse.statusCode
     }
 
     // MARK: - Private methods
@@ -92,7 +110,8 @@ public final class DTNetworkService: NetworkServiceProtocol {
         var urlRequest = URLRequest(url: endpoint.url)
 
         if let query = endpoint.query,
-           var urlComponents = URLComponents(url: endpoint.url, resolvingAgainstBaseURL: false) {
+           var urlComponents = URLComponents(url: endpoint.url, resolvingAgainstBaseURL: false)
+        {
             let queryItems: [URLQueryItem] = query.map {
                 URLQueryItem(name: $0, value: "\($1)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))
             }

@@ -23,6 +23,7 @@ struct PlaceDetailDTO: Decodable {
     let contacts: [ContactDTO]
     let routes: [RouteDTO]
     let feedbackCount: Int
+    let isFavorite: Bool
 }
 
 extension PlaceDetailDTO {
@@ -58,6 +59,7 @@ extension PlaceDetailDTO {
         let shortDescription: String?
         let images: [ImageDTO]
         let rating: Int
+        let isFavorite: Bool
     }
 }
 
@@ -82,7 +84,8 @@ extension PlaceDetailDTO: Domainable {
             placeWays: placeWays.map { $0.asDomain() },
             contacts: contacts.map { $0.asDomain() },
             routes: routes.map { $0.asDomain() },
-            feedbackCount: feedbackCount
+            feedbackCount: feedbackCount,
+            isFavorite: isFavorite
         )
     }
 }
@@ -146,7 +149,8 @@ extension PlaceDetailDTO.RouteDTO: Domainable {
             title: title,
             shortDescription: shortDescription,
             images: images.compactMap { $0.asDomain() },
-            rating: rating
+            rating: rating,
+            isFavorite: isFavorite
         )
     }
 }

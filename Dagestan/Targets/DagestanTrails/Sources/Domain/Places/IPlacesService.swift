@@ -15,4 +15,6 @@ protocol IPlacesService {
     /// Получение конкретного места
     /// - Returns: PlaceDetail - детальное место
     func getPlace(id: Int) async throws -> PlaceDetail
+    
+    func setFavorite(by id: Int) async throws -> Bool
 }

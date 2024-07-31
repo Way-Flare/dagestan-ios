@@ -13,16 +13,19 @@ public struct RoutePlaceModel {
     public let icon: Image
     public let title: String
     public let subtitle: String?
+    public let isFavorite: Bool
     
     public init(
         id: Int,
         icon: Image,
         title: String,
-        subtitle: String?
+        subtitle: String?,
+        isFavorite: Bool
     ) {
         self.id = id
         self.icon = icon
         self.title = title
         self.subtitle = subtitle
+        self.isFavorite = isFavorite
     }
 }

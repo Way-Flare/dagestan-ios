@@ -12,27 +12,39 @@ import SwiftUI
 @MainActor
 struct PlaceView: View {
     @Binding private var place: Place?
-    
+    private let isLoading: Bool
+
     private let placeDetailViewModel: PlaceDetailViewModel
     private let routeService: IRouteService
-    
+
     private var formatter: TimeSuffixFormatter {
         TimeSuffixFormatter(workTime: place?.workTime)
     }
 
-    init(place: Binding<Place?>, placeService: IPlacesService, routeService: IRouteService) {
+    private let onFavoriteAction: (() -> Void)?
+
+    init(
+        place: Binding<Place?>,
+        isLoading: Bool,
+        placeService: IPlacesService,
+        routeService: IRouteService,
+        favoriteAction: (() -> Void)?
+    ) {
         self._place = place
         self.routeService = routeService
         self.placeDetailViewModel = PlaceDetailViewModel(
             service: placeService,
-            placeId: place.wrappedValue?.id ?? .zero
+            placeId: place.wrappedValue?.id ?? .zero,
+            isFavorite: place.wrappedValue?.isFavorite ?? false
         )
+        self.isLoading = isLoading
+        self.onFavoriteAction = favoriteAction
     }
 
     var body: some View {
         if let place {
             NavigationLink(
-                destination: PlaceDetailView(viewModel: placeDetailViewModel, routeService: routeService)
+                destination: PlaceDetailView(viewModel: placeDetailViewModel, routeService: routeService, onFavoriteAction: onFavoriteAction)
             ) {
                 contentView
                     .cornerStyle(.constant(Grid.pt16))
@@ -63,17 +75,19 @@ struct PlaceView: View {
             .frame(height: 164)
         }
     }
-    
+
     private var buttonsView: some View {
         HStack(spacing: Grid.pt8) {
             Spacer()
             WFButtonIcon(
-                icon: Image(systemName: "heart.fill"),
+                icon: place?.isFavorite == true ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
                 size: .l,
+                state: isLoading ? .loading : .default,
                 type: .favorite
             ) {
+                onFavoriteAction?()
             }
-            .foregroundColor(.red)
+            .foregroundColor(place?.isFavorite == true ? WFColor.errorSoft : WFColor.iconInverted)
             WFButtonIcon(
                 icon: DagestanTrailsAsset.close.swiftUIImage,
                 size: .l,
@@ -123,12 +137,12 @@ extension PlaceView {
         }
     }
 
-    @ViewBuilder private var operatingHoursView: some View {
+    private var operatingHoursView: some View {
         Group {
             Text(formatter.operatingStatus)
                 .foregroundColor(formatter.operatingStatusColor)
-            +
-            Text(formatter.operatingStatusSuffix)
+                +
+                Text(formatter.operatingStatusSuffix)
                 .foregroundColor(WFColor.foregroundSoft)
         }
         .font(.manropeRegular(size: Grid.pt14))
@@ -141,6 +155,7 @@ extension PlaceView {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundStyle(WFColor.foregroundPrimary)
         }
     }
 }

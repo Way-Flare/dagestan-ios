@@ -22,6 +22,7 @@ struct PlaceDetail {
     let contacts: [Contact]
     let routes: [Route]
     let feedbackCount: Int
+    let isFavorite: Bool
 }
 
 extension PlaceDetail {
@@ -57,6 +58,7 @@ extension PlaceDetail {
         let shortDescription: String?
         let images: [URL]
         let rating: Int
+        let isFavorite: Bool
     }
 }
 
@@ -68,7 +70,8 @@ extension PlaceDetail.Route: Domainable {
             id: id,
             icon: TagPlace.nature.icon,
             title: title,
-            subtitle: shortDescription
+            subtitle: shortDescription,
+            isFavorite: isFavorite
         )
     }
 }
@@ -89,7 +92,8 @@ extension PlaceDetail {
             placeWays: [.mock()],
             contacts: [.mock()],
             routes: [.mock()],
-            feedbackCount: 2
+            feedbackCount: 2,
+            isFavorite: true
         )
     }
 }
@@ -140,7 +144,8 @@ extension PlaceDetail.Route {
             title: "Маршрут 1",
             shortDescription: "Краткое описание маршрута",
             images: [URL(string: "https://example.com/image4.jpg")!],
-            rating: 4
+            rating: 4,
+            isFavorite: true
         )
     }
 }

@@ -20,6 +20,7 @@ public struct RouteDetail {
     let travelTime: String
     let feedbackCount: Int
     let rating: Double
+    let isFavorite: Bool
 }
 
 public extension RouteDetail {
@@ -30,6 +31,7 @@ public extension RouteDetail {
         let workTime: String?
         let mainTag: TagPlace
         let sequence: Int
+        let isFavorite: Bool
     }
 }
 
@@ -41,7 +43,8 @@ extension RouteDetail.PlaceInRoute: Domainable {
             id: id,
             icon: mainTag.icon,
             title: name,
-            subtitle: workTime
+            subtitle: workTime,
+            isFavorite: isFavorite
         )
     }
 }

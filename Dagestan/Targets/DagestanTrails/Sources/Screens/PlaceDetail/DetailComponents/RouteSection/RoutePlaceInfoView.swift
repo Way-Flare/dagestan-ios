@@ -16,12 +16,14 @@ struct PlaceRouteInfoView: View {
     let countRoutes: Int
     let routeService: IRouteService?
     let placeService: IPlacesService?
+    var onFavoriteAction: (() -> Void)?
     
     init(
         type: InfoType,
         items: [RoutePlaceModel]?,
         routeService: IRouteService? = nil,
-        placeService: IPlacesService? = nil
+        placeService: IPlacesService? = nil,
+        onFavoriteAction: (() -> Void)? = nil
     ) {
         self.title = type.title
         self.items = items
@@ -29,6 +31,7 @@ struct PlaceRouteInfoView: View {
         self.countRoutes = type.countRoutes
         self.routeService = routeService
         self.placeService = placeService
+        self.onFavoriteAction = onFavoriteAction
     }
     
     var body: some View {
@@ -53,10 +56,11 @@ struct PlaceRouteInfoView: View {
                     }
                 }
                 RoutePlacesView(
+                    isRoutes: isRoutes, 
                     items: items,
-                    isRoutes: isRoutes,
                     routeService: routeService,
-                    placeService: placeService
+                    placeService: placeService,
+                    onFavoriteAction: onFavoriteAction
                 )
             }
         }

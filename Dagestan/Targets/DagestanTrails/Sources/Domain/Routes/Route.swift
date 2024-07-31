@@ -17,6 +17,21 @@ public struct Route {
     let travelTime: String
     let feedbackCount: Int
     let rating: Double
+    let isFavorite: Bool
+    
+    func withFavoriteStatus(to status: Bool) -> Route {
+        Route(
+            id: id,
+            title: title,
+            images: images,
+            shortDescription: shortDescription,
+            distance: distance,
+            travelTime: travelTime,
+            feedbackCount: feedbackCount,
+            rating: rating,
+            isFavorite: status
+        )
+    }
     
     static let mock = Route(
         id: 1,
@@ -26,6 +41,7 @@ public struct Route {
         distance: 5.5,
         travelTime: "1 ч 30 мин",
         feedbackCount: 12,
-        rating: 4.5
+        rating: 4.5,
+        isFavorite: true
     )
 }

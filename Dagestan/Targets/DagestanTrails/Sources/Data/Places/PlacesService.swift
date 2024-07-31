@@ -10,9 +10,9 @@ import CoreKit
 
 /// Сервис для работы с точками/местами
 final class PlacesService: IPlacesService {
-    private let networkService: NetworkServiceProtocol
+    private let networkService: INetworkService
     
-    init(networkService: NetworkServiceProtocol) {
+    init(networkService: INetworkService) {
         self.networkService = networkService
     }
     
@@ -41,6 +41,23 @@ final class PlacesService: IPlacesService {
             )
             
             return place.asDomain()
+        } catch {
+            throw error
+        }
+    }
+    
+    func setFavorite(by id: Int) async throws -> Bool {
+        let endpoint = PlacesEndpoint.favorite(id: id)
+        
+        do {
+            let statusCode = try await networkService.execute(endpoint)
+            if statusCode == 201 {
+                return true
+            } else if statusCode == 204 {
+                return false
+            } else {
+                throw RequestError.unknown
+            }
         } catch {
             throw error
         }

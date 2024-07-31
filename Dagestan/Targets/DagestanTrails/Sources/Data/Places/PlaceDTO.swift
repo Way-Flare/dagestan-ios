@@ -19,6 +19,7 @@ struct PlaceDTO: Decodable {
     let workTime: String?
     let tags: [TagPlaceDTO]?
     let feedbackCount: Int?
+    let isFavorite: Bool
 }
 
 // MARK: - Domainable
@@ -38,7 +39,8 @@ extension PlaceDTO: Domainable {
             rating: rating,
             workTime: workTime,
             tags: tags?.map { $0.asDomain() },
-            feedbackCount: feedbackCount
+            feedbackCount: feedbackCount,
+            isFavorite: isFavorite
         )
     }
 }

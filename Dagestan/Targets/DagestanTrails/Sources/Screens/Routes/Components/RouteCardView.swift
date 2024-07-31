@@ -12,6 +12,8 @@ import SwiftUI
 @MainActor
 struct RouteCardView: View {
     let route: Route
+    let isLoading: Bool
+    let onFavoriteAction: (() -> Void)?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -30,12 +32,15 @@ struct RouteCardView: View {
                 .clipped()
                 
             WFButtonIcon(
-                icon: DagestanTrailsAsset.heartFilled.swiftUIImage,
+                icon: route.isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
                 size: .m,
+                state: isLoading ? .loading : .default,
                 type: .favorite
-            ) {}
-                .foregroundColor(WFColor.errorSoft)
-                .padding([.top, .trailing], Grid.pt12)
+            ) {
+                onFavoriteAction?()
+            }
+            .foregroundColor(route.isFavorite ? WFColor.errorSoft : WFColor.iconInverted)
+            .padding([.top, .trailing], Grid.pt12)
         }
     }
     
@@ -47,7 +52,7 @@ struct RouteCardView: View {
                 ratingContainerView
             }
             
-            Text("\(String(format: ".2f", route.distance))км • \(formatExtendedTravelTime()) • \(Int.random(in: 1 ... 12)) мест")
+            Text("\(String(format: "%.2f", route.distance)) км • \(formatExtendedTravelTime()) • \(Int.random(in: 1 ... 12)) мест")
                 .foregroundStyle(WFColor.foregroundSoft)
 
             Text(route.shortDescription ?? "")
@@ -68,7 +73,7 @@ struct RouteCardView: View {
     private var ratingContainerView: some View {
         HStack(spacing: Grid.pt4) {
             StarsView(amount: 1, size: .s, type: .review)
-            Text("333")
+            Text(String(format: "%.1f", route.rating))
                 .foregroundStyle(WFColor.foregroundSoft)
         }
     }

@@ -6,10 +6,21 @@
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import SwiftUI
 import DesignSystem
+import SwiftUI
 
 struct PlaceMakeRouteBottomView: View {
+    @State var isFavorite: Bool
+    var onFavoriteAction: (() -> Void)?
+    
+    init(
+        isFavorite: Bool,
+        onFavoriteAction: ( () -> Void)? = nil
+    ) {
+        self._isFavorite = State(wrappedValue: isFavorite)
+        self.onFavoriteAction = onFavoriteAction
+    }
+
     var body: some View {
         VStack(spacing: .zero) {
             Divider()
@@ -22,11 +33,14 @@ struct PlaceMakeRouteBottomView: View {
                 ) {}
 
                 WFButtonIcon(
-                    icon: DagestanTrailsAsset.heartFilled.swiftUIImage,
+                    icon: isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
                     size: .m,
                     type: .secondary
-                ) {}
-                    .foregroundColor(WFColor.errorPrimary)
+                ) {
+                    onFavoriteAction?()
+                    isFavorite.toggle()
+                }
+                .foregroundColor(isFavorite ? WFColor.errorPrimary : WFColor.accentActive)
 
                 WFButtonIcon(
                     icon: DagestanTrailsAsset.share.swiftUIImage,
@@ -39,8 +53,4 @@ struct PlaceMakeRouteBottomView: View {
             .background(WFColor.surfaceTertiary)
         }
     }
-}
-
-#Preview {
-    PlaceMakeRouteBottomView()
 }

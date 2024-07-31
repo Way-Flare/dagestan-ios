@@ -12,7 +12,7 @@ public struct WFButtonIcon: View, Buildable {
     public let size: Size
     public let state: WFButtonState
     public let type: WFButtonStyle
-    public let action: (() -> Void)
+    public let action: () -> Void
 
     private var foregroundColor: Color?
 
@@ -33,6 +33,8 @@ public struct WFButtonIcon: View, Buildable {
     public var body: some View {
         Button(action: action) {
             contentView
+                .frame(width: size.imageSize, height: size.imageSize)
+                .padding(size.padding)
         }
         .buttonVisualStyle(
             style: type,
@@ -44,17 +46,21 @@ public struct WFButtonIcon: View, Buildable {
     }
 
     public func foregroundColor(_ foregroundColor: Color) -> Self {
-         map({ $0.foregroundColor = foregroundColor })
-     }
+        map { $0.foregroundColor = foregroundColor }
+    }
 }
 
 extension WFButtonIcon {
+    @ViewBuilder
     private var contentView: some View {
-        icon
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: size.imageSize, height: size.imageSize)
-            .padding(size.padding)
+        if state == .loading {
+            WFSpinner()
+        } else {
+            icon
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: size.imageSize, height: size.imageSize)
+        }
     }
 
     private var stateStyle: WFButtonAppearance {

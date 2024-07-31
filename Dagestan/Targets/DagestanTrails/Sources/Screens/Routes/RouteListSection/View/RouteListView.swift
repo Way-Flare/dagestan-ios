@@ -26,27 +26,32 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
     }
 
     @ViewBuilder func getContentView() -> some View {
-        if let routes = viewModel.state.data {
+        if let routes = viewModel.routeState.data {
             ScrollView {
                 LazyVStack(spacing: Grid.pt12) {
                     ForEach(routes, id: \.id) { route in
                         NavigationLink(
                             destination: RouteDetailView(
                                 viewModel: RouteDetailViewModel(
-                                    service: viewModel.service,
+                                    service: viewModel.routeService,
                                     id: route.id
                                 ),
-                                placeService: placeService
+                                placeService: placeService,
+                                onFavoriteAction: {
+                                    viewModel.setFavorite(by: route.id)
+                                }
                             )
                         ) {
-                            RouteCardView(route: route)
+                            RouteCardView(route: route, isLoading: viewModel.favoriteState.isLoading) {
+                                viewModel.setFavorite(by: route.id)
+                            }
                         }
                     }
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal, Grid.pt12)
             }
-        } else if viewModel.state.isError {
+        } else if viewModel.routeState.isError {
             FailedLoadingView {
                 viewModel.fetchRoutes()
             }

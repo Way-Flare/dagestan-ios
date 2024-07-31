@@ -19,18 +19,34 @@ struct EntryPoint: App {
 struct ContentView: View {
     @StateObject private var mapViewModel: MapViewModel
     @StateObject private var routeViewModel: RouteListViewModel
+    @StateObject private var favoriteViewModel: FavoriteListViewModel
     private let authService: AuthService
+    private let favoriteService: FavoriteService
 
     // сделать бы норм инжект)
-    init(networkService: NetworkServiceProtocol) {
+    init(networkService: INetworkService) {
         FontManager.registerFonts()
         let placesService = PlacesService(networkService: networkService)
         let routeService = RouteService(networkService: networkService)
         let authService = AuthService(networkService: networkService)
+        let favoriteService = FavoriteService(networkService: networkService)
 
-        self._mapViewModel = StateObject(wrappedValue: MapViewModel(service: placesService))
-        self._routeViewModel = StateObject(wrappedValue: RouteListViewModel(service: routeService))
+        self._mapViewModel = StateObject(wrappedValue: MapViewModel(placeService: placesService, favoriteService: favoriteService))
+        self._routeViewModel = StateObject(
+            wrappedValue: RouteListViewModel(
+                routeService: routeService,
+                favoriteService: favoriteService
+            )
+        )
+        self._favoriteViewModel = StateObject(
+            wrappedValue: FavoriteListViewModel(
+                placeService: placesService,
+                routeService: routeService,
+                favoriteService: favoriteService
+            )
+        )
         self.authService = authService
+        self.favoriteService = favoriteService
     }
 
     var body: some View {
@@ -77,10 +93,10 @@ private extension ContentView {
     @ViewBuilder
     func tabItemView(for item: TabItem) -> some View {
         switch item {
-            case .places: MapView(viewModel: mapViewModel, routeService: routeViewModel.service)
+            case .places: MapView(viewModel: mapViewModel, routeService: routeViewModel.routeService)
             case .profile: ProfileContainerView(authService: authService)
-            case .favorite: FavoriteListView()
-            case .routes: RouteListView(viewModel: routeViewModel, placeService: mapViewModel.service)
+            case .favorite: FavoriteListView(viewModel: favoriteViewModel)
+            case .routes: RouteListView(viewModel: routeViewModel, placeService: mapViewModel.placeService)
         }
     }
 }

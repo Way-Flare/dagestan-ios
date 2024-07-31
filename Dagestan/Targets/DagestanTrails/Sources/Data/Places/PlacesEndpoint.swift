@@ -11,6 +11,7 @@ import CoreKit
 enum PlacesEndpoint {
     case allPlaces
     case place(id: Int)
+    case favorite(id: Int)
 }
 
 extension PlacesEndpoint: ApiEndpoint {
@@ -18,13 +19,22 @@ extension PlacesEndpoint: ApiEndpoint {
     var path: String {
         switch self {
             case .allPlaces:
-                return "places/all"
+                return "places/all/"
             case let .place(id):
                 return "places/\(id)/"
+            case let .favorite(id):
+                return "places/\(id)/subscribe/"
         }
     }
     
-    var method: CoreKit.Method { return .get }
+    var method: CoreKit.Method {
+        switch self {
+            case .favorite:
+                return .post
+            default:
+                return .get
+        }
+    }
 
     var headers: Headers? {
         return nil
