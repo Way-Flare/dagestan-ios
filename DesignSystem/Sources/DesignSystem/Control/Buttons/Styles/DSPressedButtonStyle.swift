@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Притивный стиль кнопки, анимирующее нажатие путем изменения размера
 public struct DSPressedButtonStyle: PrimitiveButtonStyle {
     @State private var isPressed = false
     @State private var viewFrame: CGRect = .zero
