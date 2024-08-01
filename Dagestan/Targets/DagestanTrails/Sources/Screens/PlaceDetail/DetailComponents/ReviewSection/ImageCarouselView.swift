@@ -27,6 +27,7 @@ struct ImageCarousel: View {
                                 .cornerStyle(.constant(4))
                         }
                     }
+                    .buttonStyle(DSPressedButtonStyle())
                 }
             }
         }

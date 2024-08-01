@@ -1,9 +1,9 @@
-//
-//  PlaceView.swift
-//  DagestanTrails
-//
-//  Created by Рассказов Глеб on 27.04.2024.
-//
+    //
+    //  PlaceView.swift
+    //  DagestanTrails
+    //
+    //  Created by Рассказов Глеб on 27.04.2024.
+    //
 
 import DesignSystem
 import NukeUI
@@ -51,6 +51,7 @@ struct PlaceView: View {
                     .padding(.horizontal, Grid.pt12)
                     .shadow(radius: Grid.pt4)
             }
+            .buttonStyle(DSPressedButtonStyle())
             .frame(height: 292)
         }
     }
@@ -100,7 +101,7 @@ struct PlaceView: View {
     }
 }
 
-// MARK: - UI Elements
+    // MARK: - UI Elements
 
 extension PlaceView {
     private var descriptionView: some View {
@@ -141,8 +142,8 @@ extension PlaceView {
         Group {
             Text(formatter.operatingStatus)
                 .foregroundColor(formatter.operatingStatusColor)
-                +
-                Text(formatter.operatingStatusSuffix)
+            +
+            Text(formatter.operatingStatusSuffix)
                 .foregroundColor(WFColor.foregroundSoft)
         }
         .font(.manropeRegular(size: Grid.pt14))

@@ -73,6 +73,7 @@ struct ProfileView: View {
                 NavigationLink(destination: getDestination(for: item)) {
                     getMenuView(for: item)
                 }
+                .buttonStyle(DSPressedButtonStyle())
             }
         }
         .frame(maxWidth: .infinity)
