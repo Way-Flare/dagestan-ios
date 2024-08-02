@@ -11,7 +11,6 @@ import DesignSystem
 import SwiftUI
 
 struct PlaceContactInformationView: View {
-    @State private var address = "Загрузка адреса..."
     @Binding var isVisible: Bool
 
     let place: PlaceDetail?
@@ -37,21 +36,20 @@ struct PlaceContactInformationView: View {
                             isVisible: $isVisible,
                             type: .email(with: place.contacts.first?.email)
                         )
+                        ContactView(
+                            isVisible: $isVisible,
+                            type: .site(with: place.contacts.first?.site)
+                        )
                     }
                 }
 
                 VStack(alignment: .leading, spacing: Grid.pt8) {
-                    let _ = getLocation(by: CLLocation(
-                        latitude: place.coordinate.latitude,
-                        longitude: place.coordinate.longitude
-                    )
-                    )
                     Text("Адрес")
                         .font(.manropeSemibold(size: Grid.pt18))
                         .foregroundStyle(WFColor.foregroundPrimary)
                     ContactView(
                         isVisible: $isVisible,
-                        type: .location(with: address)
+                        type: .location(with: place.address)
                     )
                     ContactView(
                         isVisible: $isVisible,
@@ -65,22 +63,4 @@ struct PlaceContactInformationView: View {
             .cornerStyle(.constant(Grid.pt12))
         }
     }
-
-    func getLocation(by location: CLLocation) { // этого не будет когда бек подключит адресф
-        let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            if let error = error {
-                print("Ошибка геокодирования: \(error)")
-                self.address = "Адрес не найден"
-                return
-            }
-            self.address = placemarks?.first.map {
-                "\($0.thoroughfare ?? "Улица неизвестна"), \($0.subThoroughfare ?? "")"
-            } ?? "Адрес не найден"
-        }
-    }
-}
-
-#Preview {
-    PlaceContactInformationView(isVisible: .constant(false), place: PlaceDetail.mock())
 }

@@ -35,6 +35,19 @@ public extension RouteDetail {
     }
 }
 
+extension RouteDetail: Domainable {
+    public func asDomain() -> ReviewModel {
+        ReviewModel(
+            id: id,
+            image: images.first,
+            name: title,
+            address: shortDescription,
+            rating: rating,
+            feedbackCount: feedbackCount
+        )
+    }
+}
+
 extension RouteDetail.PlaceInRoute: Domainable {
     public typealias DomainType = RoutePlaceModel
     

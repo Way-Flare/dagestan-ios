@@ -13,6 +13,7 @@ struct PlaceDetailDTO: Decodable {
     let longitude: Double
     let latitude: Double
     let name: String
+    let address: String?
     let tags: [TagPlaceDTO]
     let shortDescription: String?
     let description: String?
@@ -51,6 +52,7 @@ extension PlaceDetailDTO {
         let id: Int
         let phoneNumber: String?
         let email: String?
+        let site: String?
     }
 
     struct RouteDTO: Decodable {
@@ -59,7 +61,10 @@ extension PlaceDetailDTO {
         let shortDescription: String?
         let images: [ImageDTO]
         let rating: Int
+        let distance: Double
+        let travelTime: String
         let isFavorite: Bool
+        let place_count: String
     }
 }
 
@@ -75,6 +80,7 @@ extension PlaceDetailDTO: Domainable {
             id: id,
             coordinate: coordinate,
             name: name,
+            address: address,
             tags: tags.map { $0.asDomain() },
             shortDescription: shortDescription,
             description: description,
@@ -84,8 +90,8 @@ extension PlaceDetailDTO: Domainable {
             placeWays: placeWays.map { $0.asDomain() },
             contacts: contacts.map { $0.asDomain() },
             routes: routes.map { $0.asDomain() },
-            feedbackCount: feedbackCount,
-            isFavorite: isFavorite
+            isFavorite: isFavorite,
+            feedbackCount: feedbackCount
         )
     }
 }
@@ -135,7 +141,8 @@ extension PlaceDetailDTO.ContactDTO: Domainable {
         PlaceDetail.Contact(
             id: id,
             phoneNumber: phoneNumber,
-            email: email
+            email: email,
+            site: site
         )
     }
 }
@@ -150,7 +157,10 @@ extension PlaceDetailDTO.RouteDTO: Domainable {
             shortDescription: shortDescription,
             images: images.compactMap { $0.asDomain() },
             rating: rating,
-            isFavorite: isFavorite
+            distance: distance,
+            travelTime: travelTime,
+            isFavorite: isFavorite,
+            place_count: place_count
         )
     }
 }

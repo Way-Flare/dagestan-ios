@@ -63,8 +63,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
 //        }
 //    }
 
-    @ViewBuilder
-    private var bottomContentContainerView: some View {
+    @ViewBuilder private var bottomContentContainerView: some View {
         if let isFavorite = viewModel.state.data?.isFavorite {
             VStack(spacing: .zero) {
                 if viewModel.isVisibleSnackbar {
@@ -81,7 +80,8 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         }
     }
 
-    @ViewBuilder func getContentView() -> some View {
+    @ViewBuilder 
+    func getContentView() -> some View {
         if let place = viewModel.state.data {
             StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
                 if let images = viewModel.state.data?.images {
@@ -105,10 +105,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                     }
                     mapContainerView
                     PlaceSendErrorView()
-                    PlaceReviewAndRatingView(
-                        rating: place.rating,
-                        reviewsCount: place.feedbackCount
-                    )
+                    PlaceReviewAndRatingView(review: place.asDomain())
                 }
                 .padding(.horizontal, Grid.pt12)
                 .padding(.bottom, Grid.pt82)

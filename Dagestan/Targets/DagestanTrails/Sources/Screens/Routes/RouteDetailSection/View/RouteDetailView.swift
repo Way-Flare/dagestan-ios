@@ -57,7 +57,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         }
     }
 
-    @ViewBuilder 
+    @ViewBuilder
     func getContentView() -> some View {
         if let route = viewModel.state.data {
             StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
@@ -82,10 +82,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     mapContainerView
                     PlaceSendErrorView()
                     if let route = viewModel.state.data {
-                        PlaceReviewAndRatingView(
-                            rating: route.rating,
-                            reviewsCount: route.feedbackCount
-                        )
+                        PlaceReviewAndRatingView(review: route.asDomain())
                     }
                 }
                 .padding(.horizontal, Grid.pt12)

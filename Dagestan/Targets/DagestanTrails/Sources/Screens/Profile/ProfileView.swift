@@ -48,23 +48,31 @@ struct ProfileView: View {
                     .foregroundColor(WFColor.foregroundPrimary)
                     .font(.manropeSemibold(size: Grid.pt18))
             } else {
-                Rectangle()
-                    .fill()
-                    .frame(width: 62, height: 24)
-                    .skeleton()
-                    .cornerStyle(.constant(Grid.pt8))
-                    .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
-                        Button("Да", role: .cancel) {
-                            viewModel.loadProfile()
-                        }
-                        Button("Нет", role: .destructive) {}
-                    }  message: {
-                        Text("Повторить попытку?")
-                    }
-
+                makeRectange()
+            }
+            if let email = viewModel.profileState.data?.email {
+                Text(email)
+                    .foregroundColor(WFColor.foregroundSoft)
+                    .font(.manropeSemibold(size: Grid.pt18))
             }
         }
         .offset(y: -Grid.pt65)
+    }
+    
+    private func makeRectange() -> some View {
+        Rectangle()
+            .fill()
+            .frame(width: 62, height: 34)
+            .skeleton()
+            .cornerStyle(.constant(Grid.pt8))
+            .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
+                Button("Да", role: .cancel) {
+                    viewModel.loadProfile()
+                }
+                Button("Нет", role: .destructive) {}
+            } message: {
+                Text("Повторить попытку?")
+            }
     }
 
     private var menuSection: some View {

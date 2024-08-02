@@ -18,6 +18,7 @@ public protocol ApiEndpoint {
     var query: Parameters? { get }
     var body: Parameters? { get }
     var headers: Headers? { get }
+    var multipartFormData: [MultipartFormData]? { get }
 }
 
 public enum Method: String {
@@ -32,35 +33,39 @@ public enum Version: String {
 }
 
 public extension ApiEndpoint {
-
+    
     private var baseURL: URL {
         // swiftlint:disable:next force_unwrapping
         let url = URL(string: "https://dagestan-trails.ru")!
-
+        
         return url
     }
-
+    
     private var commonPath: String {
         return [service, version.rawValue, path].joined(separator: "/")
     }
-
+    
     var url: URL {
         return baseURL.appendingPathComponent(commonPath, isDirectory: false)
     }
-
+    
     var version: Version {
         return .v1
     }
-
+    
     var service: String {
         return ""
     }
-
+    
     var query: Parameters? {
         return nil
     }
-
+    
     var body: Parameters? {
+        return nil
+    }
+    
+    var multipartFormData: [MultipartFormData]? {
         return nil
     }
 }

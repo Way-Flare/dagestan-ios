@@ -28,8 +28,7 @@ struct FavoriteCardView: View {
         .font(.manropeRegular(size: Grid.pt14))
     }
     
-    @MainActor
-    private var imageContainerView: some View {
+    @MainActor private var imageContainerView: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
                 SliderView(images: place.images)

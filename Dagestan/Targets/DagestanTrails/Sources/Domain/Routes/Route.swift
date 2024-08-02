@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreKit
 
 public struct Route {
     let id: Int
@@ -32,16 +33,5 @@ public struct Route {
             isFavorite: status
         )
     }
-    
-    static let mock = Route(
-        id: 1,
-        title: "Маршрут 1",
-        images: Place.mock.images,
-        shortDescription: "Краткое описание маршрута",
-        distance: 5.5,
-        travelTime: "1 ч 30 мин",
-        feedbackCount: 12,
-        rating: 4.5,
-        isFavorite: true
-    )
 }
+

@@ -32,12 +32,15 @@ extension View {
 }
 
 extension View {
-    func setCustomBackButton() -> some View {
+    func setCustomBackButton(
+        placement: ToolbarItemPlacement = .navigationBarLeading,
+        content: () -> some View = { BackButton() }
+    ) -> some View {
         self
             .navigationBarBackButtonHidden(true)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    BackButton()
+                ToolbarItem(placement: placement) {
+                    content()
                 }
             }
     }
@@ -71,4 +74,3 @@ extension View {
         )
     }
 }
-

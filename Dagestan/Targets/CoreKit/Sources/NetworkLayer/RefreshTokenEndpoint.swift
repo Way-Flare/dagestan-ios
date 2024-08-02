@@ -6,8 +6,6 @@
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import CoreKit
-
 public enum RefreshTokenEndpoint {
     case refreshToken(token: String)
 }

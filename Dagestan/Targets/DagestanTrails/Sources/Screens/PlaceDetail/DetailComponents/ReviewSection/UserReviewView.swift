@@ -44,7 +44,3 @@ struct UserReviewView: View {
         }
     }
 }
-
-#Preview {
-    UserReviewView(feedback: .mock())
-}

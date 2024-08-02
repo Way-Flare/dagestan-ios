@@ -167,5 +167,5 @@ struct FullScreenImageGallery: View {
 }
 
 #Preview {
-    FullScreenImageGallery(images: Place.mock.images, selectedIndex: 1)
+    FullScreenImageGallery(images: [], selectedIndex: 1)
 }

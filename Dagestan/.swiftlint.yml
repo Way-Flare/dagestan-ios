@@ -7,7 +7,6 @@ opt_in_rules:
   - operator_usage_whitespace
   - force_unwrapping
   - array_init
-  - attributes
   - closure_end_indentation
   - closure_spacing
   - collection_alignment
@@ -42,6 +41,7 @@ opt_in_rules:
   - xct_specific_matcher
   - yoda_condition
 disabled_rules:
+  - attributes
   - redundant_discardable_let
   - nesting
   - block_based_kvo

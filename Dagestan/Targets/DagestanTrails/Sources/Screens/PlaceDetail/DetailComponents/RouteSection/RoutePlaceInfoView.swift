@@ -100,10 +100,3 @@ extension PlaceRouteInfoView {
         }
     }
 }
-
-#Preview {
-    PlaceRouteInfoView(
-        type: .place(title: "Это место в маршрутах"),
-        items: PlaceDetail.mock().routes.map { $0.asDomain() }
-    )
-}

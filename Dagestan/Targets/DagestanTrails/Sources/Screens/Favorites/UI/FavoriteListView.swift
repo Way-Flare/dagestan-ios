@@ -8,7 +8,6 @@
 import DesignSystem
 import SwiftUI
 
-
 struct FavoriteListView: View {
     @ObservedObject var viewModel: FavoriteListViewModel
 

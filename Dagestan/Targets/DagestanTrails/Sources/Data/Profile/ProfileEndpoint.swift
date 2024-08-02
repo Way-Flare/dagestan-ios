@@ -29,11 +29,6 @@ extension ProfileEndpoint: ApiEndpoint {
     }
 
     var headers: Headers? {
-        guard let data = KeychainService.load(key: ConstantAccess.accessTokenKey),
-              let token = String(data: data, encoding: .utf8) else {
-            return nil
-        }
-        
         var parameters = [
             "Content-Type": "application/json"
         ]

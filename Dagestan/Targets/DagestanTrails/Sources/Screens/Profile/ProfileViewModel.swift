@@ -13,7 +13,7 @@ import UIKit
 final class ProfileViewModel: ObservableObject {
     @Published var offset: CGFloat = .zero
     @Published var profileState: LoadingState<Profile> = .idle
-    @Published var isShowAlert: Bool = false
+    @Published var isShowAlert = false
     @Published var username = ""
     @Published var email = ""
     

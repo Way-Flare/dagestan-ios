@@ -10,8 +10,8 @@ import DesignSystem
 import SwiftUI
 
 struct PlaceReviewAndRatingView: View {
-    let rating: Double
-    let reviewsCount: Int
+    let review: ReviewModel
+    @State private var showingReview = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Grid.pt12) {
@@ -20,14 +20,18 @@ struct PlaceReviewAndRatingView: View {
                 .foregroundStyle(WFColor.foregroundPrimary)
 
             VStack(spacing: Grid.pt12) {
-                RatingWingView(rating: rating, reviewsCount: reviewsCount)
+                RatingWingView(rating: review.rating, reviewsCount: review.feedbackCount)
                 Divider()
                     .background(WFColor.borderMuted)
                     .frame(height: Grid.pt16)
+
                 VStack(spacing: Grid.pt12) {
                     Text("Оцените место и оставьте отзыв")
                         .foregroundStyle(WFColor.iconPrimary)
-                    StarsView(amount: 0, size: .l)
+
+                    StarsView(amount: 0, size: .l) { _ in
+                        self.showingReview = true
+                    }
                 }
             }
             .frame(maxWidth: .infinity)
@@ -37,9 +41,8 @@ struct PlaceReviewAndRatingView: View {
             .background(WFColor.surfacePrimary)
             .cornerStyle(.constant(Grid.pt12))
         }
+        .sheet(isPresented: $showingReview) {
+            ReviewView(review: review)
+        }
     }
-}
-
-#Preview {
-    PlaceReviewAndRatingView(rating: 5, reviewsCount: 12)
 }
