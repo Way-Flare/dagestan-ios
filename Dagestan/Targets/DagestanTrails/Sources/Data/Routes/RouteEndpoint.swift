@@ -11,13 +11,16 @@ import CoreKit
 public enum RouteEndpoint: ApiEndpoint {
     case allRoutes
     case route(id: Int)
+    case routeFeedbacks(parameters: PlaceFeedbackParametersDTO)
     
     public var path: String {
         switch self {
             case .allRoutes:
                 "routes/all/"
-            case let .route(id):
+            case .route(let id):
                 "routes/\(id)/"
+            case .routeFeedbacks(let parameters):
+                "places/\(parameters.id)/feedbacks/"
         }
     }
     
@@ -27,5 +30,21 @@ public enum RouteEndpoint: ApiEndpoint {
     
     public var headers: Headers? {
         nil
+    }
+    
+    public var query: Parameters? {
+        switch self {
+            case .routeFeedbacks(let parameters):
+                var query: [String: Int] = [:]
+                if let pageSize = parameters.pageSize {
+                    query["page_size"] = pageSize
+                }
+                if let pages = parameters.pages {
+                    query["pages"] = pages
+                }
+                return query
+            default:
+                return nil
+        }
     }
 }

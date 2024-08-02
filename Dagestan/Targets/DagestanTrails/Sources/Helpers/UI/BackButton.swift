@@ -9,8 +9,7 @@ import SwiftUI
 import DesignSystem
 
 struct BackButton: View {
-    @Environment(\.dismiss)
-    var dismiss
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         Button {
@@ -31,6 +30,24 @@ struct BackButton: View {
                     color: WFColor.accentPrimary.opacity(0.2),
                     radius: Grid.pt6
                 )
+        }
+    }
+}
+
+struct CloseButton: View {
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        Button {
+            dismiss()
+        } label: {
+            Image(systemName: "xmark")
+                .resizable()
+                .frame(width: 16, height: 16)
+                .foregroundColor(WFColor.iconPrimary)
+                .padding(6)
+                .background(WFColor.surfacePrimary)
+                .cornerRadius(8)
         }
     }
 }

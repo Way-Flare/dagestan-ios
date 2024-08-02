@@ -42,7 +42,7 @@ struct PlaceView: View {
     }
 
     var body: some View {
-        if let place {
+        if place != nil {
             NavigationLink(
                 destination: PlaceDetailView(viewModel: placeDetailViewModel, routeService: routeService, onFavoriteAction: onFavoriteAction)
             ) {
@@ -113,8 +113,7 @@ extension PlaceView {
         .padding(.horizontal, Grid.pt8)
     }
 
-    @ViewBuilder
-    private var titleAndRatingView: some View {
+    @ViewBuilder private var titleAndRatingView: some View {
         if let place {
             HStack {
                 Text(place.name)

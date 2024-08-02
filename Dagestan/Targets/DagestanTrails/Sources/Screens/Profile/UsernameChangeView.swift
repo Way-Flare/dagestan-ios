@@ -47,6 +47,7 @@ extension UsernameChangeView {
         WFButton(
             title: "Сохранить",
             size: .l,
+            state: viewModel.profileState.isLoading ? .loading : .default,
             type: .primary
         ) {
             viewModel.patchProfile(

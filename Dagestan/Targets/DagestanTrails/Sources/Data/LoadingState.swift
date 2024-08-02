@@ -39,3 +39,5 @@ enum LoadingState<T> {
         return false
     }
 }
+
+extension LoadingState: Equatable where T: Equatable { }

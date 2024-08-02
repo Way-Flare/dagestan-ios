@@ -14,6 +14,8 @@ import MapboxMaps
 
 struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
+    @State private var scrollViewOffset: CGFloat = 0
+
     let routeService: IRouteService
     let onFavoriteAction: (() -> Void)?
 
@@ -25,10 +27,9 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                     bottomContentContainerView.isHidden(viewModel.state.isLoading)
                 }
             }
-            .edgesIgnoringSafeArea(.top)
-            .scrollIndicators(.hidden)
             .onViewDidLoad {
                 viewModel.loadPlaceDetail()
+                viewModel.loadPlaceFeedbacks()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
@@ -52,19 +53,17 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         }
     }
 
-    // TODO: Вернуть в рамках DT-191
-//    @ViewBuilder private var reviewContainerView: some View {
-//        if let feedbacks = viewModel.state.data?.placeFeedbacks {
-//            VStack(spacing: Grid.pt24) {
-//                ForEach(feedbacks, id: \.id) { feedback in
-//                    UserReviewView(feedback: feedback)
-//                }
-//            }
-//        }
-//    }
+    @ViewBuilder private var reviewContainerView: some View {
+        if let feedbacks = viewModel.placeFeedbacks.data?.results {
+            VStack(alignment: .leading, spacing: Grid.pt24) {
+                ForEach(feedbacks, id: \.id) { feedback in
+                    UserReviewView(feedback: feedback)
+                }
+            }
+        }
+    }
 
-    @ViewBuilder
-    private var bottomContentContainerView: some View {
+    @ViewBuilder private var bottomContentContainerView: some View {
         if let isFavorite = viewModel.state.data?.isFavorite {
             VStack(spacing: .zero) {
                 if viewModel.isVisibleSnackbar {
@@ -81,37 +80,50 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         }
     }
 
-    @ViewBuilder func getContentView() -> some View {
+    @ViewBuilder 
+    func getContentView() -> some View {
         if let place = viewModel.state.data {
-            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
-                if let images = viewModel.state.data?.images {
-                    SliderView(images: images)
-                }
-            } content: {
-                VStack(alignment: .leading, spacing: Grid.pt16) {
-                    PlaceDetailInfoView(place: place, formatter: viewModel.formatter)
-                    PlaceContactInformationView(
-                        isVisible: $viewModel.isVisibleSnackbar,
-                        place: place
-                    )
-                    if viewModel.state.data?.routes.count ?? 0 > 0 {
-                        PlaceRouteInfoView(
-                            type: .place(title: "Это место в маршрутах"),
-                            items: place.routes.map { $0.asDomain() },
-                            routeService: routeService,
-                            placeService: viewModel.service,
-                            onFavoriteAction: onFavoriteAction // тут баг если будет ебейшая иерархия place/route пофикшу позже
-                        )
+            ScrollViewReader { proxy in
+                StretchableHeaderScrollView(
+                    showsBackdrop: $viewModel.isBackdropVisible,
+                    scrollViewOffset: $scrollViewOffset
+                ) {
+                    if let images = viewModel.state.data?.images {
+                        SliderView(images: images)
                     }
-                    mapContainerView
-                    PlaceSendErrorView()
-                    PlaceReviewAndRatingView(
-                        rating: place.rating,
-                        reviewsCount: place.feedbackCount
-                    )
+                } content: {
+                    VStack(alignment: .leading, spacing: Grid.pt16) {
+                        PlaceDetailInfoView(place: viewModel.state.data, formatter: viewModel.formatter)
+                        PlaceContactInformationView(
+                            isVisible: $viewModel.isVisibleSnackbar,
+                            place: viewModel.state.data
+                        )
+                        if viewModel.state.data?.routes.count ?? 0 > 0 {
+                            PlaceRouteInfoView(
+                                type: .place(title: "Это место в маршрутах"),
+                                items: viewModel.state.data?.routes.map { $0.asDomain() }
+                            )
+                        }
+                        mapContainerView
+                        PlaceSendErrorView()
+                        if let place = viewModel.state.data {
+                            PlaceReviewAndRatingView(review: place.asDomain(), isPlaces: true) {
+                                viewModel.loadPlaceDetail()
+                                viewModel.loadPlaceFeedbacks()
+                            }
+                        }
+                        reviewContainerView
+                    }
+                    .padding(.horizontal, Grid.pt12)
+                    .padding(.bottom, Grid.pt82)
                 }
-                .padding(.horizontal, Grid.pt12)
-                .padding(.bottom, Grid.pt82)
+                .onAppear {
+                    proxy.scrollTo(scrollViewOffset, anchor: .center)
+                }
+                .font(.manropeRegular(size: Grid.pt14))
+                .overlay(alignment: .bottom) { bottomContentContainerView }
+                .edgesIgnoringSafeArea(.top)
+                .scrollIndicators(.hidden)
             }
         } else if viewModel.state.isError {
             FailedLoadingView {

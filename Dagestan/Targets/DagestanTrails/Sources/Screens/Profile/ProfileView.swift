@@ -14,6 +14,7 @@ struct ProfileView: View {
     @AppStorage("isAuthorized") var isAuthorized = false
     @State private var showingAlert = false
     @ObservedObject var viewModel: ProfileViewModel
+    @ObservedObject var feedbackViewModel: MyReviewsViewModel
 
     var body: some View {
         NavigationStack {
@@ -48,23 +49,31 @@ struct ProfileView: View {
                     .foregroundColor(WFColor.foregroundPrimary)
                     .font(.manropeSemibold(size: Grid.pt18))
             } else {
-                Rectangle()
-                    .fill()
-                    .frame(width: 62, height: 24)
-                    .skeleton()
-                    .cornerStyle(.constant(Grid.pt8))
-                    .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
-                        Button("Да", role: .cancel) {
-                            viewModel.loadProfile()
-                        }
-                        Button("Нет", role: .destructive) {}
-                    }  message: {
-                        Text("Повторить попытку?")
-                    }
-
+                makeRectangle()
+            }
+            if let email = viewModel.profileState.data?.email {
+                Text(email)
+                    .foregroundColor(WFColor.foregroundSoft)
+                    .font(.manropeSemibold(size: Grid.pt18))
             }
         }
         .offset(y: -Grid.pt65)
+    }
+
+    private func makeRectangle() -> some View {
+        Rectangle()
+            .fill()
+            .frame(width: 62, height: 34)
+            .skeleton()
+            .cornerStyle(.constant(Grid.pt8))
+            .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
+                Button("Да", role: .cancel) {
+                    viewModel.loadProfile()
+                }
+                Button("Нет", role: .destructive) {}
+            } message: {
+                Text("Повторить попытку?")
+            }
     }
 
     private var menuSection: some View {
@@ -77,7 +86,7 @@ struct ProfileView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, Grid.pt79)
+        .padding(.top, Grid.pt108)
         .padding(.horizontal, Grid.pt12)
         .background(WFColor.surfaceSecondary)
         .cornerRadius(Grid.pt24)
@@ -90,8 +99,8 @@ extension ProfileView {
     @ViewBuilder
     func getDestination(for item: MenuItemType) -> some View {
         switch item {
-            case .reviews: Text("Some")
-            case .account: AccountManagerView().environmentObject(viewModel)
+            case .reviews: MyReviewsView(profile: viewModel.profileState.data).environmentObject(feedbackViewModel)
+            case .account: AccountManagerView(avatar: viewModel.profileState.data?.avatar).environmentObject(viewModel)
             case .logout: EmptyView()
         }
     }
@@ -207,15 +216,19 @@ extension ProfileView {
         } else {
             if let url = viewModel.profileState.data?.avatar {
                 LazyImage(url: url) { state in
-                    state.image?
-                        .resizable()
-                        .frame(width: Grid.pt96, height: Grid.pt96)
-                        .overlay(
-                            Circle()
-                                .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
-                        )
-                        .clipShape(Circle())
-                        .shadow(radius: Grid.pt10)
+                    if state.isLoading {
+                        ShimmerCircleView()
+                    } else if let image = state.image {
+                        state.image?
+                            .resizable()
+                            .frame(width: Grid.pt96, height: Grid.pt96)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
+                            )
+                            .clipShape(Circle())
+                            .shadow(radius: Grid.pt10)
+                    }
                 }
             } else {
                 Circle()

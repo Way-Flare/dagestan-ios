@@ -72,7 +72,3 @@ struct PlaceDetailInfoView: View {
         }
     }
 }
-
-#Preview {
-    PlaceDetailInfoView(place: PlaceDetail.mock(), formatter: TimeSuffixFormatter(workTime: "10:00 - 20:00"))
-}

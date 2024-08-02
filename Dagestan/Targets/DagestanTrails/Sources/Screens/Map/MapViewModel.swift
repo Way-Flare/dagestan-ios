@@ -143,7 +143,8 @@ final class MapViewModel: IMapViewModel {
         }
     }
 
-    @objc private func handleFavoriteUpdate(_ notification: Notification) {
+    @objc 
+    private func handleFavoriteUpdate(_ notification: Notification) {
         guard let updater = notification.object as? FavoriteUpdater else { return }
 
         if updater.type == .places {

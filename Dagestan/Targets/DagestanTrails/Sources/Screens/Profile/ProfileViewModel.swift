@@ -8,12 +8,16 @@
 
 import CoreKit
 import UIKit
+import SwiftUI
+import PhotosUI
 
 // TODO: Запихать под протокол
 final class ProfileViewModel: ObservableObject {
+    @Published var pickerItem: PhotosPickerItem?
+    @Published var pickerImage: Image?
     @Published var offset: CGFloat = .zero
     @Published var profileState: LoadingState<Profile> = .idle
-    @Published var isShowAlert: Bool = false
+    @Published var isShowAlert = false
     @Published var username = ""
     @Published var email = ""
     
@@ -41,6 +45,8 @@ final class ProfileViewModel: ObservableObject {
     }
     
     func patchProfile(with request: ProfileEndpoint.PatchType) {
+        profileState = .loading
+        
         Task { @MainActor [weak self] in
             guard let self else { return }
             

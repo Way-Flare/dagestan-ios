@@ -70,7 +70,7 @@ public class KeychainService: IKeychainService {
           let query = [
               kSecClass as String: kSecClassGenericPassword as String,
               kSecAttrAccount as String: key
-          ] as [String : Any]
+          ] as [String: Any]
           
           SecItemDelete(query as CFDictionary)
       }

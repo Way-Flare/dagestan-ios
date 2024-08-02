@@ -5,8 +5,8 @@
 //  Created by Abdulaev Ramazan on 13.04.2024.
 //
 
-import Foundation
 import CoreKit
+import Foundation
 
 /// Сервис для работы с точками/местами
 final class PlacesService: IPlacesService {
@@ -58,6 +58,18 @@ final class PlacesService: IPlacesService {
             } else {
                 throw RequestError.unknown
             }
+        } catch {
+            throw error
+        }
+    }
+        
+    func getPlaceFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList {
+        let endpoint = PlacesEndpoint.placeFeedbacks(parameters: parameters)
+
+        do {
+            let placeFeedbackList = try await networkService.execute(endpoint, expecting: PlaceFeedbackListDTO.self)
+
+            return placeFeedbackList.asDomain()
         } catch {
             throw error
         }

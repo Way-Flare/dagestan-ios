@@ -22,6 +22,7 @@ struct ContentView: View {
     @StateObject private var favoriteViewModel: FavoriteListViewModel
     private let authService: AuthService
     private let favoriteService: FavoriteService
+    private let feedbackService: FeedbackService
 
     // сделать бы норм инжект)
     init(networkService: INetworkService) {
@@ -30,6 +31,7 @@ struct ContentView: View {
         let routeService = RouteService(networkService: networkService)
         let authService = AuthService(networkService: networkService)
         let favoriteService = FavoriteService(networkService: networkService)
+        let feedbackService = FeedbackService(networkService: networkService)
 
         self._mapViewModel = StateObject(wrappedValue: MapViewModel(placeService: placesService, favoriteService: favoriteService))
         self._routeViewModel = StateObject(
@@ -47,6 +49,7 @@ struct ContentView: View {
         )
         self.authService = authService
         self.favoriteService = favoriteService
+        self.feedbackService = feedbackService
     }
 
     var body: some View {
@@ -94,7 +97,7 @@ private extension ContentView {
     func tabItemView(for item: TabItem) -> some View {
         switch item {
             case .places: MapView(viewModel: mapViewModel, routeService: routeViewModel.routeService)
-            case .profile: ProfileContainerView(authService: authService)
+            case .profile: ProfileContainerView(authService: authService, feedbackService: feedbackService)
             case .favorite: FavoriteListView(viewModel: favoriteViewModel)
             case .routes: RouteListView(viewModel: routeViewModel, placeService: mapViewModel.placeService)
         }

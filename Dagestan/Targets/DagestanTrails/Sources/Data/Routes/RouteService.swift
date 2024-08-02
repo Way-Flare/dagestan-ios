@@ -45,4 +45,16 @@ public final class RouteService: IRouteService {
             throw error
         }
     }
+    
+    public func getPlaceFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList {
+        let endpoint = RouteEndpoint.routeFeedbacks(parameters: parameters)
+
+        do {
+            let routeFeedbackList = try await networkService.execute(endpoint, expecting: PlaceFeedbackListDTO.self)
+
+            return routeFeedbackList.asDomain()
+        } catch {
+            throw error
+        }
+    }
 }

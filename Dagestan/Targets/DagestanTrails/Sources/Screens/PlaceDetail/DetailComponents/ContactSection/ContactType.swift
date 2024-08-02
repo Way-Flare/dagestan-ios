@@ -33,7 +33,7 @@ enum ContactType {
             case .email:
                 DagestanTrailsAsset.smsLinear.swiftUIImage
             case .coordinates:
-                DagestanTrailsAsset.globalLinear.swiftUIImage
+                DagestanTrailsAsset.coordinates.swiftUIImage
             case .location:
                 DagestanTrailsAsset.locationLinear.swiftUIImage
             case .site:

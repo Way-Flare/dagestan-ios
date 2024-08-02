@@ -43,7 +43,7 @@ struct SkeletonModifier: ViewModifier {
             )
             .animation(.default, value: isLoading)
     }
-
+    
     @ViewBuilder
     private func skeletonIfNeeded(
         gradientOffset: CGFloat,

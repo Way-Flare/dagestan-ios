@@ -13,6 +13,7 @@ struct PlaceDetailDTO: Decodable {
     let longitude: Double
     let latitude: Double
     let name: String
+    let address: String?
     let tags: [TagPlaceDTO]
     let shortDescription: String?
     let description: String?
@@ -27,20 +28,6 @@ struct PlaceDetailDTO: Decodable {
 }
 
 extension PlaceDetailDTO {
-    struct PlaceFeedbackDTO: Decodable {
-        let id: Int
-        let images: [ImageDTO]
-        let user: UserDTO
-        let stars: Int
-        let comment: String?
-        let createdAt: String
-    }
-
-    struct UserDTO: Decodable {
-        let username: String
-        let avatar: String
-    }
-
     struct PlaceWayDTO: Decodable {
         let id: Int
         let info: String?
@@ -51,6 +38,7 @@ extension PlaceDetailDTO {
         let id: Int
         let phoneNumber: String?
         let email: String?
+        let site: String?
     }
 
     struct RouteDTO: Decodable {
@@ -59,7 +47,10 @@ extension PlaceDetailDTO {
         let shortDescription: String?
         let images: [ImageDTO]
         let rating: Int
+        let distance: Double
+        let travelTime: String
         let isFavorite: Bool
+        let place_count: String
     }
 }
 
@@ -75,6 +66,7 @@ extension PlaceDetailDTO: Domainable {
             id: id,
             coordinate: coordinate,
             name: name,
+            address: address,
             tags: tags.map { $0.asDomain() },
             shortDescription: shortDescription,
             description: description,
@@ -84,37 +76,13 @@ extension PlaceDetailDTO: Domainable {
             placeWays: placeWays.map { $0.asDomain() },
             contacts: contacts.map { $0.asDomain() },
             routes: routes.map { $0.asDomain() },
-            feedbackCount: feedbackCount,
-            isFavorite: isFavorite
+            isFavorite: isFavorite,
+            feedbackCount: feedbackCount
         )
     }
 }
 
-extension PlaceDetailDTO.PlaceFeedbackDTO: Domainable {
-    typealias DomainType = PlaceDetail.PlaceFeedback
 
-    func asDomain() -> PlaceDetail.PlaceFeedback {
-        PlaceDetail.PlaceFeedback(
-            id: id,
-            images: images.compactMap { $0.asDomain() },
-            user: user.asDomain(),
-            stars: stars,
-            comment: comment,
-            createdAt: createdAt
-        )
-    }
-}
-
-extension PlaceDetailDTO.UserDTO: Domainable {
-    typealias DomainType = PlaceDetail.User
-
-    func asDomain() -> PlaceDetail.User {
-        PlaceDetail.User(
-            username: username,
-            avatar: avatar
-        )
-    }
-}
 
 extension PlaceDetailDTO.PlaceWayDTO: Domainable {
     typealias DomainType = PlaceDetail.PlaceWay
@@ -135,7 +103,8 @@ extension PlaceDetailDTO.ContactDTO: Domainable {
         PlaceDetail.Contact(
             id: id,
             phoneNumber: phoneNumber,
-            email: email
+            email: email,
+            site: site
         )
     }
 }
@@ -150,7 +119,10 @@ extension PlaceDetailDTO.RouteDTO: Domainable {
             shortDescription: shortDescription,
             images: images.compactMap { $0.asDomain() },
             rating: rating,
-            isFavorite: isFavorite
+            distance: distance,
+            travelTime: travelTime,
+            isFavorite: isFavorite,
+            place_count: place_count
         )
     }
 }

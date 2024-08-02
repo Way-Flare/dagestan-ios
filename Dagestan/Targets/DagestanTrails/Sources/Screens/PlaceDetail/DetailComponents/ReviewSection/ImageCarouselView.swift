@@ -10,26 +10,34 @@ import DesignSystem
 import NukeUI
 import SwiftUI
 
+struct IdentifiableInt: Identifiable {
+    let id: Int
+}
+
 struct ImageCarousel: View {
     let images: [URL]
-    @State private var selectedImageIndex: Int?
+    @State private var selectedImageIndex: IdentifiableInt?
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(images.indices, id: \.self) { index in
-                    NavigationLink(destination: FullScreenImageGallery(images: images, selectedIndex: index)) {
-                        LazyImage(url: images[index]) { state in
-                            state.image?
-                                .resizable()
-                                .frame(width: 96, height: 96)
-                                .aspectRatio(contentMode: .fit)
-                                .cornerStyle(.constant(4))
-                        }
+                    LazyImage(url: images[index]) { state in
+                        state.image?
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 96, height: 96)
+                            .cornerStyle(.constant(4))
+                    }
+                    .onTapGesture {
+                        selectedImageIndex = IdentifiableInt(id: index)
                     }
                     .buttonStyle(DSPressedButtonStyle())
                 }
             }
+        }
+        .fullScreenCover(item: $selectedImageIndex) { index in
+            FullScreenImageGallery(images: images, selectedIndex: index.id)
         }
     }
 }

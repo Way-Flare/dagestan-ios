@@ -11,4 +11,5 @@ import Foundation
 public protocol IRouteService {
     func getAllRoutes() async throws -> [Route]
     func getRoute(id: Int) async throws -> RouteDetail
+    func getPlaceFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList 
 }

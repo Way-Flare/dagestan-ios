@@ -29,20 +29,12 @@ extension ProfileEndpoint: ApiEndpoint {
     }
 
     var headers: Headers? {
-        guard let data = KeychainService.load(key: ConstantAccess.accessTokenKey),
-              let token = String(data: data, encoding: .utf8) else {
-            return nil
-        }
-        
-        var parameters = [
-            "Content-Type": "application/json"
-        ]
-        
+
         if case .patchProfile(let request) = self {
-            parameters["field-modify"] = request.value
+            return ["field-modify": request.value]
         }
-        
-        return parameters
+
+        return nil
     }
 
     var body: Parameters? {
@@ -52,12 +44,33 @@ extension ProfileEndpoint: ApiEndpoint {
                     return ["username": value]
                 case .email(let value):
                     return ["email": value]
-                case .photo(let value):
-                    return ["avatar": value]
+                case .photo(value: let value):
+                    return nil
             }
         }
-        
+
         return nil
+    }
+
+    var multipartFormData: [MultipartFormData]? {
+        switch self {
+            case .patchProfile(let request):
+                switch request {
+                    case .photo(let value):
+                        return [
+                            MultipartFormData(
+                                data: value,
+                                name: "avatar",
+                                fileName: "avatar.jpg",
+                                mimeType: "image/jpeg"
+                            )
+                        ]
+                    default:
+                        return nil
+                }
+            default:
+                return nil
+        }
     }
 }
 
@@ -66,7 +79,7 @@ extension ProfileEndpoint {
         case name(value: String)
         case email(value: String)
         case photo(value: Data)
-        
+
         var value: String {
             switch self {
                 case .name: return "username"

@@ -32,19 +32,24 @@ struct SliderView: View {
         if !images.isEmpty {
             GeometryReader { geometry in
                 LazyImage(url: images[index]) { state in
-                    state.image?
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .clipped()
-                        .overlay(sliderView, alignment: .bottom)
-                        .overlay(gestureOverlay)
-                        .onReceive(timer) { _ in
-                            animateTimerProgress()
-                        }
-                        .skeleton(show: state.isLoading)
-
-                    if state.error != nil {
+                    if state.isLoading {
+                        Rectangle()
+                            .fill()
+                            .frame(width: geometry.size.width, height: geometry.size.height)
+                            .skeleton()
+                    } else if let image = state.image {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: geometry.size.width, height: geometry.size.height)
+                            .clipped()
+                            .overlay(sliderView, alignment: .bottom)
+                            .overlay(gestureOverlay)
+                            .onReceive(timer) { _ in
+                                animateTimerProgress()
+                            }
+                            .skeleton(show: state.isLoading)
+                    } else {
                         DagestanTrailsAsset.notAvaibleImage.swiftUIImage
                             .resizable()
                             .aspectRatio(contentMode: .fill)

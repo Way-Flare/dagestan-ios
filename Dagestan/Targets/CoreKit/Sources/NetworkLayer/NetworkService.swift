@@ -11,12 +11,6 @@ import Security
 public protocol INetworkService: AnyObject {
     func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
-        media: Data?,
-        expecting type: T.Type
-    ) async throws -> T
-
-    func execute<T: Decodable>(
-        _ endpoint: ApiEndpoint,
         expecting type: T.Type
     ) async throws -> T
 
@@ -26,23 +20,6 @@ public protocol INetworkService: AnyObject {
     ) async throws -> T
 
     func execute(_ endpoint: ApiEndpoint) async throws -> Int
-}
-
-extension INetworkService {
-    func execute<T: Decodable>(
-        _ endpoint: ApiEndpoint,
-        media: Data? = nil,
-        expecting type: T.Type
-    ) async throws -> T {
-        return try await execute(endpoint, media: media, expecting: type)
-    }
-
-    public func execute<T: Decodable>(
-        _ endpoint: ApiEndpoint,
-        expecting type: T.Type
-    ) async throws -> T {
-        return try await execute(endpoint, media: nil, expecting: type)
-    }
 }
 
 public final class DTNetworkService: INetworkService {
@@ -61,27 +38,25 @@ public final class DTNetworkService: INetworkService {
 
     public func execute<T: Decodable>(
         _ endpoint: ApiEndpoint,
-        media: Data? = nil,
         expecting type: T.Type
     ) async throws -> T {
-        guard let urlRequest = self.request(from: endpoint, media: media) else {
+        guard let urlRequest = self.request(from: endpoint) else {
             throw RequestError.invalidURL
         }
 
         return try await load(urlRequest, expecting: type)
     }
-    
+
     public func execute(_ endpoint: ApiEndpoint) async throws -> Int {
         guard let urlRequest = self.request(from: endpoint) else {
             throw RequestError.invalidURL
         }
-        
-        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+
+        let (_, response) = try await URLSession.shared.data(for: urlRequest)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw RequestError.noResponse
         }
-
 
         return httpResponse.statusCode
     }
@@ -106,12 +81,11 @@ public final class DTNetworkService: INetworkService {
         }
     }
 
-    private func request(from endpoint: ApiEndpoint, media: Data? = nil) -> URLRequest? {
+    private func request(from endpoint: ApiEndpoint) -> URLRequest? {
         var urlRequest = URLRequest(url: endpoint.url)
 
         if let query = endpoint.query,
-           var urlComponents = URLComponents(url: endpoint.url, resolvingAgainstBaseURL: false)
-        {
+           var urlComponents = URLComponents(url: endpoint.url, resolvingAgainstBaseURL: false) {
             let queryItems: [URLQueryItem] = query.map {
                 URLQueryItem(name: $0, value: "\($1)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))
             }
@@ -119,16 +93,20 @@ public final class DTNetworkService: INetworkService {
             urlRequest.url = urlComponents.url
         }
 
-        if let media {
+        if let multipartFormData = endpoint.multipartFormData {
+            let boundary = "Boundary-\(UUID().uuidString)"
+            urlRequest.httpBody = createMultipartBody(with: multipartFormData, boundary: boundary)
             urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            urlRequest.httpBody = createBodyWithParams(using: media)
         } else if let body = endpoint.body {
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
                 urlRequest.httpBody = jsonData
+                urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
             } catch {
-                print(error.localizedDescription)
+                print("Failed to serialize JSON: \(error.localizedDescription)")
             }
+        } else {
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
 
         // TODO: Constants.headers + enpoint.headers, когда добавим post запросы
@@ -137,23 +115,37 @@ public final class DTNetworkService: INetworkService {
         urlRequest.httpMethod = endpoint.method.rawValue
         urlRequest.allHTTPHeaderFields = endpoint.headers
         if let keychainData = KeychainService.load(key: ConstantAccess.accessTokenKey),
-           let accessToken = String(data: keychainData, encoding: .utf8) {
+           let accessToken = String(data: keychainData, encoding: .utf8)
+        {
             urlRequest.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
 
         return urlRequest
     }
 
-    private func createBodyWithParams(using data: Data) -> Data {
+    private func createMultipartBody(with parts: [MultipartFormData], boundary: String) -> Data {
         var body = Data()
-        let mimetype = "image/jpg"
-        let filename = String(Int(Date().timeIntervalSince1970)) + "Img.jpg"
-        body.appendString(string: "--\(boundary)\r\n")
-        body.appendString(string: "Content-Disposition: form-data; name=\"avatar\"; filename=\"\(filename)\"\r\n")
-        body.appendString(string: "Content-Type: \(mimetype)\r\n\r\n")
-        body.append(data)
-        body.appendString(string: "\r\n")
-        body.appendString(string: "--\(boundary)--\r\n")
+
+        for part in parts {
+            let boundaryText = "--\(boundary)\r\n"
+            body.append(boundaryText.data(using: .utf8)!)
+
+            if let filename = part.fileName, let mimeType = part.mimeType {
+                let contentDisposition = "Content-Disposition: form-data; name=\"\(part.name)\"; filename=\"\(filename)\"\r\n"
+                let contentType = "Content-Type: \(mimeType)\r\n\r\n"
+                body.append(contentDisposition.data(using: .utf8)!)
+                body.append(contentType.data(using: .utf8)!)
+            } else {
+                let contentDisposition = "Content-Disposition: form-data; name=\"\(part.name)\"\r\n\r\n"
+                body.append(contentDisposition.data(using: .utf8)!)
+            }
+            body.append(part.data)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+
+        let closingBoundary = "--\(boundary)--\r\n"
+        body.append(closingBoundary.data(using: .utf8)!)
+
         return body
     }
 
