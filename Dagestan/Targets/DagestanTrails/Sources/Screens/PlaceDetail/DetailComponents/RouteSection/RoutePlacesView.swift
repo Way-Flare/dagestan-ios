@@ -63,6 +63,7 @@ struct RoutePlacesView: View {
                         }
                     }
                 }
+                .buttonStyle(DSPressedButtonStyle())
             }
         }
     }

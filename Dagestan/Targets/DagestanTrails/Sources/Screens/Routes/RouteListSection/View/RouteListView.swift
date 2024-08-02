@@ -46,6 +46,7 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                                 viewModel.setFavorite(by: route.id)
                             }
                         }
+                        .buttonStyle(DSPressedButtonStyle())
                     }
                 }
                 .buttonStyle(PlainButtonStyle())

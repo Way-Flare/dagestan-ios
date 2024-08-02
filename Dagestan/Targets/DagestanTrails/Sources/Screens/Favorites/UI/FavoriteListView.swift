@@ -8,7 +8,6 @@
 import DesignSystem
 import SwiftUI
 
-
 struct FavoriteListView: View {
     @ObservedObject var viewModel: FavoriteListViewModel
 
@@ -87,6 +86,7 @@ struct FavoriteListView: View {
                                                 viewModel.setFavorite(by: place.id)
                                             }
                                         }
+                                        .buttonStyle(DSPressedButtonStyle())
                                     }
                                 }
                             } else {
@@ -117,6 +117,7 @@ struct FavoriteListView: View {
                                                 viewModel.setFavorite(by: route.id)
                                             }
                                         }
+                                        .buttonStyle(DSPressedButtonStyle())
                                     }
                                 }
                             } else {
