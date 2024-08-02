@@ -12,6 +12,7 @@ import SwiftUI
 import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
+    @State private var scrollViewOffset: CGFloat = 0
     @StateObject var viewModel: ViewModel
     let placeService: IPlacesService
     let onFavoriteAction: (() -> Void)?
@@ -24,6 +25,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             .font(.manropeRegular(size: Grid.pt14))
             .onViewDidLoad {
                 viewModel.loadRouteDetail()
+                viewModel.loadRouteFeedbacks()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
@@ -60,7 +62,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @ViewBuilder
     func getContentView() -> some View {
         if let route = viewModel.state.data {
-            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
+            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible, scrollViewOffset: $scrollViewOffset) {
                 if let images = viewModel.state.data?.images {
                     SliderView(images: images)
                 }
@@ -82,8 +84,13 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     mapContainerView
                     PlaceSendErrorView()
                     if let route = viewModel.state.data {
-                        PlaceReviewAndRatingView(review: route.asDomain())
+                        PlaceReviewAndRatingView(review: route.asDomain(), isPlaces: false) {
+                            viewModel.loadRouteDetail()
+                            viewModel.loadRouteFeedbacks()
+                        }
                     }
+                    
+                    reviewContainerView
                 }
                 .padding(.horizontal, Grid.pt12)
                 .padding(.bottom, Grid.pt82)
@@ -101,6 +108,16 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             }
         } else {
             ShimmerRouteDetailView()
+        }
+    }
+    
+    @ViewBuilder private var reviewContainerView: some View {
+        if let feedbacks = viewModel.routeFeedbacks.data?.results {
+            VStack(alignment: .leading, spacing: Grid.pt24) {
+                ForEach(feedbacks, id: \.id) { feedback in
+                    UserReviewView(feedback: feedback)
+                }
+            }
         }
     }
 

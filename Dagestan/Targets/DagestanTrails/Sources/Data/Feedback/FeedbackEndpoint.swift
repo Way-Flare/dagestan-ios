@@ -10,21 +10,24 @@ import CoreKit
 import Foundation
 
 enum FeedbackEndpoint: ApiEndpoint {
-    case getFeedbacks(FeedbackPaginator)
-    case sendFeedback(FeedbackReview)
+    case getFeedbacks(FeedbackPaginator, isPlace: Bool)
+    case sendFeedback(FeedbackReview, isPlace: Bool)
+    case getAllFeedback
     
     var path: String {
         switch self {
-            case .getFeedbacks(let feedbackPaginator):
-                return "places/\(feedbackPaginator.id)/feedbacks/"
-            case .sendFeedback(let feedbackReview):
-                return "places/\(feedbackReview.id)/feedbacks/"
+            case .getAllFeedback:
+                return "profile/feedbacks"
+            case let .getFeedbacks(feedbackPaginator, isPlace):
+                return "\(isPlace ? "places" : "routes")/\(feedbackPaginator.id)/feedbacks/"
+            case let .sendFeedback(feedbackReview, isPlace):
+                return "\(isPlace ? "places" : "routes")/\(feedbackReview.id)/feedbacks/"
         }
     }
     
     var method: CoreKit.Method {
         switch self {
-            case .getFeedbacks:
+            case .getFeedbacks, .getAllFeedback:
                 return .get
             case .sendFeedback:
                 return .post
@@ -37,11 +40,12 @@ enum FeedbackEndpoint: ApiEndpoint {
     
     var multipartFormData: [MultipartFormData]? {
         switch self {
-            case .sendFeedback(let feedbackReview):
+            case let .sendFeedback(feedbackReview, _):
                 var formData = [MultipartFormData]()
 
                 if let comment = feedbackReview.comment,
-                   let commentData = comment.data(using: .utf8) {
+                   let commentData = comment.data(using: .utf8)
+                {
                     formData.append(MultipartFormData(data: commentData, name: "comment"))
                     print("Comment data added")
                 }

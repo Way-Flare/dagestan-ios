@@ -27,20 +27,6 @@ struct PlaceDetail {
 }
 
 extension PlaceDetail {
-    struct PlaceFeedback: Hashable {
-        let id: Int
-        let images: [URL]
-        let user: User
-        let stars: Int
-        let comment: String?
-        let createdAt: String
-    }
-
-    struct User: Hashable {
-        let username: String
-        let avatar: String
-    }
-
     struct PlaceWay {
         let id: Int
         let info: String?

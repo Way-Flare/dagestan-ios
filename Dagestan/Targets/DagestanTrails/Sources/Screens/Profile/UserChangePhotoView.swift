@@ -7,6 +7,7 @@
 //
 
 import DesignSystem
+import NukeUI
 import PhotosUI
 import SwiftUI
 
@@ -34,9 +35,8 @@ struct TransferableImage: Transferable {
 }
 
 struct UserChangePhotoView: View {
-    @State private var pickerItem: PhotosPickerItem?
-    @State private var pickerImage: Image?
     @ObservedObject var viewModel: ProfileViewModel
+    let avatar: URL?
 
     var body: some View {
         VStack(spacing: Grid.pt16) {
@@ -46,7 +46,7 @@ struct UserChangePhotoView: View {
             Spacer()
         }
         .padding(.horizontal, Grid.pt16)
-        .onChange(of: pickerItem) { _ in
+        .onChange(of: viewModel.pickerItem) { _ in
             loadPhoto()
         }
     }
@@ -55,14 +55,24 @@ struct UserChangePhotoView: View {
 extension UserChangePhotoView {
     @ViewBuilder
     func getPhotoView() -> some View {
-        if pickerImage == nil {
+        if let avatar {
+            LazyImage(url: avatar) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 186, height: 186)
+                        .cornerStyle(.round)
+                }
+            }
+        } else if viewModel.pickerImage == nil {
             WFAvatarView.initials(
                 "GR",
                 userId: UUID().uuidString,
                 size: .size186
             )
         } else {
-            pickerImage?
+            viewModel.pickerImage?
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: Grid.pt186, height: Grid.pt186)
@@ -72,7 +82,7 @@ extension UserChangePhotoView {
 
     func getPhotoPickerView() -> some View {
         PhotosPicker(
-            selection: $pickerItem,
+            selection: $viewModel.pickerItem,
             matching: .images,
             photoLibrary: .shared()
         ) {
@@ -88,13 +98,13 @@ extension UserChangePhotoView {
 extension UserChangePhotoView {
     func loadPhoto() {
         Task {
-            guard let pickerItem = pickerItem else {
+            guard let pickerItem = viewModel.pickerItem else {
                 print("No image selected")
                 return
             }
 
             do {
-                guard let loadedImage = try await pickerItem.loadTransferable(type: TransferableImage.self) else {
+                guard let loadedImage = try await viewModel.pickerItem?.loadTransferable(type: TransferableImage.self) else {
                     return
                 }
                 guard let uiImage = UIImage(data: loadedImage.imageData) else {
@@ -114,7 +124,7 @@ extension UserChangePhotoView {
                 if FileManagerHelper.saveImage(imageData, withName: "cachedUserPhoto.jpg") {
                     print("Image saved successfully")
                     DispatchQueue.main.async {
-                        self.pickerImage = Image(uiImage: uiImage)
+                        viewModel.pickerImage = Image(uiImage: uiImage)
 
                         if let data = uiImage.jpegData(compressionQuality: 0.0) {
                             viewModel.patchProfile(with: .photo(value: data))

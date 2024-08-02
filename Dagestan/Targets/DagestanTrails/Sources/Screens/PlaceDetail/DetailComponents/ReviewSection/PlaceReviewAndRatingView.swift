@@ -12,6 +12,10 @@ import SwiftUI
 struct PlaceReviewAndRatingView: View {
     let review: ReviewModel
     @State private var showingReview = false
+    @State private var rating = 0
+    var isPlaces: Bool
+    var onSuccessSaveButton: (() -> Void)?
+
 
     var body: some View {
         VStack(alignment: .leading, spacing: Grid.pt12) {
@@ -29,8 +33,9 @@ struct PlaceReviewAndRatingView: View {
                     Text("Оцените место и оставьте отзыв")
                         .foregroundStyle(WFColor.iconPrimary)
 
-                    StarsView(amount: 0, size: .l) { _ in
+                    StarsView(amount: rating, size: .l) { new in
                         self.showingReview = true
+                        rating = new
                     }
                 }
             }
@@ -42,7 +47,12 @@ struct PlaceReviewAndRatingView: View {
             .cornerStyle(.constant(Grid.pt12))
         }
         .sheet(isPresented: $showingReview) {
-            ReviewView(review: review)
+            ReviewView(
+                initialRating: $rating,
+                review: review,
+                onSaveButton: onSuccessSaveButton,
+                isPlaces: isPlaces
+            )
         }
     }
 }

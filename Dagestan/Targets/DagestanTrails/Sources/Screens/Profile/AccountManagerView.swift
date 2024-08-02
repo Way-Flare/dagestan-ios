@@ -12,6 +12,7 @@ import SwiftUI
 struct AccountManagerView: View {
     @State private var showAlert = false
     @EnvironmentObject var viewModel: ProfileViewModel
+    let avatar: URL?
 
     var body: some View {
         VStack(spacing: Grid.pt10) {
@@ -37,7 +38,7 @@ extension AccountManagerView {
     func getDestination(for item: MenuItemType) -> some View {
         switch item {
             case .username: UsernameChangeView(isUserChange: true, placeholder: "Введите имя", viewModel: viewModel)
-            case .userPhoto: UserChangePhotoView(viewModel: viewModel)
+            case .userPhoto: UserChangePhotoView(viewModel: viewModel, avatar: avatar)
             case .changeEmail: UsernameChangeView(isUserChange: false, placeholder: "Введите почту", viewModel: viewModel)
             case .deleteAccount: EmptyView()
         }

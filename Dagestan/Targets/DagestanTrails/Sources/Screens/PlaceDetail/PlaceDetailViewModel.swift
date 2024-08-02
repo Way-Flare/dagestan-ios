@@ -6,18 +6,22 @@
 //
 
 import Foundation
+
 protocol IPlaceDetailViewModel: ObservableObject {
     var state: LoadingState<PlaceDetail> { get }
+    var placeFeedbacks: LoadingState<PlaceFeedbackList> { get }
     var isVisibleSnackbar: Bool { get set }
     var isBackdropVisible: Bool { get set }
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
 
     func loadPlaceDetail()
+    func loadPlaceFeedbacks()
 }
 
 final class PlaceDetailViewModel: IPlaceDetailViewModel {
     @Published var state: LoadingState<PlaceDetail> = .idle
+    @Published var placeFeedbacks: LoadingState<PlaceFeedbackList> = .idle
     @Published var isVisibleSnackbar = false
     @Published var isBackdropVisible = false
     @Published var isFavorite: Bool
@@ -25,9 +29,9 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
 
     lazy var formatter = TimeSuffixFormatter(workTime: state.data?.workTime)
 
+    private var isLoadingMoreCharacters = false
     let service: IPlacesService
     private let placeId: Int
-    private var task: Task<Void, Error>?
 
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками
@@ -36,10 +40,6 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
         self.service = service
         self.placeId = placeId
         self.isFavorite = isFavorite
-    }
-
-    deinit {
-        task?.cancel()
     }
 
     func loadPlaceDetail() {
@@ -53,6 +53,22 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
                 state = .loaded(place)
             } catch {
                 state = .failed(error.localizedDescription)
+                print("Failed to load place: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    @MainActor
+    func loadPlaceFeedbacks() {
+        placeFeedbacks = .loading
+
+        Task {
+            do {
+                let parameters = PlaceFeedbackParametersDTO(id: placeId, pageSize: nil, pages: nil)
+                let feedbacks = try await service.getPlaceFeedbacks(parameters: parameters)
+                placeFeedbacks = .loaded(feedbacks)
+            } catch {
+                placeFeedbacks = .failed(error.localizedDescription)
                 print("Failed to load place: \(error.localizedDescription)")
             }
         }

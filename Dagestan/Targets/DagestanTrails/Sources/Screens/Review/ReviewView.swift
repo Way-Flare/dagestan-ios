@@ -23,21 +23,24 @@ public struct ReviewModel: Identifiable {
 
 class ReviewViewModel: ObservableObject {
     @Published var text = ""
-    @Published var rating = 0
     @Published var pickerItems: [PhotosPickerItem] = []
     @Published var selectedImages: [UIImage] = []
-    @Published var sendStatus: LoadingState<Void> = .idle
+    @Published var sendStatus: LoadingState<Bool> = .idle
+    @Published var showAlert = false
+
+    @Published var rating: Int
 
     private let service: IFeedbackService
 
-    init(service: IFeedbackService = FeedbackService(networkService: DTNetworkService())) {
+    init(service: IFeedbackService = FeedbackService(networkService: DTNetworkService()), rating: Int) {
         self.service = service
+        self.rating = rating
     }
 
     @MainActor
-    func sendReview(by id: Int) {
+    func sendReview(by id: Int, fromPlace value: Bool) {
         sendStatus = .loading
-        
+
         Task {
             do {
                 let photos = selectedImages.compactMap { $0.jpegData(compressionQuality: 1.0) }
@@ -49,10 +52,13 @@ class ReviewViewModel: ObservableObject {
                     images: photos
                 )
 
-                let response = try await service.addFeedback(review: review)
-                sendStatus = .loaded(())
+                let response = try await service.addFeedback(review: review, isPlace: value)
+                sendStatus = .loaded(true)
             } catch {
-                sendStatus = .failed(error.localizedDescription)
+                showAlert = true
+                if let error = error as? RequestError {
+                    sendStatus = .failed(error.message)
+                }
                 print("Error: \(error.localizedDescription)")
             }
         }
@@ -81,9 +87,26 @@ class ReviewViewModel: ObservableObject {
 }
 
 struct ReviewView: View {
-    @StateObject var viewModel = ReviewViewModel()
+    @StateObject var viewModel: ReviewViewModel
     @Environment(\.dismiss) var dismiss
     @State private var editorHeight: CGFloat = 100
+    @Binding var rating: Int
+    var onSuccessSaveButton: (() -> Void)?
+    let isPlaces: Bool
+
+    init(
+        initialRating: Binding<Int>,
+        review: ReviewModel,
+        onSaveButton: (() -> Void)? = nil,
+        isPlaces: Bool
+    ) {
+        self._viewModel = StateObject(wrappedValue: ReviewViewModel(rating: initialRating.wrappedValue))
+        self._rating = initialRating
+        self.review = review
+        self.onSuccessSaveButton = onSaveButton
+        self.isPlaces = isPlaces
+    }
+
     let review: ReviewModel
 
     var body: some View {
@@ -114,6 +137,13 @@ struct ReviewView: View {
                                 .frame(maxWidth: .infinity)
                                 .cornerStyle(.constant(12))
                                 .padding(.top, 8)
+                        } else {
+                            DagestanTrailsAsset.notAvaibleImage.swiftUIImage
+                                .resizable()
+                                .frame(height: 207)
+                                .frame(maxWidth: .infinity)
+                                .cornerStyle(.constant(12))
+                                .padding(.top, 8)
                         }
                     }
                     .padding(.horizontal, 12)
@@ -131,7 +161,6 @@ struct ReviewView: View {
                     }
                     .padding(.horizontal, 12)
 
-
                     if viewModel.pickerItems.isEmpty {
                         getMaxWidthPhotoPickerView()
                             .padding(.horizontal, 12)
@@ -145,8 +174,8 @@ struct ReviewView: View {
                             Text("Поставьте оценку месту")
                                 .font(.manropeRegular(size: 14))
                                 .foregroundStyle(WFColor.foregroundPrimary)
-                            StarsView(amount: viewModel.rating, size: .l) { rating in
-                                print(rating)
+                            StarsView(amount: rating, size: .l) { rating in
+                                self.rating = rating
                                 viewModel.rating = rating
                             }
                         }
@@ -174,9 +203,13 @@ struct ReviewView: View {
                             state: viewModel.sendStatus.isLoading ? .loading : .default,
                             type: .primary
                         ) {
-                            viewModel.sendReview(by: review.id)
-                            dismiss()
-                            
+                            viewModel.sendReview(by: review.id, fromPlace: isPlaces)
+                        }
+                        .onChange(of: viewModel.sendStatus) { status in
+                            if let _ = status.data  {
+                                dismiss()
+                                onSuccessSaveButton?()
+                            }
                         }
                         .padding(12)
                     }
@@ -186,6 +219,16 @@ struct ReviewView: View {
             }
         }
         .scrollIndicators(.hidden)
+        .alert("Ошибка", isPresented: $viewModel.showAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            if let error = viewModel.sendStatus.error {
+                Text(error)
+                    .foregroundStyle(WFColor.foregroundPrimary)
+                    .font(.manropeRegular(size: Grid.pt20))
+                    .multilineTextAlignment(.center)
+            }
+        }
         .onChange(of: viewModel.pickerItems) { _ in
             viewModel.loadImages()
         }
@@ -257,24 +300,6 @@ struct ReviewView: View {
             }
             .frame(width: 80, height: 80)
         }
-    }
-}
-
-#Preview {
-    @State var isPressed: Bool = true
-
-    return VStack {
-        Button("Press") {
-            isPressed = true
-        }
-        .padding(16)
-
-        Color.red
-            .sheet(isPresented: $isPressed) {
-                ReviewView(
-                    review: ReviewModel(id: 5, image: nil, name: "Test", address: "Test", rating: 0, feedbackCount: 0)
-                )
-            }
     }
 }
 

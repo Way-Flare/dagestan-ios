@@ -25,11 +25,6 @@ struct AccountDTO: Decodable {
     let createdAt: String
 }
 
-struct UserDTO: Decodable {
-    let username: String
-    let avatar: String
-}
-
 struct FeedbackDTO: Decodable {
     let stars: Int
     let comment: String?
@@ -37,6 +32,7 @@ struct FeedbackDTO: Decodable {
 }
 
 protocol IFeedbackService {
-    func getFeedbacks(paginator: FeedbackEndpoint.FeedbackPaginator) async throws -> FeedbackPageResultDTO
-    func addFeedback(review: FeedbackEndpoint.FeedbackReview) async throws -> FeedbackDTO
+    func getFeedbacks(paginator: FeedbackEndpoint.FeedbackPaginator, isPlace: Bool) async throws -> FeedbackPageResultDTO 
+    func addFeedback(review: FeedbackEndpoint.FeedbackReview, isPlace: Bool) async throws
+    func getAllFeedback() async throws -> [UserFeedback]
 }

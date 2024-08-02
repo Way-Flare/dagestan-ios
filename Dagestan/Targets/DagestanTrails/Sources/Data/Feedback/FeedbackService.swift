@@ -16,23 +16,33 @@ class FeedbackService: IFeedbackService {
         self.networkService = networkService
     }
 
-    func getFeedbacks(paginator: FeedbackEndpoint.FeedbackPaginator) async throws -> FeedbackPageResultDTO {
-        let endpoint = FeedbackEndpoint.getFeedbacks(paginator)
+    func getFeedbacks(paginator: FeedbackEndpoint.FeedbackPaginator, isPlace: Bool) async throws -> FeedbackPageResultDTO {
+        let endpoint = FeedbackEndpoint.getFeedbacks(paginator, isPlace: isPlace)
         
         do {
-            let token = try await networkService.execute(endpoint, expecting: FeedbackPageResultDTO.self)
-            return token
+            let page = try await networkService.execute(endpoint, expecting: FeedbackPageResultDTO.self)
+            return page
         } catch {
             throw error
         }
     }
 
-    func addFeedback(review: FeedbackEndpoint.FeedbackReview) async throws -> FeedbackDTO {
-        let endpoint = FeedbackEndpoint.sendFeedback(review)
+    func addFeedback(review: FeedbackEndpoint.FeedbackReview, isPlace: Bool) async throws {
+        let endpoint = FeedbackEndpoint.sendFeedback(review, isPlace: isPlace)
         
         do {
-            let token = try await networkService.execute(endpoint, expecting: FeedbackDTO.self)
-            return token
+            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
+        } catch {
+            throw error
+        }
+    }
+
+    func getAllFeedback() async throws -> [UserFeedback] {
+        let endpoint = FeedbackEndpoint.getAllFeedback
+        
+        do {
+            let feedback = try await networkService.execute(endpoint, expecting: [UserFeedbackDTO].self)
+            return feedback.map { $0.asDomain() }
         } catch {
             throw error
         }

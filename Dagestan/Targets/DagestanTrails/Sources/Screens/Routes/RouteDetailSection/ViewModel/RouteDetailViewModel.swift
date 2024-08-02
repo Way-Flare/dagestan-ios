@@ -13,8 +13,10 @@ protocol IRouteDetailViewModel: ObservableObject {
     var routeCoordinates: [CLLocationCoordinate2D] { get }
     var service: IRouteService { get }
     var isBackdropVisible: Bool { get set }
+    var routeFeedbacks: LoadingState<PlaceFeedbackList> { get }
 
     func loadRouteDetail()
+    func loadRouteFeedbacks()
     func calculateCenterAndApproximateZoom() -> (center: CLLocationCoordinate2D, zoom: Double)
 }
 
@@ -24,6 +26,7 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
 
     @Published var state: LoadingState<RouteDetail> = .idle
     @Published var isBackdropVisible = false
+    @Published var routeFeedbacks: LoadingState<PlaceFeedbackList> = .idle
 
     var routeCoordinates: [CLLocationCoordinate2D] {
         [
@@ -47,6 +50,22 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
                 state = .loaded(route)
             } catch {
                 state = .failed(error.localizedDescription)
+            }
+        }
+    }
+    
+    @MainActor
+    func loadRouteFeedbacks() {
+        routeFeedbacks = .loading
+
+        Task {
+            do {
+                let parameters = PlaceFeedbackParametersDTO(id: id, pageSize: nil, pages: nil)
+                let feedbacks = try await service.getPlaceFeedbacks(parameters: parameters)
+                routeFeedbacks = .loaded(feedbacks)
+            } catch {
+                routeFeedbacks = .failed(error.localizedDescription)
+                print("Failed to load place: \(error.localizedDescription)")
             }
         }
     }

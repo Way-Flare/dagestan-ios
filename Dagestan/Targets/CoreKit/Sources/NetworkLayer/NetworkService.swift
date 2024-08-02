@@ -93,20 +93,20 @@ public final class DTNetworkService: INetworkService {
             urlRequest.url = urlComponents.url
         }
 
-        if let body = endpoint.body {
+        if let multipartFormData = endpoint.multipartFormData {
+            let boundary = "Boundary-\(UUID().uuidString)"
+            urlRequest.httpBody = createMultipartBody(with: multipartFormData, boundary: boundary)
+            urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        } else if let body = endpoint.body {
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: body, options: .prettyPrinted)
                 urlRequest.httpBody = jsonData
                 urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
             } catch {
-                print(error.localizedDescription)
+                print("Failed to serialize JSON: \(error.localizedDescription)")
             }
-        }
-        
-        if let multipartFormData = endpoint.multipartFormData { // тут не кастится
-            let boundary = "Boundary-\(UUID().uuidString)"
-            urlRequest.httpBody = createMultipartBody(with: multipartFormData, boundary: boundary)
-            urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        } else {
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
 
         // TODO: Constants.headers + enpoint.headers, когда добавим post запросы
