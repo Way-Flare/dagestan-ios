@@ -25,6 +25,7 @@ struct PlaceDetailDTO: Decodable {
     let routes: [RouteDTO]
     let feedbackCount: Int
     let isFavorite: Bool
+    let isPromocode: Bool
 }
 
 extension PlaceDetailDTO {
@@ -50,7 +51,7 @@ extension PlaceDetailDTO {
         let distance: Double
         let travelTime: String
         let isFavorite: Bool
-        let place_count: String
+        let placesCount: Int
     }
 }
 
@@ -79,6 +80,8 @@ extension PlaceDetailDTO: Domainable {
             isFavorite: isFavorite,
             feedbackCount: feedbackCount
         )
+
+//        return PlaceDetail(id: 0, coordinate: coordinate, name: "", address: nil, tags: [], shortDescription: nil, description: "", images: [], workTime: nil, rating: 0, placeWays: [], contacts: [], routes: [], isFavorite: false, feedbackCount: 0)
     }
 }
 
@@ -117,12 +120,12 @@ extension PlaceDetailDTO.RouteDTO: Domainable {
             id: id,
             title: title,
             shortDescription: shortDescription,
-            images: images.compactMap { $0.asDomain() },
+            images: [],
             rating: rating,
             distance: distance,
             travelTime: travelTime,
             isFavorite: isFavorite,
-            place_count: place_count
+            placesCount: placesCount
         )
     }
 }

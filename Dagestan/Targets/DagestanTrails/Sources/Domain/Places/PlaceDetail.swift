@@ -49,7 +49,7 @@ extension PlaceDetail {
         let distance: Double
         let travelTime: String
         let isFavorite: Bool
-        let place_count: String
+        let placesCount: Int
     }
 }
 

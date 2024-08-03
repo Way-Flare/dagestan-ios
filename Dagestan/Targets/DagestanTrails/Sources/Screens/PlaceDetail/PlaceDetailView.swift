@@ -105,7 +105,9 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                             )
                         }
                         mapContainerView
-                        PlaceSendErrorView()
+                        Link(destination: URL(string: "https://wa.me/message/R5ZOYUTGMW4BH1")!) {
+                            PlaceSendErrorView()
+                        }
                         if let place = viewModel.state.data {
                             PlaceReviewAndRatingView(review: place.asDomain(), isPlaces: true) {
                                 viewModel.loadPlaceDetail()
