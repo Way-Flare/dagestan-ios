@@ -1,7 +1,6 @@
 //
 //  DSPressedButtonStyle.swift
 //
-//
 //  Created by Ramazan Abdulaev on 01.08.2024.
 //
 
@@ -11,8 +10,13 @@ import SwiftUI
 public struct DSPressedButtonStyle: PrimitiveButtonStyle {
     @State private var isPressed = false
     @State private var viewFrame: CGRect = .zero
+    private let isCancellable: Bool
 
-    public init() { }
+    /// Инициализатор
+    /// - Parameter isCancellable: Можно ли отменить нажатие
+    public init(isCancellable: Bool = true) {
+        self.isCancellable = isCancellable
+    }
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -35,7 +39,7 @@ public struct DSPressedButtonStyle: PrimitiveButtonStyle {
                     .onEnded { value in
                         withAnimation {
                             isPressed = false
-                            if viewFrame.contains(value.location) {
+                            if !isCancellable || (isCancellable && viewFrame.contains(value.location)) {
                                 configuration.trigger()
                             }
                         }
