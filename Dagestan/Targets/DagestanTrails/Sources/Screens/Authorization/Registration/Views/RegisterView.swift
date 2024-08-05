@@ -13,8 +13,6 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
     @ObservedObject var viewModel: RegisterViewModel
     @Binding var path: NavigationPath
 
-    @State private var isPrivacyPolicyAccepted: Bool = false
-
     var body: some View {
         contentView
             .setCustomBackButton()
@@ -62,7 +60,7 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
                     .font(.manropeRegular(size: Grid.pt14))
             }
             // Чекбокс для согласия на обработку персональных данных
-            Toggle(isOn: $isPrivacyPolicyAccepted) {
+            Toggle(isOn: $viewModel.isPrivacyPolicyAccepted) {
                 Text("Я подтверждаю согласие на [Политику обработки персональных данных](https://dagestan-trails.ru)")
                     .font(.manropeRegular(size: Grid.pt12))
             }
@@ -78,7 +76,7 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
             WFButton(
                 title: "Зарегистрироваться",
                 size: .l,
-                state: viewModel.registrationState.isLoading ? .loading : viewModel.phoneNumber.count >= 11 && isPrivacyPolicyAccepted ? .default : .disabled, // TODO: Вынести этот ебаный пиздец
+                state: buttonState(),
                 type: .primary
             ) {
                 Task {
@@ -102,11 +100,17 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
         }
         .padding(.bottom, Grid.pt8)
     }
-}
 
-#Preview {
-    ContentView(networkService: DTNetworkService())
-        .environmentObject(TimerViewModel())
+    private func buttonState() -> WFButtonState {
+        if viewModel.registrationState.isLoading {
+            return .loading
+        }
+        if viewModel.isPrivacyPolicyAccepted, viewModel.phoneNumber.count >= 11 {
+            return .default
+        }
+
+        return .disabled
+    }
 }
 
 struct CheckboxToggleStyle: ToggleStyle {
