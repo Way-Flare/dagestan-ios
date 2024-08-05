@@ -12,16 +12,13 @@ struct StretchableHeaderScrollView<Header: View, Content: View>: View {
     let header: () -> Header
     let content: () -> Content
     @Binding var showsBackdrop: Bool // Переменная для управления видимостью подложки
-    @Binding var scrollViewOffset: CGFloat // Отслеживание позиции прокрутки
 
     init(
         showsBackdrop: Binding<Bool>,
-        scrollViewOffset: Binding<CGFloat>,
         @ViewBuilder header: @escaping () -> Header,
         @ViewBuilder content: @escaping () -> Content
     ) {
         _showsBackdrop = showsBackdrop
-        _scrollViewOffset = scrollViewOffset
         self.header = header
         self.content = content
     }
@@ -38,7 +35,6 @@ struct StretchableHeaderScrollView<Header: View, Content: View>: View {
                             .offset(y: minY > 0 ? -minY : 0)
                             .onChange(of: minY) { value in
                                 showsBackdrop = value < 0
-                                scrollViewOffset = value
                             }
                     }
                     .frame(height: geometry.size.width * 0.6)

@@ -9,7 +9,7 @@
 import Foundation
 import CoreKit
 
-class FavoriteService: IFavoriteService {
+final class FavoriteService: IFavoriteService {
     let networkService: INetworkService
 
     init(networkService: INetworkService) {

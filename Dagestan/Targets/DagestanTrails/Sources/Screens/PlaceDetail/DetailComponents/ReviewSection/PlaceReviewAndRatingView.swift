@@ -11,7 +11,9 @@ import SwiftUI
 
 struct PlaceReviewAndRatingView: View {
     let review: ReviewModel
+    @AppStorage("isAuthorized") var isAuthorized = false
     @State private var showingReview = false
+    @State private var showAlert = false
     @State private var rating = 0
     var isPlaces: Bool
     var onSuccessSaveButton: (() -> Void)?
@@ -34,6 +36,10 @@ struct PlaceReviewAndRatingView: View {
                         .foregroundStyle(WFColor.iconPrimary)
 
                     StarsView(amount: rating, size: .l) { new in
+                        guard isAuthorized else {
+                            showAlert = true
+                            return
+                        }
                         self.showingReview = true
                         rating = new
                     }
@@ -45,6 +51,11 @@ struct PlaceReviewAndRatingView: View {
             .padding(.bottom, Grid.pt20)
             .background(WFColor.surfacePrimary)
             .cornerStyle(.constant(Grid.pt12))
+            .alert("Вы не авторизованы", isPresented: $showAlert) {
+                Button("Понял принял обработал", role: .cancel) {}
+            } message: {
+                Text("Перейди, по-братски, на вкладку ‘Профиль’ и авторизуйся")
+            }
         }
         .sheet(isPresented: $showingReview) {
             ReviewView(

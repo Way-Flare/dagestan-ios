@@ -11,8 +11,9 @@ import SwiftUI
 
 struct PlaceMakeRouteBottomView: View {
     @State var isFavorite: Bool
+    @State var showAlert: Bool = false
     var onFavoriteAction: (() -> Void)?
-    
+
     init(
         isFavorite: Bool,
         onFavoriteAction: ( () -> Void)? = nil
@@ -30,7 +31,10 @@ struct PlaceMakeRouteBottomView: View {
                     title: "Построить маршрут",
                     size: .m,
                     type: .primary
-                ) {}
+                ) {
+                    showAlert = true
+                }
+                .noFeatureAlert(isPresented: $showAlert)
 
                 WFButtonIcon(
                     icon: isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-@_spi(Experimental) import MapboxMaps
+import MapboxMaps
 import DesignSystem
 
 private enum ItemId {

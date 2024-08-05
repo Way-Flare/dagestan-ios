@@ -1,5 +1,5 @@
 //
-//  PlaceSendErrorView.swift
+//  SendErrorButton.swift
 //  DagestanTrails
 //
 //  Created by Рассказов Глеб on 18.06.2024.
@@ -9,7 +9,30 @@
 import SwiftUI
 import DesignSystem
 
-struct PlaceSendErrorView: View {
+struct SendErrorButton: View {
+    @State private var showingContactsSheet = false
+
+    var body: some View {
+        Button(action: { showingContactsSheet.toggle() }) {
+            if #available(iOS 16.4, *) {
+                SendErrorView()
+                    .sheet(isPresented: $showingContactsSheet) {
+                        CompanyContactsView()
+                            .presentationCornerRadius(Grid.pt32)
+                            .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                    }
+            } else {
+                SendErrorView()
+                    .sheet(isPresented: $showingContactsSheet) {
+                        CompanyContactsView()
+                            .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                    }
+            }
+        }
+    }
+}
+
+private struct SendErrorView: View {
     let action: (() -> Void)?
     
     init(action: (() -> Void)? = nil) {
@@ -17,11 +40,7 @@ struct PlaceSendErrorView: View {
     }
     
     var body: some View {
-        Button {
-            action?()
-        } label: {
-            contentView
-        }
+        contentView
     }
     
     var contentView: some View {
@@ -46,5 +65,5 @@ struct PlaceSendErrorView: View {
 }
 
 #Preview {
-    PlaceSendErrorView()
+   SendErrorButton()
 }

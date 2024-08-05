@@ -20,7 +20,9 @@ protocol IFavoriteListViewModel: ObservableObject {
     var isFavoritePlacesLoading: [Int: Bool] { get set }
     /// Словарь маршрутов со значением обновляется ли у них сейчас isFavorite
     var isFavoriteRoutesLoading: [Int: Bool] { get set }
-    
+    /// Количество избранных элементов
+    var favoriteCount: Int { get }
+
     /// Загрузить места
     func loadPlaces()
     /// Загрузить маршруты
@@ -32,11 +34,20 @@ protocol IFavoriteListViewModel: ObservableObject {
 
 final class FavoriteListViewModel: IFavoriteListViewModel {
     @Published var section: FavoriteSection = .places
-    @Published var routesState: LoadingState<[Route]> = .idle
-    @Published var placesState: LoadingState<[Place]> = .idle
+    @Published var routesState: LoadingState<[Route]> = .idle {
+        didSet {
+            updateCounter()
+        }
+    }
+    @Published var placesState: LoadingState<[Place]> = .idle {
+        didSet {
+            updateCounter()
+        }
+    }
     @Published var favoriteState: LoadingState<Bool> = .idle
     @Published var isFavoritePlacesLoading: [Int: Bool] = [:]
     @Published var isFavoriteRoutesLoading: [Int: Bool] = [:]
+    @Published var favoriteCount: Int = 0
 
     let placeService: IPlacesService
     let routeService: IRouteService
@@ -149,5 +160,17 @@ final class FavoriteListViewModel: IFavoriteListViewModel {
         } else {
             isFavoriteRoutesLoading[id] = isLoading
         }
+    }
+
+    private func updateCounter() {
+        var count = 0
+        if let placesCount = placesState.data?.count {
+            count += placesCount
+        }
+        if let routesCount = routesState.data?.count {
+            count += routesCount
+        }
+
+        favoriteCount = count
     }
 }
