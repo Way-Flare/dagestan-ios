@@ -54,9 +54,9 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     }
 
     @ViewBuilder private var reviewContainerView: some View {
-        if let feedbacks = viewModel.placeFeedbacks.data?.results {
+        if !viewModel.userFeedbacks.isEmpty {
             VStack(alignment: .leading, spacing: Grid.pt24) {
-                ForEach(feedbacks, id: \.id) { feedback in
+                ForEach(viewModel.userFeedbacks, id: \.id) { feedback in
                     UserReviewView(feedback: feedback)
                 }
             }
@@ -107,7 +107,11 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                         mapContainerView
                         SendErrorButton()
                         if let place = viewModel.state.data {
-                            PlaceReviewAndRatingView(review: place.asDomain(), isPlaces: true) {
+                            PlaceReviewAndRatingView(
+                                review: place.asDomain(),
+                                feedback: viewModel.placeFeedbacks.data?.results.first,
+                                isPlaces: true
+                            ) {
                                 viewModel.loadPlaceDetail()
                                 viewModel.loadPlaceFeedbacks()
                             }

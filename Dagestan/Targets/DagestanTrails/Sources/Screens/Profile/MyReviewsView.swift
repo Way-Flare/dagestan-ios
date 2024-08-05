@@ -36,8 +36,9 @@ class MyReviewsViewModel: ObservableObject {
 }
 
 struct MyReviewsView: View {
-    @EnvironmentObject var viewModel: MyReviewsViewModel
+    @ObservedObject var viewModel: MyReviewsViewModel
     let profile: Profile?
+    
     var body: some View {
         getContentView()
             .background(WFColor.surfaceSecondary)
@@ -54,7 +55,7 @@ struct MyReviewsView: View {
             ShimmerMyFeedbacksView()
         } else {
             ScrollView {
-                if let feedbacks = viewModel.feedbacks.data {
+                if let feedbacks = viewModel.feedbacks.data, !feedbacks.isEmpty {
                     LazyVStack(alignment: .leading) {
                         ForEach(feedbacks, id: \.id) { feedback in
                             VStack(alignment: .leading, spacing: 12) {
@@ -93,10 +94,31 @@ struct MyReviewsView: View {
                         }
                         .padding([.horizontal, .top], 12)
                     }
+                } else {
+                    emptyFeedbacksView
                 }
             }
             .scrollIndicators(.hidden)
         }
+    }
+
+    private var emptyFeedbacksView: some View {
+        VStack(spacing: 8) {
+            Spacer()
+
+            DagestanTrailsAsset.message.swiftUIImage
+                .resizable()
+                .frame(width: 210, height: 210)
+                .aspectRatio(contentMode: .fit)
+
+            Text("Вы не оставили ни одного\nотзыва")
+                .font(.manropeSemibold(size: 20))
+                .foregroundStyle(WFColor.foregroundPrimary)
+            Text("Оценивайте места и оставляйте отзывы, чтобы помочь другим пользователям")
+                .font(.manropeRegular(size: 16))
+                .foregroundStyle(WFColor.foregroundSoft)
+        }
+        .multilineTextAlignment(.center)
     }
 }
 

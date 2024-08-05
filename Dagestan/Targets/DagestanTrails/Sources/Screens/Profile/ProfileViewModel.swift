@@ -7,9 +7,9 @@
 //
 
 import CoreKit
-import UIKit
-import SwiftUI
 import PhotosUI
+import SwiftUI
+import UIKit
 
 // TODO: Запихать под протокол
 final class ProfileViewModel: ObservableObject {
@@ -37,6 +37,7 @@ final class ProfileViewModel: ObservableObject {
             do {
                 let profile = try await service.getProfile()
                 profileState = .loaded(profile)
+                saveName(with: profile.username)
             } catch {
                 profileState = .failed(error.localizedDescription)
                 isShowAlert = true
@@ -72,6 +73,12 @@ final class ProfileViewModel: ObservableObject {
             } catch {
                 profileState = .failed(error.localizedDescription)
             }
+        }
+    }
+    
+    private func saveName(with name: String?) {
+        if UserDefaults.standard.string(forKey: "username") != name {
+            UserDefaults.standard.setValue(name, forKey: "username")
         }
     }
 }

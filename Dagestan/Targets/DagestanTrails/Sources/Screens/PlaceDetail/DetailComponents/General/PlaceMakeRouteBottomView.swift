@@ -29,7 +29,7 @@ struct PlaceMakeRouteBottomView: View {
         VStack(spacing: .zero) {
             Divider()
                 .background(WFColor.borderMuted)
-            HStack(spacing: 12) {
+            HStack(spacing: Grid.pt12) {
                 WFButton(
                     title: "Построить маршрут",
                     size: .m,
@@ -58,10 +58,15 @@ struct PlaceMakeRouteBottomView: View {
                         ) {}
                             .allowsHitTesting(false)
                     }
+                    .buttonVisualStyle(
+                        style: .secondary,
+                        appearance: WFButtonSecondary().default,
+                        cornerRadius: Grid.pt12
+                    )
                 }
             }
-            .frame(height: 68)
-            .padding(.horizontal, 12)
+            .frame(height: Grid.pt68)
+            .padding(.horizontal, Grid.pt12)
             .background(WFColor.surfaceTertiary)
         }
     }

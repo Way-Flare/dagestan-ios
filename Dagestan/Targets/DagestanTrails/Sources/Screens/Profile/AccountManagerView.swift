@@ -11,8 +11,8 @@ import SwiftUI
 
 struct AccountManagerView: View {
     @State private var showAlert = false
-    @EnvironmentObject var viewModel: ProfileViewModel
-    let avatar: URL?
+    @ObservedObject var viewModel: ProfileViewModel
+    let profile: Profile
 
     var body: some View {
         VStack(spacing: Grid.pt10) {
@@ -39,8 +39,9 @@ extension AccountManagerView {
     func getDestination(for item: MenuItemType) -> some View {
         switch item {
             case .username: UsernameChangeView(isUserChange: true, placeholder: "Введите имя", viewModel: viewModel)
-            case .userPhoto: UserChangePhotoView(viewModel: viewModel, avatar: avatar)
+            case .userPhoto: UserChangePhotoView(viewModel: viewModel, avatar: profile.avatar)
             case .changeEmail: UsernameChangeView(isUserChange: false, placeholder: "Введите почту", viewModel: viewModel)
+            case .changeBackgroundPhoto: EmptyView()
             case .deleteAccount: EmptyView()
         }
     }
@@ -51,6 +52,7 @@ extension AccountManagerView {
             case .username: getUsernameCell()
             case .userPhoto: getUserPhotoCell()
             case .changeEmail: getChangeEmailCell()
+            case .changeBackgroundPhoto: getUserBackgroundPhoto()
             case .deleteAccount: getDeleteAccountCell()
         }
     }
@@ -115,6 +117,24 @@ extension AccountManagerView {
         .cornerRadius(Grid.pt10)
     }
 
+    func getUserBackgroundPhoto() -> some View {
+        HStack(spacing: Grid.pt10) {
+            DagestanTrailsAsset.smsLinear.swiftUIImage
+                .resizable()
+                .frame(width: Grid.pt28, height: Grid.pt28)
+                .padding(.trailing, Grid.pt10)
+            Text("Поменять задний фон")
+                .foregroundColor(WFColor.foregroundPrimary)
+                .font(.manropeRegular(size: Grid.pt16))
+            Spacer()
+            chevron
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(WFColor.surfacePrimary)
+        .cornerRadius(Grid.pt10)
+    }
+
     func getDeleteAccountCell() -> some View {
         HStack(spacing: Grid.pt10) {
             DagestanTrailsAsset.profileRemoveLinear.swiftUIImage
@@ -158,6 +178,7 @@ extension AccountManagerView {
         case username
         case userPhoto
         case changeEmail
+        case changeBackgroundPhoto
         case deleteAccount
     }
 }
