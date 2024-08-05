@@ -15,6 +15,7 @@ protocol IRouteDetailViewModel: ObservableObject {
     var isBackdropVisible: Bool { get set }
     var routeFeedbacks: LoadingState<PlaceFeedbackList> { get }
     var shareUrl: URL? { get }
+    /// Массив включающих всех юзеров кроме самого юзера
     var userFeedbacks: [PlaceFeedback] { get }
 
     func loadRouteDetail()
@@ -40,7 +41,6 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
         ]
     }
     
-    /// Массив включающих всех юзеров кроме самого юзера
     var userFeedbacks: [PlaceFeedback] {
         guard let feedbacks = routeFeedbacks.data?.results, !feedbacks.isEmpty else {
             return []

@@ -15,6 +15,7 @@ protocol IPlaceDetailViewModel: ObservableObject {
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
     var sharedUrl: URL? { get }
+    /// Массив включающих всех юзеров кроме самого юзера
     var userFeedbacks: [PlaceFeedback] { get }
 
     func loadPlaceDetail()
@@ -36,7 +37,6 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     private let placeId: Int
     let sharedUrl: URL?
 
-    /// Массив включающих всех юзеров кроме самого юзера
     var userFeedbacks: [PlaceFeedback] {
         guard let feedbacks = placeFeedbacks.data?.results, !feedbacks.isEmpty else {
             return []
