@@ -46,7 +46,7 @@ public final class RouteService: IRouteService {
         }
     }
     
-    public func getPlaceFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList {
+    public func getRouteFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList {
         let endpoint = RouteEndpoint.routeFeedbacks(parameters: parameters)
 
         do {

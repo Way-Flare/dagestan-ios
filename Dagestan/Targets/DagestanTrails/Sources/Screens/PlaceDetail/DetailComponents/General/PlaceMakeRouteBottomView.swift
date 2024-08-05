@@ -13,13 +13,16 @@ struct PlaceMakeRouteBottomView: View {
     @State var isFavorite: Bool
     @State var showAlert: Bool = false
     var onFavoriteAction: (() -> Void)?
+    let shareUrl: URL?
 
     init(
         isFavorite: Bool,
-        onFavoriteAction: ( () -> Void)? = nil
+        onFavoriteAction: (() -> Void)? = nil,
+        shareUrl: URL?
     ) {
         self._isFavorite = State(wrappedValue: isFavorite)
         self.onFavoriteAction = onFavoriteAction
+        self.shareUrl = shareUrl
     }
 
     var body: some View {
@@ -46,11 +49,16 @@ struct PlaceMakeRouteBottomView: View {
                 }
                 .foregroundColor(isFavorite ? WFColor.errorPrimary : WFColor.accentActive)
 
-                WFButtonIcon(
-                    icon: DagestanTrailsAsset.share.swiftUIImage,
-                    size: .m,
-                    type: .secondary
-                ) {}
+                if let shareUrl {
+                    ShareLink(item: shareUrl) {
+                        WFButtonIcon(
+                            icon: DagestanTrailsAsset.share.swiftUIImage,
+                            size: .m,
+                            type: .secondary
+                        ) {}
+                            .allowsHitTesting(false)
+                    }
+                }
             }
             .frame(height: 68)
             .padding(.horizontal, 12)

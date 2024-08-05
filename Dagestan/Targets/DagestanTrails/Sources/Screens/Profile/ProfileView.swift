@@ -219,8 +219,9 @@ extension ProfileView {
                     if state.isLoading {
                         ShimmerCircleView()
                     } else if let image = state.image {
-                        state.image?
+                        image
                             .resizable()
+                            .aspectRatio(contentMode: .fill)
                             .frame(width: Grid.pt96, height: Grid.pt96)
                             .overlay(
                                 Circle()

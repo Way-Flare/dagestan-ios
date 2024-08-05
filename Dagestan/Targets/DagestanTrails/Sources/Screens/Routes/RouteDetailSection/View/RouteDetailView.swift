@@ -89,7 +89,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                             viewModel.loadRouteFeedbacks()
                         }
                     }
-                    
+
                     reviewContainerView
                 }
                 .padding(.horizontal, Grid.pt12)
@@ -97,7 +97,11 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             }
             .overlay(alignment: .bottom) {
                 if let isFavorite = viewModel.state.data?.isFavorite {
-                    PlaceMakeRouteBottomView(isFavorite: isFavorite, onFavoriteAction: onFavoriteAction).isHidden(viewModel.state.isLoading)
+                    PlaceMakeRouteBottomView(
+                        isFavorite: isFavorite,
+                        onFavoriteAction: onFavoriteAction,
+                        shareUrl: viewModel.shareUrl
+                    ).isHidden(viewModel.state.isLoading)
                 }
             }
             .edgesIgnoringSafeArea(.top)
@@ -110,7 +114,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             ShimmerRouteDetailView()
         }
     }
-    
+
     @ViewBuilder private var reviewContainerView: some View {
         if let feedbacks = viewModel.routeFeedbacks.data?.results {
             VStack(alignment: .leading, spacing: Grid.pt24) {

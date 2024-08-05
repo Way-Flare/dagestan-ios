@@ -75,7 +75,11 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                         }
                         .padding(Grid.pt8)
                 }
-                PlaceMakeRouteBottomView(isFavorite: isFavorite, onFavoriteAction: onFavoriteAction)
+                PlaceMakeRouteBottomView(
+                    isFavorite: isFavorite,
+                    onFavoriteAction: onFavoriteAction,
+                    shareUrl: viewModel.sharedUrl
+                )
             }
         }
     }
