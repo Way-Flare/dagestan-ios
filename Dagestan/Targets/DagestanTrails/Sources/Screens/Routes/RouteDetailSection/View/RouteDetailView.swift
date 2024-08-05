@@ -84,7 +84,11 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     mapContainerView
                     SendErrorButton()
                     if let route = viewModel.state.data {
-                        PlaceReviewAndRatingView(review: route.asDomain(), isPlaces: false) {
+                        PlaceReviewAndRatingView(
+                            review: route.asDomain(),
+                            feedback: viewModel.routeFeedbacks.data?.results.first,
+                            isPlaces: false
+                        ) {
                             viewModel.loadRouteDetail()
                             viewModel.loadRouteFeedbacks()
                         }
@@ -116,15 +120,14 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     }
 
     @ViewBuilder private var reviewContainerView: some View {
-        if let feedbacks = viewModel.routeFeedbacks.data?.results {
+        if !viewModel.userFeedbacks.isEmpty {
             VStack(alignment: .leading, spacing: Grid.pt24) {
-                ForEach(feedbacks, id: \.id) { feedback in
+                ForEach(viewModel.userFeedbacks, id: \.id) { feedback in
                     UserReviewView(feedback: feedback)
                 }
             }
         }
     }
-
     private var mapContainerView: some View {
         let camera = viewModel.calculateCenterAndApproximateZoom()
 

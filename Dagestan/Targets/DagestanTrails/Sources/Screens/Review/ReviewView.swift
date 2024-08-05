@@ -52,7 +52,7 @@ class ReviewViewModel: ObservableObject {
                     images: photos
                 )
 
-                let response = try await service.addFeedback(review: review, isPlace: value)
+                let _ = try await service.addFeedback(review: review, isPlace: value)
                 sendStatus = .loaded(true)
             } catch {
                 showAlert = true

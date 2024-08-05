@@ -15,6 +15,7 @@ protocol IPlaceDetailViewModel: ObservableObject {
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
     var sharedUrl: URL? { get }
+    var userFeedbacks: [PlaceFeedback] { get }
 
     func loadPlaceDetail()
     func loadPlaceFeedbacks()
@@ -34,6 +35,18 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     let service: IPlacesService
     private let placeId: Int
     let sharedUrl: URL?
+
+    /// Массив включающих всех юзеров кроме самого юзера
+    var userFeedbacks: [PlaceFeedback] {
+        guard let feedbacks = placeFeedbacks.data?.results, !feedbacks.isEmpty else {
+            return []
+        }
+        if feedbacks.first!.user.username == UserDefaults.standard.string(forKey: "username") {
+            return Array(feedbacks.dropFirst())
+        }
+        return feedbacks
+    }
+
 
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками

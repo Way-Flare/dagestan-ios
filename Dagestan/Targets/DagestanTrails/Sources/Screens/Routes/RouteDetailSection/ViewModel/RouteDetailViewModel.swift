@@ -15,6 +15,7 @@ protocol IRouteDetailViewModel: ObservableObject {
     var isBackdropVisible: Bool { get set }
     var routeFeedbacks: LoadingState<PlaceFeedbackList> { get }
     var shareUrl: URL? { get }
+    var userFeedbacks: [PlaceFeedback] { get }
 
     func loadRouteDetail()
     func loadRouteFeedbacks()
@@ -37,6 +38,17 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
             .init(latitude: 41.1167, longitude: 45.1936),
             .init(latitude: 42.1167, longitude: 48.1936),
         ]
+    }
+    
+    /// Массив включающих всех юзеров кроме самого юзера
+    var userFeedbacks: [PlaceFeedback] {
+        guard let feedbacks = routeFeedbacks.data?.results, !feedbacks.isEmpty else {
+            return []
+        }
+        if feedbacks.first!.user.username == UserDefaults.standard.string(forKey: "username") {
+            return Array(feedbacks.dropFirst())
+        }
+        return feedbacks
     }
 
     init(service: IRouteService, id: Int) {

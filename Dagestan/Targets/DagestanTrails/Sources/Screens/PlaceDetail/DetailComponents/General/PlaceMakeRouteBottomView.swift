@@ -58,6 +58,11 @@ struct PlaceMakeRouteBottomView: View {
                         ) {}
                             .allowsHitTesting(false)
                     }
+                    .buttonVisualStyle(
+                        style: .secondary,
+                        appearance: WFButtonSecondary().default,
+                        cornerRadius: 12
+                    )
                 }
             }
             .frame(height: 68)

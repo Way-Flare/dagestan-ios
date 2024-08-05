@@ -99,8 +99,11 @@ extension ProfileView {
     @ViewBuilder
     func getDestination(for item: MenuItemType) -> some View {
         switch item {
-            case .reviews: MyReviewsView(profile: viewModel.profileState.data).environmentObject(feedbackViewModel)
-            case .account: AccountManagerView(avatar: viewModel.profileState.data?.avatar).environmentObject(viewModel)
+            case .reviews: MyReviewsView(viewModel: feedbackViewModel, profile: viewModel.profileState.data)
+            case .account:
+                if let profile = viewModel.profileState.data {
+                    AccountManagerView(viewModel: viewModel, profile: profile)
+                }
             case .logout: EmptyView()
         }
     }
