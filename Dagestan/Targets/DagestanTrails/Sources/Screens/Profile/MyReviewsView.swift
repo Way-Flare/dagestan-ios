@@ -64,7 +64,7 @@ struct MyReviewsView: View {
 
                                 VStack(alignment: .leading, spacing: 8) {
                                     UserInfoFeedbackView(
-                                        id: profile?.id,
+                                        id: profile?.id ?? .zero,
                                         avatar: profile?.avatar,
                                         username: profile?.username ?? "username",
                                         createdAt: feedback.createdAt,
