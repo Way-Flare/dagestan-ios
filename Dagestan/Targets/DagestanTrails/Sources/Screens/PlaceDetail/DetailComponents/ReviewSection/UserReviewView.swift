@@ -54,6 +54,7 @@ struct UserInfoFeedbackView: View {
                 if let image = state.image {
                     image
                         .resizable()
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: 44, height: 44)
                         .aspectRatio(contentMode: .fit)
                         .cornerStyle(.round)

@@ -14,6 +14,7 @@ protocol IRouteDetailViewModel: ObservableObject {
     var service: IRouteService { get }
     var isBackdropVisible: Bool { get set }
     var routeFeedbacks: LoadingState<PlaceFeedbackList> { get }
+    var shareUrl: URL? { get }
 
     func loadRouteDetail()
     func loadRouteFeedbacks()
@@ -22,6 +23,8 @@ protocol IRouteDetailViewModel: ObservableObject {
 
 final class RouteDetailViewModel: IRouteDetailViewModel {
     let service: IRouteService
+    let shareUrl: URL?
+    
     private let id: Int
 
     @Published var state: LoadingState<RouteDetail> = .idle
@@ -39,6 +42,7 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
     init(service: IRouteService, id: Int) {
         self.service = service
         self.id = id
+        self.shareUrl = URL(string: "https://dagestan-trails.ru/route/\(id)")
     }
 
     @MainActor

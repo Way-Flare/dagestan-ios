@@ -14,6 +14,7 @@ protocol IPlaceDetailViewModel: ObservableObject {
     var isBackdropVisible: Bool { get set }
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
+    var sharedUrl: URL? { get }
 
     func loadPlaceDetail()
     func loadPlaceFeedbacks()
@@ -32,6 +33,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     private var isLoadingMoreCharacters = false
     let service: IPlacesService
     private let placeId: Int
+    let sharedUrl: URL?
 
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками
@@ -40,6 +42,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
         self.service = service
         self.placeId = placeId
         self.isFavorite = isFavorite
+        self.sharedUrl = URL(string: "https://dagestan-trails.ru/place/\(placeId)")
     }
 
     func loadPlaceDetail() {
