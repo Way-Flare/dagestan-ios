@@ -13,6 +13,7 @@ protocol IRouteDetailViewModel: ObservableObject {
     var routeCoordinates: [CLLocationCoordinate2D] { get }
     var service: IRouteService { get }
     var isBackdropVisible: Bool { get set }
+    var shareUrl: URL? { get }
 
     func loadRouteDetail()
     func calculateCenterAndApproximateZoom() -> (center: CLLocationCoordinate2D, zoom: Double)
@@ -20,6 +21,7 @@ protocol IRouteDetailViewModel: ObservableObject {
 
 final class RouteDetailViewModel: IRouteDetailViewModel {
     let service: IRouteService
+    let shareUrl: URL?
     private let id: Int
 
     @Published var state: LoadingState<RouteDetail> = .idle
@@ -36,6 +38,7 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
     init(service: IRouteService, id: Int) {
         self.service = service
         self.id = id
+        self.shareUrl = URL(string: "https://dagestan-trails.ru/route/\(id)")
     }
 
     @MainActor

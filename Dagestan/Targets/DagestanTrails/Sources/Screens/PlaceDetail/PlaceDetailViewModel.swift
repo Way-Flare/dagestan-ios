@@ -12,6 +12,7 @@ protocol IPlaceDetailViewModel: ObservableObject {
     var isBackdropVisible: Bool { get set }
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
+    var sharedUrl: URL? { get }
 
     func loadPlaceDetail()
 }
@@ -22,6 +23,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     @Published var isBackdropVisible = false
     @Published var isFavorite: Bool
     @Published var favoriteState: LoadingState<Bool> = .idle
+    var sharedUrl: URL?
 
     lazy var formatter = TimeSuffixFormatter(workTime: state.data?.workTime)
 
@@ -36,6 +38,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
         self.service = service
         self.placeId = placeId
         self.isFavorite = isFavorite
+        self.sharedUrl = URL(string: "https://dagestan-trails.ru/place/\(placeId)")
     }
 
     deinit {
