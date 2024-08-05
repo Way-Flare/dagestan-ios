@@ -23,11 +23,19 @@ struct ImageCarousel: View {
             HStack(spacing: 8) {
                 ForEach(images.indices, id: \.self) { index in
                     LazyImage(url: images[index]) { state in
-                        state.image?
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 96, height: 96)
-                            .cornerStyle(.constant(4))
+                        if let image = state.image {
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 96, height: 96)
+                                .cornerStyle(.constant(4))
+                        } else {
+                            Rectangle()
+                                .fill()
+                                .frame(width: 96, height: 96)
+                                .skeleton()
+                                .cornerStyle(.constant(4))
+                        }
                     }
                     .onTapGesture {
                         selectedImageIndex = IdentifiableInt(id: index)
