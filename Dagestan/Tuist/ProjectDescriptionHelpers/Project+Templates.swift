@@ -11,19 +11,11 @@ extension Project {
         let packages: [ProjectDescription.Package] = [
             .remote(
                 url: "https://github.com/mapbox/mapbox-maps-ios.git",
-                requirement: .upToNextMinor(from: "11.5.0-beta.1")
+                requirement: .upToNextMinor(from: "11.6.0-rc.1")
             ),
             .remote(
                 url: "https://github.com/kean/Nuke.git",
                 requirement: .upToNextMajor(from: "12.7")
-            ),
-            .remote(
-                url: "https://github.com/ozontech/SUINavigation.git",
-                requirement: .upToNextMinor(from: "1.9.4")
-            ),
-            .remote(
-                url: "https://github.com/Swinject/Swinject.git",
-                requirement: .upToNextMinor(from: "2.9.1")
             ),
             .local(path: "../DesignSystem")
         ]
@@ -31,8 +23,6 @@ extension Project {
             .package(product: "MapboxMaps"),
             .package(product: "Nuke"),
             .package(product: "NukeUI"),
-            .package(product: "Swinject"),
-            .package(product: "SUINavigation"),
             .package(product: "DesignSystem")
         ]
 
@@ -85,14 +75,15 @@ extension Project {
                                    """
 
         let infoPlist: [String: Plist.Value] = [
-            "CFBundleShortVersionString": .string("0.1.2"),
+            "CFBundleShortVersionString": .string("0.1.3"),
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
             "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
             "UIUserInterfaceStyle": .string("Light"),
             "NSAppTransportSecurity": .dictionary(["NSAllowsArbitraryLoads": .boolean(true)]),
             "NSLocationAlwaysUsageDescription": .string("Your location is required for cool benefits for you"),
-            "NSLocationWhenInUseUsageDescription": .string("Your location is required for cool benefits for you")
+            "NSLocationWhenInUseUsageDescription": .string("Your location is required for cool benefits for you"),
+            "ITSAppUsesNonExemptEncryption": .boolean(false)
         ]
 
         let mainTarget = Target.target(

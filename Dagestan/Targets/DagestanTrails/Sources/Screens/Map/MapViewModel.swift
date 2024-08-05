@@ -1,7 +1,6 @@
 import CoreKit
 import MapKit
 import SwiftUI
-@_spi(Experimental)
 import MapboxMaps
 
 protocol IMapViewModel: ObservableObject {

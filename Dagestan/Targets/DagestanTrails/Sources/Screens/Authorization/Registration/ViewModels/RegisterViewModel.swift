@@ -10,6 +10,8 @@ import SwiftUI
 
 protocol IRegisterViewModel: ObservableObject {
     var phoneNumber: String { get set }
+    /// Согласен ли на обработку персональных данных
+    var isPrivacyPolicyAccepted: Bool { get set }
     var code: String { get set }
     var registrationState: LoadingState<Void> { get }
     var verificationState: LoadingState<Void> { get }
@@ -19,18 +21,18 @@ protocol IRegisterViewModel: ObservableObject {
 }
 
 final class RegisterViewModel: IRegisterViewModel {
-    private let authService: AuthService
-    private let isRecovery: Bool
-
+    @Published var isPrivacyPolicyAccepted: Bool = false
     @Published var phoneNumber = "" {
         didSet {
             registrationState = .idle
         }
     }
-
     @Published var code = ""
     @Published var registrationState: LoadingState<Void> = .idle
     @Published var verificationState: LoadingState<Void> = .idle
+
+    private let authService: AuthService
+    private let isRecovery: Bool
 
     init(isRecovery: Bool = false, authService: AuthService) {
         self.authService = authService

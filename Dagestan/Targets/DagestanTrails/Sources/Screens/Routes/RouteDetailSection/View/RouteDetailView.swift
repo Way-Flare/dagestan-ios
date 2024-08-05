@@ -8,12 +8,12 @@
 
 import DesignSystem
 import SwiftUI
-@_spi(Experimental)
 import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
-    @State private var scrollViewOffset: CGFloat = 0
     @StateObject var viewModel: ViewModel
+    @State private var showingContactsSheet = false
+
     let placeService: IPlacesService
     let onFavoriteAction: (() -> Void)?
 
@@ -62,7 +62,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @ViewBuilder
     func getContentView() -> some View {
         if let route = viewModel.state.data {
-            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible, scrollViewOffset: $scrollViewOffset) {
+            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
                 if let images = viewModel.state.data?.images {
                     SliderView(images: images)
                 }
@@ -82,7 +82,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                         onFavoriteAction: onFavoriteAction
                     )
                     mapContainerView
-                    PlaceSendErrorView()
+                    SendErrorButton()
                     if let route = viewModel.state.data {
                         PlaceReviewAndRatingView(review: route.asDomain(), isPlaces: false) {
                             viewModel.loadRouteDetail()

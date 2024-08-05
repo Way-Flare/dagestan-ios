@@ -9,12 +9,12 @@ import CoreKit
 import CoreLocation
 import DesignSystem
 import SwiftUI
-@_spi(Experimental)
 import MapboxMaps
 
 struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
     @State private var scrollViewOffset: CGFloat = 0
+    @State private var showingContactsSheet = false
 
     let routeService: IRouteService
     let onFavoriteAction: (() -> Void)?
@@ -84,14 +84,10 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         }
     }
 
-    @ViewBuilder 
-    func getContentView() -> some View {
+    @ViewBuilder func getContentView() -> some View {
         if let place = viewModel.state.data {
             ScrollViewReader { proxy in
-                StretchableHeaderScrollView(
-                    showsBackdrop: $viewModel.isBackdropVisible,
-                    scrollViewOffset: $scrollViewOffset
-                ) {
+                StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
                     if let images = viewModel.state.data?.images {
                         SliderView(images: images)
                     }
@@ -109,9 +105,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                             )
                         }
                         mapContainerView
-                        Link(destination: URL(string: "https://wa.me/message/R5ZOYUTGMW4BH1")!) {
-                            PlaceSendErrorView()
-                        }
+                        SendErrorButton()
                         if let place = viewModel.state.data {
                             PlaceReviewAndRatingView(review: place.asDomain(), isPlaces: true) {
                                 viewModel.loadPlaceDetail()
@@ -122,9 +116,6 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                     }
                     .padding(.horizontal, Grid.pt12)
                     .padding(.bottom, Grid.pt82)
-                }
-                .onAppear {
-                    proxy.scrollTo(scrollViewOffset, anchor: .center)
                 }
                 .font(.manropeRegular(size: Grid.pt14))
                 .overlay(alignment: .bottom) { bottomContentContainerView }
