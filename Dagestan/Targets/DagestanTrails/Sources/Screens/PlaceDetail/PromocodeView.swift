@@ -35,6 +35,8 @@ struct PromocodeView<ViewModel: IPlaceDetailViewModel>: View {
             }
             .edgesIgnoringSafeArea(.bottom)
             .tabViewStyle(.page(indexDisplayMode: promocodes.count > 1 ? .always : .never))
+        } else if viewModel.promocodes.isLoading {
+            ShimmerPromocodeView()
         }
     }
     

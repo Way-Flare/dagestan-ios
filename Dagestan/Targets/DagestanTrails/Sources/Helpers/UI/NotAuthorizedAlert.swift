@@ -22,7 +22,7 @@ struct NotAuthorizedAlert: ViewModifier {
 }
 
 extension View {
-    func notAutorizedAlert(isPresented: Binding<Bool>) -> some View {
+    func notAuthorizedAlert(isPresented: Binding<Bool>) -> some View {
         self.modifier(NotAuthorizedAlert(isPresented: isPresented))
     }
 }

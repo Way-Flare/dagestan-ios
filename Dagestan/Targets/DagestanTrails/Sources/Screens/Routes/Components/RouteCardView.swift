@@ -47,7 +47,7 @@ struct RouteCardView: View {
             }
             .foregroundColor(route.isFavorite ? WFColor.errorSoft : WFColor.iconInverted)
             .padding([.top, .trailing], Grid.pt12)
-            .notAutorizedAlert(isPresented: $showAlert)
+            .notAuthorizedAlert(isPresented: $showAlert)
         }
     }
     

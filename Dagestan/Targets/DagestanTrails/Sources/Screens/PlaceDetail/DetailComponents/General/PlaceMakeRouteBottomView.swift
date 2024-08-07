@@ -55,7 +55,7 @@ struct PlaceMakeRouteBottomView: View {
                     isFavorite.toggle()
                 }
                 .foregroundColor(isFavorite ? WFColor.errorPrimary : WFColor.accentActive)
-                .notAutorizedAlert(isPresented: $showNotAuthorizedAlert)
+                .notAuthorizedAlert(isPresented: $showNotAuthorizedAlert)
 
                 if let shareUrl {
                     ShareLink(item: shareUrl) {

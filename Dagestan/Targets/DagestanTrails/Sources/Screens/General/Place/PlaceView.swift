@@ -55,7 +55,7 @@ struct PlaceView: View {
             }
             .buttonStyle(DSPressedButtonStyle())
             .frame(height: 292)
-            .notAutorizedAlert(isPresented: $showAlert)
+            .notAuthorizedAlert(isPresented: $showAlert)
         }
     }
 
