@@ -18,6 +18,7 @@ public struct Route {
     let travelTime: String
     let feedbackCount: Int
     let rating: Double
+    let placesCount: Int
     let isFavorite: Bool
     
     func withFavoriteStatus(to status: Bool) -> Route {
@@ -30,6 +31,7 @@ public struct Route {
             travelTime: travelTime,
             feedbackCount: feedbackCount,
             rating: rating,
+            placesCount: placesCount,
             isFavorite: status
         )
     }

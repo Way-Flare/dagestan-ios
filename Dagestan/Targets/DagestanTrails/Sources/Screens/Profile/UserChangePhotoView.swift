@@ -21,7 +21,7 @@ struct TransferableImage: Transferable {
 
     static var transferRepresentation: some TransferRepresentation {
         DataRepresentation(importedContentType: .image) { data in
-            guard data.count <= 15_000_000 else { // 15 MB
+            guard data.count <= 15_000_000 else {
                 throw TransferError.imageSizeTooLarge
             }
 
@@ -36,6 +36,7 @@ struct TransferableImage: Transferable {
 
 struct UserChangePhotoView: View {
     @ObservedObject var viewModel: ProfileViewModel
+    let username: String?
     let avatar: URL?
 
     var body: some View {
@@ -49,34 +50,35 @@ struct UserChangePhotoView: View {
         .onChange(of: viewModel.pickerItem) { _ in
             loadPhoto()
         }
+        .setCustomNavigationBarTitle(title: "Фото профиля")
+        .setCustomBackButton()
     }
 }
 
 extension UserChangePhotoView {
     @ViewBuilder
     func getPhotoView() -> some View {
-        if let avatar {
-            LazyImage(url: avatar) { state in
-                if let image = state.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 186, height: 186)
-                        .cornerStyle(.round)
-                }
-            }
-        } else if viewModel.pickerImage == nil {
-            WFAvatarView.initials(
-                "GR",
-                userId: UUID().uuidString,
-                size: .size186
-            )
-        } else {
-            viewModel.pickerImage?
+        if let image = viewModel.pickerImage {
+            image
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: Grid.pt186, height: Grid.pt186)
                 .clipShape(Circle())
+        } else if let avatar {
+            LazyImage(url: avatar) { state in
+                state.image?
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 186, height: 186)
+                    .skeleton(show: state.isLoading, cornerStyle: .round)
+                    .cornerStyle(.round)
+            }
+        } else if viewModel.pickerImage == nil {
+            WFAvatarView.initials(
+                username,
+                userId: UUID().uuidString,
+                size: .size186
+            )
         }
     }
 
@@ -98,7 +100,7 @@ extension UserChangePhotoView {
 extension UserChangePhotoView {
     func loadPhoto() {
         Task {
-            guard let pickerItem = viewModel.pickerItem else {
+            guard let _ = viewModel.pickerItem else {
                 print("No image selected")
                 return
             }
@@ -121,14 +123,11 @@ extension UserChangePhotoView {
                     return
                 }
 
-                if FileManagerHelper.saveImage(imageData, withName: "cachedUserPhoto.jpg") {
-                    print("Image saved successfully")
-                    DispatchQueue.main.async {
-                        viewModel.pickerImage = Image(uiImage: uiImage)
+                DispatchQueue.main.async {
+                    viewModel.pickerImage = Image(uiImage: uiImage)
 
-                        if let data = uiImage.jpegData(compressionQuality: 0.0) {
-                            viewModel.patchProfile(with: .photo(value: data))
-                        }
+                    if let data = uiImage.jpegData(compressionQuality: 0.0) {
+                        viewModel.patchProfile(with: .photo(value: data))
                     }
                 }
             } catch {

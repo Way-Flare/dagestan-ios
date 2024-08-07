@@ -96,6 +96,8 @@ struct MyReviewsView: View {
                     }
                 } else {
                     emptyFeedbacksView
+                        .padding([.horizontal, .top], 12)
+
                 }
             }
             .scrollIndicators(.hidden)

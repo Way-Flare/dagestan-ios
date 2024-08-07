@@ -10,8 +10,11 @@ import DesignSystem
 import SwiftUI
 
 struct PlaceMakeRouteBottomView: View {
+    @AppStorage("isAuthorized") var isAuthorized = false
     @State var isFavorite: Bool
-    @State var showAlert: Bool = false
+    @State var showAlert = false
+    @State var showNotAuthorizedAlert = false
+    
     var onFavoriteAction: (() -> Void)?
     let shareUrl: URL?
 
@@ -44,10 +47,15 @@ struct PlaceMakeRouteBottomView: View {
                     size: .m,
                     type: .secondary
                 ) {
+                    guard isAuthorized else {
+                        showNotAuthorizedAlert = true
+                        return
+                    }
                     onFavoriteAction?()
                     isFavorite.toggle()
                 }
                 .foregroundColor(isFavorite ? WFColor.errorPrimary : WFColor.accentActive)
+                .notAutorizedAlert(isPresented: $showNotAuthorizedAlert)
 
                 if let shareUrl {
                     ShareLink(item: shareUrl) {

@@ -21,8 +21,25 @@ struct NoFeatureAlert: ViewModifier {
     }
 }
 
+struct NotAutorizedAlert: ViewModifier {
+    @Binding var isPresented: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .alert("Вы не авторизованы", isPresented: $isPresented) {
+                Button("Понял принял обработал", role: .cancel) {}
+            } message: {
+                Text("Перейди, по-братски, на вкладку ‘Профиль’ и авторизуйся")
+            }
+    }
+}
+
 extension View {
     func noFeatureAlert(isPresented: Binding<Bool>) -> some View {
         self.modifier(NoFeatureAlert(isPresented: isPresented))
+    }
+    
+    func notAutorizedAlert(isPresented: Binding<Bool>) -> some View {
+        self.modifier(NotAutorizedAlert(isPresented: isPresented))
     }
 }

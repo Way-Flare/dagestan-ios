@@ -55,6 +55,7 @@ struct PlaceRouteInfoView: View {
                             .font(.manropeSemibold(size: 18))
                     }
                 }
+                
                 RoutePlacesView(
                     isRoutes: isRoutes, 
                     items: items,

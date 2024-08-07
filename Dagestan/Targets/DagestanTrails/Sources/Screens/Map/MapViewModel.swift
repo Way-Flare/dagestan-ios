@@ -14,6 +14,7 @@ protocol IMapViewModel: ObservableObject {
     var selectedTags: Set<TagPlace> { get set }
     var placeService: IPlacesService { get }
     var favoriteState: LoadingState<Bool> { get set }
+    var showFavoriteAlert: Bool { get set }
 
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat)
     func loadPlaces()
@@ -35,6 +36,7 @@ final class MapViewModel: IMapViewModel {
     }
 
     @Published var isShowAlert = false
+    @Published var showFavoriteAlert = false
     @Published var isLoading = false
     @Published var filteredPlaces: [Place] = []
     @Published var selectedPlace: Place?
@@ -124,7 +126,13 @@ final class MapViewModel: IMapViewModel {
                 self.updateFavoriteStatus(for: id, to: status)
                 favoriteState = .loaded(status)
             } catch {
-                favoriteState = .failed(error.localizedDescription)
+                self.showFavoriteAlert = true
+
+                if let error = error as? RequestError {
+                    favoriteState = .failed(error.message)
+                } else {
+                    favoriteState = .failed(error.localizedDescription)
+                }
                 print("Failed to set favorite: \(error.localizedDescription)")
             }
         }

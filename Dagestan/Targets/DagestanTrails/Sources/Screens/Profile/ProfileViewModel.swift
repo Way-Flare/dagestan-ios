@@ -20,6 +20,7 @@ final class ProfileViewModel: ObservableObject {
     @Published var isShowAlert = false
     @Published var username = ""
     @Published var email = ""
+    @Published var backgroundImage: Image?
     
     private let service: IProfileService
     
