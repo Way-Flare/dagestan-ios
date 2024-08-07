@@ -42,7 +42,10 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                                 }
                             )
                         ) {
-                            RouteCardView(route: route, isLoading: viewModel.favoriteState.isLoading) {
+                            RouteCardView(
+                                route: route,
+                                isLoading: viewModel.isFavoriteRoutesLoading[route.id] ?? false
+                            ) {
                                 viewModel.setFavorite(by: route.id)
                             }
                         }

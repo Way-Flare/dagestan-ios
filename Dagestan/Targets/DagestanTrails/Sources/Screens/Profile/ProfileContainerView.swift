@@ -11,20 +11,18 @@ import CoreKit
 
 struct ProfileContainerView: View {
     @AppStorage("isAuthorized") var isAuthorized = false
-    @StateObject var viewModel: ProfileViewModel
-    @StateObject var feedbackViewModel: MyReviewsViewModel
     let authService: AuthService
+    let feedbackService: IFeedbackService
     
     init(authService: AuthService, feedbackService: IFeedbackService) {
         self.authService = authService
-        self._feedbackViewModel = StateObject(wrappedValue: MyReviewsViewModel(feedbackService: feedbackService))
-        self._viewModel = StateObject(wrappedValue: ProfileViewModel())
+        self.feedbackService = feedbackService
     }
 
     var body: some View {
         VStack {
             if isAuthorized {
-                ProfileView(viewModel: viewModel, feedbackViewModel: feedbackViewModel)
+                ProfileView(feedbackService: feedbackService)
             } else {
                 AuthorizationView(service: authService)
             }

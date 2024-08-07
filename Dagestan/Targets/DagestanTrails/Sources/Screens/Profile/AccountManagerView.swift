@@ -39,9 +39,12 @@ extension AccountManagerView {
     func getDestination(for item: MenuItemType) -> some View {
         switch item {
             case .username: UsernameChangeView(isUserChange: true, placeholder: "Введите имя", viewModel: viewModel)
-            case .userPhoto: UserChangePhotoView(viewModel: viewModel, avatar: profile.avatar)
+            case .userPhoto: UserChangePhotoView(viewModel: viewModel, username: profile.username, avatar: profile.avatar)
             case .changeEmail: UsernameChangeView(isUserChange: false, placeholder: "Введите почту", viewModel: viewModel)
-            case .changeBackgroundPhoto: EmptyView()
+            case .changeBackgroundPhoto:
+                if let profile = viewModel.profileState.data {
+                    ProfileChangeBackgroundImageView(profile: profile)
+                }
             case .deleteAccount: EmptyView()
         }
     }
@@ -49,11 +52,8 @@ extension AccountManagerView {
     @ViewBuilder
     func getMenuView(for item: MenuItemType) -> some View {
         switch item {
-            case .username: getUsernameCell()
-            case .userPhoto: getUserPhotoCell()
-            case .changeEmail: getChangeEmailCell()
-            case .changeBackgroundPhoto: getUserBackgroundPhoto()
             case .deleteAccount: getDeleteAccountCell()
+            default: setupBasicCell(for: item)
         }
     }
 }
@@ -61,102 +61,35 @@ extension AccountManagerView {
 // MARK: - Cells
 
 extension AccountManagerView {
-    func getUsernameCell() -> some View {
-        HStack(spacing: 10) {
-            DagestanTrailsAsset.profileCircle.swiftUIImage
-                .resizable()
-                .frame(width: Grid.pt28, height: Grid.pt28)
-                .foregroundColor(.green)
-                .padding(.trailing, Grid.pt16)
-            Text("Имя пользователя")
-                .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: Grid.pt16))
-            Spacer()
-            chevron
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(WFColor.surfacePrimary)
-        .cornerRadius(Grid.pt10)
-    }
-
-    func getUserPhotoCell() -> some View {
-        HStack(spacing: Grid.pt10) {
-            DagestanTrailsAsset.imageLinear.swiftUIImage
-                .resizable()
-                .frame(width: Grid.pt28, height: Grid.pt28)
-                .foregroundColor(.green)
-                .padding(.trailing, Grid.pt10)
-            Text("Фото профиля")
-                .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: Grid.pt16))
-            Spacer()
-            chevron
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(WFColor.surfacePrimary)
-        .cornerRadius(Grid.pt10)
-    }
-
-    func getChangeEmailCell() -> some View {
-        HStack(spacing: Grid.pt10) {
-            DagestanTrailsAsset.smsLinear.swiftUIImage
-                .resizable()
-                .frame(width: Grid.pt28, height: Grid.pt28)
-                .padding(.trailing, Grid.pt10)
-            Text("Изменить электронную почту")
-                .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: Grid.pt16))
-            Spacer()
-            chevron
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(WFColor.surfacePrimary)
-        .cornerRadius(Grid.pt10)
-    }
-
-    func getUserBackgroundPhoto() -> some View {
-        HStack(spacing: Grid.pt10) {
-            DagestanTrailsAsset.smsLinear.swiftUIImage
-                .resizable()
-                .frame(width: Grid.pt28, height: Grid.pt28)
-                .padding(.trailing, Grid.pt10)
-            Text("Поменять задний фон")
-                .foregroundColor(WFColor.foregroundPrimary)
-                .font(.manropeRegular(size: Grid.pt16))
-            Spacer()
-            chevron
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(WFColor.surfacePrimary)
-        .cornerRadius(Grid.pt10)
-    }
-
     func getDeleteAccountCell() -> some View {
+        setupBasicCell(for: .deleteAccount)
+            .onTapGesture {
+                self.showAlert = true
+            }
+            .alert(isPresented: $showAlert) {
+                getDeleteAccountAlert()
+            }
+    }
+
+    private func setupBasicCell(for item: MenuItemType) -> some View {
         HStack(spacing: Grid.pt10) {
-            DagestanTrailsAsset.profileRemoveLinear.swiftUIImage
+            item.icon
                 .resizable()
                 .frame(width: Grid.pt28, height: Grid.pt28)
                 .padding(.trailing, Grid.pt10)
-            Text("Удалить аккаунт")
+                .foregroundStyle(WFColor.accentPrimary)
+            Text(item.title)
                 .foregroundColor(WFColor.foregroundPrimary)
                 .font(.manropeRegular(size: Grid.pt16))
             Spacer()
-            chevron
+            if item.hasChevron {
+                chevron
+            }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(WFColor.surfacePrimary)
         .cornerRadius(Grid.pt10)
-        .onTapGesture {
-            self.showAlert = true
-        }
-        .alert(isPresented: $showAlert) {
-            getDeleteAccountAlert()
-        }
     }
 
     func getDeleteAccountAlert() -> Alert {
@@ -180,6 +113,30 @@ extension AccountManagerView {
         case changeEmail
         case changeBackgroundPhoto
         case deleteAccount
+        
+        var title: String {
+            switch self {
+                case .username: return "Имя пользователя"
+                case .userPhoto: return "Фото профиля"
+                case .changeEmail: return "Изменить электронную почту"
+                case .changeBackgroundPhoto: return "Поменять задний фон"
+                case .deleteAccount: return "Удалить аккаунт"
+            }
+        }
+        
+        var icon: Image {
+            switch self {
+                case .username: DagestanTrailsAsset.profileCircle.swiftUIImage
+                case .userPhoto: DagestanTrailsAsset.imageLinear.swiftUIImage
+                case .changeEmail: DagestanTrailsAsset.smsLinear.swiftUIImage
+                case .changeBackgroundPhoto: DagestanTrailsAsset.imageLinear.swiftUIImage
+                case .deleteAccount: DagestanTrailsAsset.profileRemoveLinear.swiftUIImage
+            }
+        }
+        
+        var hasChevron: Bool {
+            self != .deleteAccount
+        }
     }
 }
 

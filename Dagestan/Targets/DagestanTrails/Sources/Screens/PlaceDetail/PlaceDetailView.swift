@@ -88,9 +88,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         if let place = viewModel.state.data {
             ScrollViewReader { proxy in
                 StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
-                    if let images = viewModel.state.data?.images {
-                        SliderView(images: images)
-                    }
+                    SliderView(images: place.images)
                 } content: {
                     VStack(alignment: .leading, spacing: Grid.pt16) {
                         PlaceDetailInfoView(place: viewModel.state.data, formatter: viewModel.formatter)
@@ -98,10 +96,14 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                             isVisible: $viewModel.isVisibleSnackbar,
                             place: viewModel.state.data
                         )
-                        if viewModel.state.data?.routes.count ?? 0 > 0 {
+                        if let routes = viewModel.state.data?.routes,
+                           !routes.isEmpty {
                             PlaceRouteInfoView(
                                 type: .place(title: "Это место в маршрутах"),
-                                items: viewModel.state.data?.routes.map { $0.asDomain() }
+                                items: routes.map { $0.asDomain() },
+                                routeService: routeService,
+                                placeService: viewModel.service,
+                                onFavoriteAction: onFavoriteAction
                             )
                         }
                         mapContainerView

@@ -12,6 +12,8 @@ import SwiftUI
 @MainActor
 struct PlaceView: View {
     @Binding private var place: Place?
+    @State var showAlert = false
+    @AppStorage("isAuthorized") var isAuthorized = false
     private let isLoading: Bool
 
     private let placeDetailViewModel: PlaceDetailViewModel
@@ -53,6 +55,7 @@ struct PlaceView: View {
             }
             .buttonStyle(DSPressedButtonStyle())
             .frame(height: 292)
+            .notAutorizedAlert(isPresented: $showAlert)
         }
     }
 
@@ -86,6 +89,10 @@ struct PlaceView: View {
                 state: isLoading ? .loading : .default,
                 type: .favorite
             ) {
+                guard isAuthorized else {
+                    showAlert = true
+                    return
+                }
                 onFavoriteAction?()
             }
             .foregroundColor(place?.isFavorite == true ? WFColor.errorSoft : WFColor.iconInverted)
