@@ -41,7 +41,7 @@ struct CloseButton: View {
         Button {
             dismiss()
         } label: {
-            Image(systemName: "xmark")
+            DagestanTrailsAsset.close.swiftUIImage
                 .resizable()
                 .frame(width: 16, height: 16)
                 .foregroundColor(WFColor.iconPrimary)
@@ -49,6 +49,10 @@ struct CloseButton: View {
                 .background(WFColor.surfacePrimary)
                 .cornerRadius(8)
         }
+        .shadow(
+            color: WFColor.accentPrimary.opacity(0.2),
+            radius: Grid.pt6
+        )
     }
 }
 

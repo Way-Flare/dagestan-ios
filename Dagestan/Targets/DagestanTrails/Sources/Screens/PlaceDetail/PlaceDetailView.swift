@@ -8,12 +8,13 @@
 import CoreKit
 import CoreLocation
 import DesignSystem
-import SwiftUI
 import MapboxMaps
+import SwiftUI
 
 struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
     @State private var scrollViewOffset: CGFloat = 0
+    @State private var showingPromocodeSheet = false
     @State private var showingContactsSheet = false
 
     let routeService: IRouteService
@@ -23,8 +24,8 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         getContentView()
             .font(.manropeRegular(size: Grid.pt14))
             .overlay(alignment: .bottom) {
-                if  viewModel.state.data != nil {
-                    bottomContentContainerView.isHidden(viewModel.state.isLoading)
+                if viewModel.placeDetail.data != nil {
+                    bottomContentContainerView.isHidden(viewModel.placeDetail.isLoading)
                 }
             }
             .onViewDidLoad {
@@ -34,12 +35,12 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
             .navigationBarBackButtonHidden(true)
-            .navigationTitle(viewModel.isBackdropVisible ? viewModel.state.data?.name ?? "" : "")
+            .navigationTitle(viewModel.isBackdropVisible ? viewModel.placeDetail.data?.name ?? "" : "")
             .setCustomBackButton()
     }
 
     @ViewBuilder private var mapContainerView: some View {
-        if let place = viewModel.state.data {
+        if let place = viewModel.placeDetail.data {
             Map(initialViewport: .camera(center: place.coordinate, zoom: 15.0)) {
                 MapViewAnnotation(coordinate: place.coordinate) {
                     AnnotationView(name: place.name, workingTime: place.workTime, tagPlace: place.tags.first)
@@ -64,7 +65,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     }
 
     @ViewBuilder private var bottomContentContainerView: some View {
-        if let isFavorite = viewModel.state.data?.isFavorite {
+        if let isFavorite = viewModel.placeDetail.data?.isFavorite {
             VStack(spacing: .zero) {
                 if viewModel.isVisibleSnackbar {
                     WFSnackbar(status: .success(text: "Скопировано!"))
@@ -85,16 +86,38 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     }
 
     @ViewBuilder func getContentView() -> some View {
-        if let place = viewModel.state.data {
-            ScrollViewReader { proxy in
+        if let place = viewModel.placeDetail.data {
+            ScrollViewReader { _ in
                 StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
                     SliderView(images: place.images)
                 } content: {
                     VStack(alignment: .leading, spacing: Grid.pt16) {
-                        PlaceDetailInfoView(place: viewModel.state.data, formatter: viewModel.formatter)
+                        PlaceDetailInfoView(place: viewModel.placeDetail.data, formatter: viewModel.formatter)
+                        if place.isPromocode {
+                            if #available(iOS 16.4, *) {
+                                SlideButtonView()
+                                    .onSwipeSuccessAction {
+                                        showingPromocodeSheet = true
+                                    }
+                                    .sheet(isPresented: $showingPromocodeSheet) {
+                                        PromocodeView(viewModel: viewModel)
+                                            .presentationCornerRadius(Grid.pt32)
+                                            .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                                    }
+                            } else {
+                                SlideButtonView()
+                                    .onSwipeSuccessAction {
+                                        showingPromocodeSheet = true
+                                    }
+                                    .sheet(isPresented: $showingPromocodeSheet) {
+                                        PromocodeView(viewModel: viewModel)
+                                            .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                                    }
+                            }
+                        }
                         PlaceContactInformationView(
                             isVisible: $viewModel.isVisibleSnackbar,
-                            place: viewModel.state.data
+                            place: viewModel.placeDetail.data
                         )
                         if !place.routes.isEmpty {
                             PlaceRouteInfoView(
@@ -107,7 +130,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                         }
                         mapContainerView
                         SendErrorButton()
-                        if let place = viewModel.state.data {
+                        if let place = viewModel.placeDetail.data {
                             PlaceReviewAndRatingView(
                                 review: place.asDomain(),
                                 feedback: viewModel.placeFeedbacks.data?.results.first,
@@ -127,7 +150,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                 .edgesIgnoringSafeArea(.top)
                 .scrollIndicators(.hidden)
             }
-        } else if viewModel.state.isError {
+        } else if viewModel.placeDetail.isError {
             FailedLoadingView {
                 viewModel.loadPlaceDetail()
             }

@@ -17,4 +17,5 @@ protocol IPlacesService {
     func getPlace(id: Int) async throws -> PlaceDetail
     func setFavorite(by id: Int) async throws -> Bool
     func getPlaceFeedbacks(parameters: PlaceFeedbackParametersDTO) async throws -> PlaceFeedbackList
+    func getPromocode(by id: Int) async throws -> [Promocode]
 }

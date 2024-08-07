@@ -20,7 +20,7 @@ struct AccountManagerView: View {
                 NavigationLink(destination: getDestination(for: item)) {
                     getMenuView(for: item)
                 }
-                .buttonStyle(DSPressedButtonStyle())
+                .buttonStyle(.plain)
             }
             Spacer()
         }

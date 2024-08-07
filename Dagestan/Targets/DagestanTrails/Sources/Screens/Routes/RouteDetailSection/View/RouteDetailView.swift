@@ -12,7 +12,6 @@ import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @StateObject var viewModel: ViewModel
-    @State private var showingContactsSheet = false
 
     let placeService: IPlacesService
     let onFavoriteAction: (() -> Void)?
@@ -67,7 +66,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     SliderView(images: images)
                 }
             } content: {
-                VStack(alignment: .leading, spacing: Grid.pt16) {
+               LazyVStack(alignment: .leading, spacing: Grid.pt16) {
                     routeInfoContainerView
                     expandableTextContainerView
 

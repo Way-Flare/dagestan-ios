@@ -8,8 +8,9 @@
 import Foundation
 
 protocol IPlaceDetailViewModel: ObservableObject {
-    var state: LoadingState<PlaceDetail> { get }
+    var placeDetail: LoadingState<PlaceDetail> { get }
     var placeFeedbacks: LoadingState<PlaceFeedbackList> { get }
+    var promocodes: LoadingState<[Promocode]> { get }
     var isVisibleSnackbar: Bool { get set }
     var isBackdropVisible: Bool { get set }
     var formatter: TimeSuffixFormatter { get }
@@ -20,17 +21,19 @@ protocol IPlaceDetailViewModel: ObservableObject {
 
     func loadPlaceDetail()
     func loadPlaceFeedbacks()
+    func loadPromocode()
 }
 
 final class PlaceDetailViewModel: IPlaceDetailViewModel {
-    @Published var state: LoadingState<PlaceDetail> = .idle
+    @Published var placeDetail: LoadingState<PlaceDetail> = .idle
     @Published var placeFeedbacks: LoadingState<PlaceFeedbackList> = .idle
+    @Published var promocodes: LoadingState<[Promocode]> = .idle
     @Published var isVisibleSnackbar = false
     @Published var isBackdropVisible = false
     @Published var isFavorite: Bool
     @Published var favoriteState: LoadingState<Bool> = .idle
 
-    lazy var formatter = TimeSuffixFormatter(workTime: state.data?.workTime)
+    lazy var formatter = TimeSuffixFormatter(workTime: placeDetail.data?.workTime)
 
     private var isLoadingMoreCharacters = false
     let service: IPlacesService
@@ -62,13 +65,13 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
         Task { @MainActor [weak self] in
             guard let self else { return }
 
-            self.state = .loading
+            self.placeDetail = .loading
 
             do {
                 let place = try await service.getPlace(id: placeId)
-                state = .loaded(place)
+                placeDetail = .loaded(place)
             } catch {
-                state = .failed(error.localizedDescription)
+                placeDetail = .failed(error.localizedDescription)
                 print("Failed to load place: \(error.localizedDescription)")
             }
         }
@@ -86,6 +89,20 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
             } catch {
                 placeFeedbacks = .failed(error.localizedDescription)
                 print("Failed to load place: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    @MainActor
+    func loadPromocode() {
+        promocodes = .loading
+        
+        Task {
+            do {
+                let loadedPromocodes = try await service.getPromocode(by: placeId)
+                promocodes = .loaded(loadedPromocodes)
+            } catch {
+                promocodes = .failed(error.localizedDescription)
             }
         }
     }

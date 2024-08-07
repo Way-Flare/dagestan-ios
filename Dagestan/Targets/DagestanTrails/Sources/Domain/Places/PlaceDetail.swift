@@ -24,6 +24,7 @@ struct PlaceDetail {
     let routes: [Route]
     let isFavorite: Bool
     let feedbackCount: Int
+    let isPromocode: Bool
 }
 
 extension PlaceDetail {

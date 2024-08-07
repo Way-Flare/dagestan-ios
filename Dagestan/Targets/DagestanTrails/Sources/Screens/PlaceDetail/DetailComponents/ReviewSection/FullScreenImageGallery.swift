@@ -76,25 +76,9 @@ struct FullScreenImageGallery: View {
             .foregroundColor(WFColor.surfacePrimary)
             .font(.system(size: 20, weight: .bold))
             .frame(maxWidth: .infinity)
-            .overlay(alignment: .trailing) { closeButton }
+            .overlay(alignment: .trailing) { CloseButton() }
     }
-
-    private var closeButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Image(systemName: "xmark")
-                .resizable()
-                .frame(width: 16, height: 16)
-                .foregroundColor(WFColor.iconPrimary)
-                .padding(6)
-                .background(WFColor.surfacePrimary)
-                .cornerRadius(8)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-    }
-
+    
     private func calculateBoundedOffset(_ dragAmount: CGSize, in geometry: GeometryProxy, scale: CGFloat) -> CGSize {
         let width = geometry.size.width
         let height = geometry.size.height
