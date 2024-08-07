@@ -5,9 +5,9 @@
 //  Created by Рассказов Глеб on 15.04.2024.
 //
 
-import SwiftUI
-import MapboxMaps
 import DesignSystem
+import MapboxMaps
+import SwiftUI
 
 private enum ItemId {
     static let clusterCircle = "clustered-circle-layer"
@@ -19,7 +19,7 @@ private enum ItemId {
 struct MapView<ViewModel: IMapViewModel>: View {
     @ObservedObject var viewModel: ViewModel
     let routeService: IRouteService
-    
+
     var body: some View {
         NavigationStack {
             MapReader { proxy in
@@ -58,7 +58,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     Button("Да", role: .cancel) {
                         viewModel.loadPlaces()
                     }
-                }  message: {
+                } message: {
                     Text("Повторить попытку?")
                 }
             }
@@ -81,6 +81,13 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     }
                 }
                 .padding(.bottom, Grid.pt8)
+                .alert("Произошла ошибка", isPresented: $viewModel.showFavoriteAlert) {
+                    Button("Понятно", role: .cancel) {}
+                } message: {
+                    if let error = viewModel.favoriteState.error {
+                        Text(error)
+                    }
+                }
             }
         }
     }
@@ -188,7 +195,7 @@ extension MapView {
 
         layer.textAnchor = .constant(.top)
         layer.iconAnchor = .constant(.bottom)
-        layer.textField = .expression( Exp(.get) { "place_name" })
+        layer.textField = .expression(Exp(.get) { "place_name" })
         layer.iconImage = .constant(.name("place-icon"))
 
         layer.textAllowOverlap = .constant(true)

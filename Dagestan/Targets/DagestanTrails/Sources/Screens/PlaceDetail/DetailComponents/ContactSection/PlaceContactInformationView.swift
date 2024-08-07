@@ -28,7 +28,8 @@ struct PlaceContactInformationView: View {
                             type: .phone(with: place.contacts.first?.phoneNumber)
                         ) {
                             if let phone = place.contacts.first?.phoneNumber,
-                               let url = URL(string: "tel://\(phone)") {
+                               let url = URL(string: "tel://\(phone)")
+                            {
                                 UIApplication.shared.open(url)
                             }
                         }
@@ -36,10 +37,16 @@ struct PlaceContactInformationView: View {
                             isVisible: $isVisible,
                             type: .email(with: place.contacts.first?.email)
                         )
+                        
                         ContactView(
                             isVisible: $isVisible,
                             type: .site(with: place.contacts.first?.site)
-                        )
+                        ) {
+                            if let site = place.contacts.first?.site,
+                               let url = updatedUrl(with: site) {
+                                UIApplication.shared.open(url)
+                            }
+                        }
                     }
                 }
 
@@ -62,5 +69,15 @@ struct PlaceContactInformationView: View {
             .background(WFColor.surfacePrimary)
             .cornerStyle(.constant(Grid.pt12))
         }
+    }
+
+    /// Метод возвращает url с суффиксом https:// если его не было
+    func updatedUrl(with string: String) -> URL? {
+        var stringUrl = string
+        if !string.hasPrefix("https://") && !string.hasPrefix("http://") {
+            stringUrl = "https://\(stringUrl)"
+        }
+
+        return URL(string: stringUrl)
     }
 }
