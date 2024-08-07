@@ -96,11 +96,10 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                             isVisible: $viewModel.isVisibleSnackbar,
                             place: viewModel.state.data
                         )
-                        if let routes = viewModel.state.data?.routes,
-                           !routes.isEmpty {
+                        if !place.routes.isEmpty {
                             PlaceRouteInfoView(
                                 type: .place(title: "Это место в маршрутах"),
-                                items: routes.map { $0.asDomain() },
+                                items: place.routes.map { $0.asDomain() },
                                 routeService: routeService,
                                 placeService: viewModel.service,
                                 onFavoriteAction: onFavoriteAction

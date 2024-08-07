@@ -70,7 +70,8 @@ struct PlaceContactInformationView: View {
             .cornerStyle(.constant(Grid.pt12))
         }
     }
-    
+
+    /// Метод возвращает url с суффиксом https:// если его не было
     func updatedUrl(with string: String) -> URL? {
         var stringUrl = string
         if !string.hasPrefix("https://") && !string.hasPrefix("http://") {
