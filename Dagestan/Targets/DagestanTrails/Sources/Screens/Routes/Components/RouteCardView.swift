@@ -32,6 +32,7 @@ struct RouteCardView: View {
             SliderView(images: route.images)
                 .frame(height: Grid.pt174)
                 .clipped()
+                .disabled(true)
                 
             WFButtonIcon(
                 icon: route.isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,

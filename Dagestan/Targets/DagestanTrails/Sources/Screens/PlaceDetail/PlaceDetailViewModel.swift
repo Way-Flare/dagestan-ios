@@ -5,7 +5,7 @@
 //  Created by Рассказов Глеб on 27.04.2024.
 //
 
-import Foundation
+import SwiftUI
 
 protocol IPlaceDetailViewModel: ObservableObject {
     var placeDetail: LoadingState<PlaceDetail> { get }
@@ -16,6 +16,7 @@ protocol IPlaceDetailViewModel: ObservableObject {
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
     var sharedUrl: URL? { get }
+    var isAuthorized: Bool { get }
     /// Массив включающих всех юзеров кроме самого юзера
     var userFeedbacks: [PlaceFeedback] { get }
 
@@ -32,6 +33,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     @Published var isBackdropVisible = false
     @Published var isFavorite: Bool
     @Published var favoriteState: LoadingState<Bool> = .idle
+    @AppStorage("isAuthorized") var isAuthorized = false
 
     lazy var formatter = TimeSuffixFormatter(workTime: placeDetail.data?.workTime)
 

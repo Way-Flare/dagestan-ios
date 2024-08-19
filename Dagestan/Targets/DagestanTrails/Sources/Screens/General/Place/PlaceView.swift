@@ -1,9 +1,9 @@
-    //
-    //  PlaceView.swift
-    //  DagestanTrails
-    //
-    //  Created by Рассказов Глеб on 27.04.2024.
-    //
+//
+//  PlaceView.swift
+//  DagestanTrails
+//
+//  Created by Рассказов Глеб on 27.04.2024.
+//
 
 import DesignSystem
 import NukeUI
@@ -75,6 +75,7 @@ struct PlaceView: View {
             ZStack(alignment: .topTrailing) {
                 SliderView(images: place.images)
                     .frame(height: 164)
+                    .disabled(true)
                 buttonsView
             }
             .cornerStyle(.constant(Grid.pt4, .bottomCorners))
@@ -112,7 +113,7 @@ struct PlaceView: View {
     }
 }
 
-    // MARK: - UI Elements
+// MARK: - UI Elements
 
 extension PlaceView {
     private var descriptionView: some View {
@@ -150,13 +151,13 @@ extension PlaceView {
 
     private var operatingHoursView: some View {
         Group {
-            Text(formatter.operatingStatus)
-                .foregroundColor(formatter.operatingStatusColor)
+            Text(formatter.operatingStatus.description)
+                .foregroundColor(formatter.operatingStatus.descriptionColor)
             +
-            Text(formatter.operatingStatusSuffix)
-                .foregroundColor(WFColor.foregroundSoft)
+            Text(formatter.operatingStatus.suffix)
         }
         .font(.manropeRegular(size: Grid.pt14))
+        .foregroundStyle(WFColor.foregroundSoft)
     }
 
     @ViewBuilder private var routeDescriptionView: some View {
