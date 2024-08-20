@@ -18,7 +18,7 @@ struct PlaceWaysView: View {
 
     var body: some View {
         ContainerTitleView(title: isFood ? "Меню" : "Советы и подсказки") {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: Grid.pt12) {
                 if let info = placeWay.info {
                     ExpandableTextView(text: info, lineLimit: 8) { isExpanded in
                         Text(isExpanded ? "свернуть" : "раскрыть")
@@ -49,40 +49,40 @@ struct PlaceWaysView: View {
     }
 
     func placeWayContent(with image: ImageDTO, isFood: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Grid.pt8) {
             LazyImage(url: image.asDomain()) { state in
                 if let image = state.image {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 96, height: 96)
-                        .cornerStyle(.constant(16))
+                        .frame(width: Grid.pt96, height: Grid.pt96)
+                        .cornerStyle(.constant(Grid.pt16))
                 } else if state.isLoading {
                     Rectangle()
                         .fill()
-                        .frame(width: 96, height: 96)
+                        .frame(width: Grid.pt96, height: Grid.pt96)
                         .skeleton()
-                        .cornerStyle(.constant(16))
+                        .cornerStyle(.constant(Grid.pt16))
                 }
             }
 
             if let name = image.trimmedName, isFood {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Grid.pt4) {
                     Text(name)
-                        .font(.manropeSemibold(size: 14))
+                        .font(.manropeSemibold(size: Grid.pt14))
                         .foregroundStyle(WFColor.foregroundPrimary)
                         .lineLimit(2)
 
                     if let items = image.items, !items.isEmpty {
                         ForEach(Array(items.enumerated()), id: \.offset) { _, item in
                             Text(item)
-                                .font(.manropeSemibold(size: 12))
+                                .font(.manropeSemibold(size: Grid.pt12))
                                 .foregroundStyle(WFColor.foregroundSoft)
                                 .lineLimit(2)
                         }
                     }
                 }
-                .frame(width: 120, alignment: .leading)
+                .frame(width: Grid.pt120, alignment: .leading)
             }
         }
     }

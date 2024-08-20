@@ -42,12 +42,3 @@ extension ContainerTitleView {
         }
     }
 }
-
-#Preview {
-    ZStack {
-        Color.black
-        ContainerTitleView(title: "Hello") {
-            Text("Hello")
-        }
-    }
-}
