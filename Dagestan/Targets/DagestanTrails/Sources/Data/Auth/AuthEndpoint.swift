@@ -9,12 +9,15 @@ import CoreKit
 
 enum AuthEndpoint {
     case login(phone: String, password: String)
+    case loginV2(phone: String)
     case refreshToken(token: String)
     case register(phone: String, password: String, repeated: String)
     case registerConfirmVerification(phone: String, code: Int)
     case registerSendVerification(phone: String)
+    case sendVerificationSmsV2(phone: String)
     case resetPassword(phone: String, password: String, repeated: String)
     case resetPasswordConfirmVerification(phone: String, code: Int)
+    case confirmVerificationSmsV2(phone: String, code: Int)
     case resetPasswordSendVerification(phone: String)
 }
 
@@ -22,6 +25,8 @@ extension AuthEndpoint: ApiEndpoint {
     var path: String {
         switch self {
             case .login:
+                return "auth/login/phone/"
+            case .loginV2:
                 return "auth/login/phone/"
             case .refreshToken:
                 return "auth/refresh-token/"
@@ -37,6 +42,10 @@ extension AuthEndpoint: ApiEndpoint {
                 return "auth/reset-password/phone/confirm-verification-code/"
             case .resetPasswordSendVerification:
                 return "auth/reset-password/phone/send-verification-code/"
+            case .sendVerificationSmsV2:
+                return "auth/register/phone/sms/send-verif-code/"
+            case .confirmVerificationSmsV2:
+                return "auth/login/phone/confirm-verif-code/"
         }
     }
 
@@ -54,6 +63,13 @@ extension AuthEndpoint: ApiEndpoint {
         ]
     }
 
+    var version: Version {
+        switch self {
+            case .loginV2, .confirmVerificationSmsV2: .v2
+            default: .v1
+        }
+    }
+
     var body: Parameters? {
         var parameters: Parameters?
 
@@ -62,6 +78,19 @@ extension AuthEndpoint: ApiEndpoint {
                 parameters = [
                     "phone": phone,
                     "password": password
+                ]
+            case let .loginV2(phone):
+                parameters = [
+                    "phone": phone
+                ]
+            case let .sendVerificationSmsV2(phone):
+                parameters = [
+                    "phone": phone
+                ]
+            case let .confirmVerificationSmsV2(phone, code):
+                parameters = [
+                    "phone": phone,
+                    "code": code
                 ]
             case let .registerSendVerification(phone), let .resetPasswordSendVerification(phone):
                 parameters = [

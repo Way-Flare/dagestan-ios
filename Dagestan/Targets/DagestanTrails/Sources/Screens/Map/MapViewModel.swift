@@ -27,7 +27,7 @@ protocol IMapViewModel: ObservableObject {
     func moveToDagestan()
     func placesAsGeoJSON() -> Data?
     func setFavorite(by id: Int)
-    func deselectAllTags() -> Void
+    func deselectAllTags () -> Void
 }
 
 final class MapViewModel: IMapViewModel {
@@ -48,7 +48,6 @@ final class MapViewModel: IMapViewModel {
     @Published var selectedTags: Set<TagPlace> = []
     @Published var favoriteState: LoadingState<Bool> = .idle
     
-
     let placeService: IPlacesService
     let favoriteService: IFavoriteService
     private var task: Task<Void, Error>?

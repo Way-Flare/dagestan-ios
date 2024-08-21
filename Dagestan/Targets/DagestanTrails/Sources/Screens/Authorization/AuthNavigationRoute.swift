@@ -13,3 +13,7 @@ enum AuthNavigationRoute: Hashable {
     case verification(isRecovery: Bool)
     case recoveryPassword
 }
+
+enum AuthNavigationRouteV2: Hashable {
+    case verification
+}

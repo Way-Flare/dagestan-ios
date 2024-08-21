@@ -89,4 +89,32 @@ final class AuthService: IAuthService {
             throw error
         }
     }
+    
+    func loginV2(phone: String) async throws {
+        let endpoint = AuthEndpoint.loginV2(phone: phone)
+        do {
+            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
+        } catch {
+            throw error
+        }
+    }
+    
+    func sendVerificationSmsV2(phone: String) async throws {
+        let endpoint = AuthEndpoint.sendVerificationSmsV2(phone: phone)
+        do {
+            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
+        } catch {
+            throw error
+        }
+    }
+    
+    func confirmVerificationSmsV2(phone: String, code: Int) async throws -> AuthToken {
+        let endpoint = AuthEndpoint.confirmVerificationSmsV2(phone: phone, code: code)
+        do {
+            let token = try await networkService.execute(endpoint, expecting: AuthToken.self)
+            return token
+        } catch {
+            throw error
+        }
+    }
 }

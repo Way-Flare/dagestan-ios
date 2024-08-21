@@ -16,4 +16,7 @@ protocol IAuthService {
     func resetPassword(phone: String, password: String, repeated: String) async throws -> String
     func resetPasswordConfirmVerification(phone: String, code: Int) async throws
     func resetPasswordSendVerification(phone: String) async throws
+    func loginV2(phone: String) async throws
+    func sendVerificationSmsV2(phone: String) async throws
+    func confirmVerificationSmsV2(phone: String, code: Int) async throws -> AuthToken
 }
