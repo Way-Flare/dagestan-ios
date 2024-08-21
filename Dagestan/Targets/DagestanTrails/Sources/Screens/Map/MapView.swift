@@ -28,7 +28,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     Map(viewport: $viewModel.viewport) {
                         Puck2D(bearing: .heading)
                     }
-                    .mapStyle(.streets)
+                    .mapStyle(.satelliteStreets)
                     .ornamentOptions(OrnamentOptions(
                         compass: CompassViewOptions(
                             position: .bottomTrailing,

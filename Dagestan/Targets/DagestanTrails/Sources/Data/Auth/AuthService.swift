@@ -90,10 +90,12 @@ final class AuthService: IAuthService {
         }
     }
     
-    func authV2(phone: String) async throws {
+    func authV2(phone: String) async throws -> Int {
         let endpoint = AuthEndpoint.authV2(phone: phone)
         do {
-            let _ = try await networkService.execute(endpoint, expecting: EmptyResponse.self)
+            let statusCode = try await networkService.execute(endpoint)
+
+            return statusCode
         } catch {
             throw error
         }

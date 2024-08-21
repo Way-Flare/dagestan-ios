@@ -49,7 +49,7 @@ extension AuthEndpoint: ApiEndpoint {
             case .registerSendVerificationSms:
                 return "auth/register/phone/sms/send-verif-code/"
             case .confirmVerificationSmsV2:
-                return "auth/login/phone/confirm-verif-code/"
+                return "auth/login/phone/confirm-verif-code"
         }
     }
 

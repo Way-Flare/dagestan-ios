@@ -40,8 +40,13 @@ final class AuthorizationViewModelV2: IAuthorizationViewModelV2 {
         withAnimation { loginState = .loading }
         do {
             try await Task.sleep(nanoseconds: 750_000_000)
-            let _ = try await authService.authV2(phone: phoneNumber)
-            withAnimation { loginState = .loaded(()) }
+            let statusCode = try await authService.authV2(phone: phoneNumber)
+            if  statusCode == 202 {
+                withAnimation { loginState = .loaded(()) }
+                path.append(AuthNavigationRouteV2.verification)
+            } else {
+                withAnimation { loginState = .failed("Произошла неизвестная ошибка") }
+            }
         } catch let requestError as RequestError {
             withAnimation { loginState = .failed(requestError.message) }
         } catch {

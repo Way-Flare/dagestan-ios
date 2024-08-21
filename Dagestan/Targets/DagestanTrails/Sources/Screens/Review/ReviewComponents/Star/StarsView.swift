@@ -35,7 +35,7 @@ struct StarsView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: size.value, height: size.value)
                     .foregroundStyle(
-                        index < amount ? WFColor.starActive : WFColor.starPrimary
+                        index < amount ? WFColor.starsActive : WFColor.starsPrimary
                     )
                     .onTapGesture {
                         onSelectionChange?(index + 1)

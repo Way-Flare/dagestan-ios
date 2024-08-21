@@ -18,7 +18,7 @@ protocol IAuthService {
     func resetPasswordConfirmVerification(phone: String, code: Int) async throws
     func resetPasswordSendVerification(phone: String) async throws
     /// Авторизация v2 без пароля по номеру телефону
-    func authV2(phone: String) async throws
+    func authV2(phone: String) async throws -> Int
     /// Подтверждения 4х значного кода для авторизации v2
     func confirmVerificationSmsV2(phone: String, code: Int) async throws -> AuthToken
 }
