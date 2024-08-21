@@ -27,6 +27,7 @@ protocol IMapViewModel: ObservableObject {
     func moveToDagestan()
     func placesAsGeoJSON() -> Data?
     func setFavorite(by id: Int)
+    func deselectAllTags() -> Void
 }
 
 final class MapViewModel: IMapViewModel {
@@ -179,6 +180,11 @@ final class MapViewModel: IMapViewModel {
         } else {
             selectedTags.insert(tag)
         }
+        updateFilteredPlaces()
+    }
+    
+    func deselectAllTags() {
+        selectedTags.removeAll()
         updateFilteredPlaces()
     }
 

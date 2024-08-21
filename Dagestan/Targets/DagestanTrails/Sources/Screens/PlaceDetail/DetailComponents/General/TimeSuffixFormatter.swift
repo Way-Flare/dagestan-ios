@@ -12,64 +12,88 @@ import SwiftUI
 struct TimeSuffixFormatter {
     let workTime: String?
     
-    var operatingStatus: String {
-        guard let workTime else { return "Время работы неизвестно" }
-        if workTime == "24/7" || workTime == "Круглосуточно" {
-            return "Открыто"
+    var operatingStatus: OperatingStatus {
+        guard let workTime else { return .unknown(value: "") }
+        switch workTime.lowercased() {
+            case "24/7", "Круглосуточно".lowercased():
+                return .open24Hours
+            default:
+                if isValidTimeRange(workTime) {
+                    return isOpenNow(workTime: workTime) ? .open(time: workTime) : .closed(time: workTime)
+                } else {
+                    return .unknown(value: workTime)
+                }
         }
-        return isOpenNow(workTime: workTime) ? "Открыто" : "Закрыто"
     }
     
-    var operatingStatusColor: Color {
-        guard let workTime else { return WFColor.foregroundSoft }
-        if workTime == "24/7" || workTime == "Круглосуточно" {
-            return WFColor.successPrimary
-        }
-        return isOpenNow(workTime: workTime) ? WFColor.successPrimary : WFColor.errorPrimary
-    }
-    
-    var operatingStatusSuffix: String {
-        guard let workTime else { return "" }
-        if workTime == "24/7" || workTime == "Круглосуточно" {
-            return " • Круглосуточно"
-        }
-        
-        let times = workTime.split(separator: "-").map { String($0) }
-        return " • до " + (isOpenNow(workTime: workTime) ? times[1] : times[0])
+    private func isValidTimeRange(_ workTime: String) -> Bool {
+        guard let regex = try? NSRegularExpression(pattern: "^\\d{2}:\\d{2} - \\d{2}:\\d{2}$") else { return false }
+        let range = NSRange(location: 0, length: workTime.utf16.count)
+        return regex.firstMatch(in: workTime, options: [], range: range) != nil
     }
     
     private func isOpenNow(workTime: String) -> Bool {
-        if workTime == "24/7" || workTime == "Круглосуточно" {
-            return true
-        }
-        // workTime имеет формат "HH:mm-HH:mm"
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
-        
-        let components = workTime.split(separator: "-").map { String($0) }
-        guard components.count == 2,
-              let openingTime = dateFormatter.date(from: components[0]),
-              let closingTime = dateFormatter.date(from: components[1])
+            
+        let times = workTime.split(separator: "-").map { String($0) }
+        guard let openingTime = dateFormatter.date(from: times[0]),
+              let closingTime = dateFormatter.date(from: times[1])
         else {
             return false
         }
-        
+            
         let currentTime = Date()
         let calendar = Calendar.current
-        
+            
         let openingComponents = calendar.dateComponents([.hour, .minute], from: openingTime)
         let closingComponents = calendar.dateComponents([.hour, .minute], from: closingTime)
-        
-        guard let openingHour = openingComponents.hour,
-              let openingMinute = openingComponents.minute,
-              let closingHour = closingComponents.hour,
-              let closingMinute = closingComponents.minute,
-              let openingDate = calendar.date(bySettingHour: openingHour, minute: openingMinute, second: 0, of: currentTime),
-              let closingDate = calendar.date(bySettingHour: closingHour, minute: closingMinute, second: 0, of: currentTime)
+            
+        guard let openingDate = calendar.date(bySettingHour: openingComponents.hour!, minute: openingComponents.minute!, second: 0, of: currentTime),
+              let closingDate = calendar.date(bySettingHour: closingComponents.hour!, minute: closingComponents.minute!, second: 0, of: currentTime)
         else {
             return false
         }
+            
+        if closingDate > openingDate {
+            return currentTime >= openingDate && currentTime <= closingDate
+        } else {
+            return currentTime >= openingDate || currentTime <= closingDate
+        }
+    }
+}
+
+extension TimeSuffixFormatter {
+    enum OperatingStatus {
+        case open(time: String)
+        case open24Hours
+        case closed(time: String)
+        case unknown(value: String)
         
-        return currentTime >= openingDate && currentTime <= closingDate
+        var description: String {
+            switch self {
+                case .open: return "Открыто"
+                case .open24Hours: return "Открыто круглосуточно"
+                case .closed: return "Закрыто"
+                case .unknown(let value): return value
+            }
+        }
+        
+        var descriptionColor: Color {
+            switch self {
+                case .open, .open24Hours: return WFColor.successPrimary
+                case .closed: return WFColor.errorPrimary
+                case .unknown: return WFColor.foregroundSoft
+            }
+        }
+        
+        var suffix: String {
+            switch self {
+                case .open(let time), .closed(let time):
+                    return " • до \(time)"
+                default:
+                    return ""
+            }
+        }
     }
 }

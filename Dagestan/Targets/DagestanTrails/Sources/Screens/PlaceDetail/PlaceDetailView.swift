@@ -9,6 +9,7 @@ import CoreKit
 import CoreLocation
 import DesignSystem
 import MapboxMaps
+import NukeUI
 import SwiftUI
 
 struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
@@ -34,14 +35,14 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(WFColor.surfaceTertiary, ignoresSafeAreaEdges: .all)
-            .navigationBarBackButtonHidden(true)
-            .navigationTitle(viewModel.isBackdropVisible ? viewModel.placeDetail.data?.name ?? "" : "")
             .setCustomBackButton()
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(viewModel.isBackdropVisible ? viewModel.placeDetail.data?.name ?? "" : "")
     }
 
     @ViewBuilder private var mapContainerView: some View {
         if let place = viewModel.placeDetail.data {
-            Map(initialViewport: .camera(center: place.coordinate, zoom: 15.0)) {
+            Map(initialViewport: .camera(center: place.coordinate, zoom: 12.0)) {
                 MapViewAnnotation(coordinate: place.coordinate) {
                     AnnotationView(name: place.name, workingTime: place.workTime, tagPlace: place.tags.first)
                 }
@@ -92,8 +93,14 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                     SliderView(images: place.images)
                 } content: {
                     VStack(alignment: .leading, spacing: Grid.pt16) {
-                        PlaceDetailInfoView(place: viewModel.placeDetail.data, formatter: viewModel.formatter)
-                        if place.isPromocode {
+                        PlaceDetailInfoView(
+                            place: viewModel.placeDetail.data,
+                            formatter: viewModel.formatter
+                        )
+                        if let placeWay = place.placeWays.first {
+                            PlaceWaysView(placeWay: placeWay, isFood: place.tags.first == .food)
+                        }
+                        if place.isPromocode && viewModel.isAuthorized {
                             if #available(iOS 16.4, *) {
                                 SlideButtonView()
                                     .onSwipeSuccessAction {

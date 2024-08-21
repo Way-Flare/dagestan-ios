@@ -84,8 +84,6 @@ extension PlaceDetailDTO: Domainable {
     }
 }
 
-
-
 extension PlaceDetailDTO.PlaceWayDTO: Domainable {
     typealias DomainType = PlaceDetail.PlaceWay
 
@@ -93,7 +91,7 @@ extension PlaceDetailDTO.PlaceWayDTO: Domainable {
         PlaceDetail.PlaceWay(
             id: id,
             info: info,
-            images: images.compactMap { $0.asDomain() }
+            images: images
         )
     }
 }

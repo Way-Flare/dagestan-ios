@@ -24,7 +24,6 @@ struct CompanyContactsView: View {
     }
 }
 
-
 private struct ItemView: View {
     let image: Image
     let title: String

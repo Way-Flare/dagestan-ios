@@ -90,6 +90,9 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         viewModel.setFavorite(by: id)
                     }
                 }
+                .onAppear {
+                    viewModel.deselectAllTags()
+                }
                 .padding(.bottom, Grid.pt8)
                 .alert("Произошла ошибка", isPresented: $viewModel.showFavoriteAlert) {
                     Button("Понятно", role: .cancel) {}

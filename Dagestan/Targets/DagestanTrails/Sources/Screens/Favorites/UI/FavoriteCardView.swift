@@ -81,13 +81,13 @@ struct FavoriteCardView: View {
     
     private var operatingHoursView: some View {
         Group {
-            Text(formatter.operatingStatus)
-                .foregroundColor(formatter.operatingStatusColor)
-                +
-                Text(formatter.operatingStatusSuffix)
-                .foregroundColor(WFColor.foregroundSoft)
+            Text(formatter.operatingStatus.description)
+                .foregroundColor(formatter.operatingStatus.descriptionColor)
+            +
+            Text(formatter.operatingStatus.suffix)
         }
         .font(.manropeRegular(size: Grid.pt14))
+        .foregroundStyle(WFColor.foregroundSoft)
     }
     
     @ViewBuilder private var routeDescriptionView: some View {
