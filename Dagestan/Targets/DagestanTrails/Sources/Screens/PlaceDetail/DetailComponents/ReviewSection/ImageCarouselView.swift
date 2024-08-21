@@ -40,7 +40,7 @@ struct ImageCarousel: View {
                     .onTapGesture {
                         selectedImageIndex = IdentifiableInt(id: index)
                     }
-                    .buttonStyle(DSPressedButtonStyle())
+                    .buttonStyle(.plain)
                 }
             }
         }

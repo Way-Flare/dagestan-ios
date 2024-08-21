@@ -24,7 +24,7 @@ struct ProfileContainerView: View {
             if isAuthorized {
                 ProfileView(feedbackService: feedbackService)
             } else {
-                AuthorizationView(service: authService)
+                AuthorizationViewV2(service: authService)
             }
         }
     }
