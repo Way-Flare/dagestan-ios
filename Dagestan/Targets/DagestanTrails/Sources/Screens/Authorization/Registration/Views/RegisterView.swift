@@ -61,7 +61,7 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
             }
             // Чекбокс для согласия на обработку персональных данных
             Toggle(isOn: $viewModel.isPrivacyPolicyAccepted) {
-                Text("Я подтверждаю согласие на [Политику обработки персональных данных](https://dagestan-trails.ru)")
+                Text("Я подтверждаю согласие на [Политику обработки персональных данных](https://dagestan-trails.ru/policyOfConfidentiality)")
                     .font(.manropeRegular(size: Grid.pt12))
             }
             .toggleStyle(CheckboxToggleStyle())
