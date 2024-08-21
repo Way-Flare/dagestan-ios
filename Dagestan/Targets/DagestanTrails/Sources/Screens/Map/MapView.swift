@@ -29,6 +29,12 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         Puck2D(bearing: .heading)
                     }
                     .mapStyle(.streets)
+                    .ornamentOptions(OrnamentOptions(
+                        compass: CompassViewOptions(
+                            position: .bottomTrailing,
+                            margins: .init(x: Grid.pt8, y: Grid.pt56)
+                        )
+                    ))
                     .onStyleLoaded { _ in setupMap(proxy) }
                     .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
                         handleTap(proxy: proxy, feature: feature, context: context)
