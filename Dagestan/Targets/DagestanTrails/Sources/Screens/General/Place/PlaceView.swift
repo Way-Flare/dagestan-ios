@@ -1,9 +1,9 @@
-    //
-    //  PlaceView.swift
-    //  DagestanTrails
-    //
-    //  Created by Рассказов Глеб on 27.04.2024.
-    //
+//
+//  PlaceView.swift
+//  DagestanTrails
+//
+//  Created by Рассказов Глеб on 27.04.2024.
+//
 
 import DesignSystem
 import NukeUI
@@ -12,8 +12,10 @@ import SwiftUI
 @MainActor
 struct PlaceView: View {
     @Binding private var place: Place?
+    @State var showAlert = false
+    @AppStorage("isAuthorized") var isAuthorized = false
     private let isLoading: Bool
-
+    private let needClose: Bool
     private let placeDetailViewModel: PlaceDetailViewModel
     private let routeService: IRouteService
 
@@ -28,6 +30,7 @@ struct PlaceView: View {
         isLoading: Bool,
         placeService: IPlacesService,
         routeService: IRouteService,
+        needClose: Bool = true,
         favoriteAction: (() -> Void)?
     ) {
         self._place = place
@@ -37,6 +40,7 @@ struct PlaceView: View {
             placeId: place.wrappedValue?.id ?? .zero,
             isFavorite: place.wrappedValue?.isFavorite ?? false
         )
+        self.needClose = needClose
         self.isLoading = isLoading
         self.onFavoriteAction = favoriteAction
     }
@@ -51,8 +55,9 @@ struct PlaceView: View {
                     .padding(.horizontal, Grid.pt12)
                     .shadow(radius: Grid.pt4)
             }
-            .buttonStyle(DSPressedButtonStyle())
+            .buttonStyle(.plain)
             .frame(height: 292)
+            .notAuthorizedAlert(isPresented: $showAlert)
         }
     }
 
@@ -70,6 +75,7 @@ struct PlaceView: View {
             ZStack(alignment: .topTrailing) {
                 SliderView(images: place.images)
                     .frame(height: 164)
+                    .disabled(true)
                 buttonsView
             }
             .cornerStyle(.constant(Grid.pt4, .bottomCorners))
@@ -86,22 +92,28 @@ struct PlaceView: View {
                 state: isLoading ? .loading : .default,
                 type: .favorite
             ) {
+                guard isAuthorized else {
+                    showAlert = true
+                    return
+                }
                 onFavoriteAction?()
             }
             .foregroundColor(place?.isFavorite == true ? WFColor.errorSoft : WFColor.iconInverted)
-            WFButtonIcon(
-                icon: DagestanTrailsAsset.close.swiftUIImage,
-                size: .l,
-                type: .favorite
-            ) {
-                place = nil
+            if needClose {
+                WFButtonIcon(
+                    icon: DagestanTrailsAsset.close.swiftUIImage,
+                    size: .l,
+                    type: .favorite
+                ) {
+                    place = nil
+                }
             }
         }
         .padding([.top, .trailing], Grid.pt12)
     }
 }
 
-    // MARK: - UI Elements
+// MARK: - UI Elements
 
 extension PlaceView {
     private var descriptionView: some View {
@@ -139,13 +151,13 @@ extension PlaceView {
 
     private var operatingHoursView: some View {
         Group {
-            Text(formatter.operatingStatus)
-                .foregroundColor(formatter.operatingStatusColor)
+            Text(formatter.operatingStatus.description)
+                .foregroundColor(formatter.operatingStatus.descriptionColor)
             +
-            Text(formatter.operatingStatusSuffix)
-                .foregroundColor(WFColor.foregroundSoft)
+            Text(formatter.operatingStatus.suffix)
         }
         .font(.manropeRegular(size: Grid.pt14))
+        .foregroundStyle(WFColor.foregroundSoft)
     }
 
     @ViewBuilder private var routeDescriptionView: some View {

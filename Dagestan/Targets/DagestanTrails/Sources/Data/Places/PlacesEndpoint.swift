@@ -13,6 +13,7 @@ enum PlacesEndpoint {
     case place(id: Int)
     case favorite(id: Int)
     case placeFeedbacks(parameters: PlaceFeedbackParametersDTO)
+    case promocode(id: Int)
 }
 
 extension PlacesEndpoint: ApiEndpoint {
@@ -27,6 +28,8 @@ extension PlacesEndpoint: ApiEndpoint {
                 return "places/\(parameters.id)/feedbacks/"
             case let .favorite(id):
                 return "places/\(id)/subscribe/"
+            case let .promocode(id):
+                return "promocode/\(id)/"
         }
     }
     

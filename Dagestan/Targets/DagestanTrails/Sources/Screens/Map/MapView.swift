@@ -5,9 +5,9 @@
 //  Created by Рассказов Глеб on 15.04.2024.
 //
 
-import SwiftUI
-@_spi(Experimental) import MapboxMaps
 import DesignSystem
+import MapboxMaps
+import SwiftUI
 
 private enum ItemId {
     static let clusterCircle = "clustered-circle-layer"
@@ -18,12 +18,13 @@ private enum ItemId {
 
 struct MapView<ViewModel: IMapViewModel>: View {
     @ObservedObject var viewModel: ViewModel
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
     let routeService: IRouteService
-    
+
     var body: some View {
         NavigationStack {
             MapReader { proxy in
-                ZStack {
+                ZStack(alignment: .top) {
                     Map(viewport: $viewModel.viewport) {
                         Puck2D(bearing: .heading)
                     }
@@ -42,6 +43,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                             .progressViewStyle(.circular)
                     }
                 }
+                .overlay(alignment: .top) { searchBar.padding(.top, safeAreaInsets.top) }
                 .overlay(alignment: .bottom) { bottomContentContainerView }
                 .overlay(alignment: .trailing) {
                     WFButtonIcon(
@@ -58,10 +60,18 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     Button("Да", role: .cancel) {
                         viewModel.loadPlaces()
                     }
-                }  message: {
+                } message: {
                     Text("Повторить попытку?")
                 }
             }
+        }
+        .fullScreenCover(isPresented: $viewModel.searchOpen) {
+            SearchPlaceListView(
+                with: viewModel.places,
+                placeService: viewModel.placeService,
+                routeService: routeService,
+                favoriteService: viewModel.favoriteService
+            )
         }
     }
 
@@ -80,7 +90,17 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         viewModel.setFavorite(by: id)
                     }
                 }
+                .onAppear {
+                    viewModel.deselectAllTags()
+                }
                 .padding(.bottom, Grid.pt8)
+                .alert("Произошла ошибка", isPresented: $viewModel.showFavoriteAlert) {
+                    Button("Понятно", role: .cancel) {}
+                } message: {
+                    if let error = viewModel.favoriteState.error {
+                        Text(error)
+                    }
+                }
             }
         }
     }
@@ -106,6 +126,28 @@ struct MapView<ViewModel: IMapViewModel>: View {
             .padding(.bottom, Grid.pt4)
             .scrollIndicators(.hidden)
         }
+    }
+
+    private var searchBar: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "magnifyingglass")
+                .resizable()
+                .frame(width: 16, height: 16)
+                .foregroundStyle(WFColor.iconPrimary)
+            Text("Искать место...")
+                .font(.manropeSemibold(size: 14))
+                .foregroundStyle(WFColor.foregroundSoft)
+            Spacer()
+        }
+        .frame(height: 44)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 12)
+        .background(WFColor.surfaceSecondary)
+        .cornerStyle(.constant(12))
+        .onTapGesture {
+            viewModel.searchOpen = true
+        }
+        .padding()
     }
 }
 
@@ -188,7 +230,7 @@ extension MapView {
 
         layer.textAnchor = .constant(.top)
         layer.iconAnchor = .constant(.bottom)
-        layer.textField = .expression( Exp(.get) { "place_name" })
+        layer.textField = .expression(Exp(.get) { "place_name" })
         layer.iconImage = .constant(.name("place-icon"))
 
         layer.textAllowOverlap = .constant(true)

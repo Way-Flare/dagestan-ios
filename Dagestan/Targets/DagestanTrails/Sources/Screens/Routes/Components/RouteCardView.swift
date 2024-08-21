@@ -11,6 +11,8 @@ import SwiftUI
 
 @MainActor
 struct RouteCardView: View {
+    @State var showAlert = false
+    @AppStorage("isAuthorized") var isAuthorized = false
     let route: Route
     let isLoading: Bool
     let onFavoriteAction: (() -> Void)?
@@ -30,6 +32,7 @@ struct RouteCardView: View {
             SliderView(images: route.images)
                 .frame(height: Grid.pt174)
                 .clipped()
+                .disabled(true)
                 
             WFButtonIcon(
                 icon: route.isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
@@ -37,10 +40,15 @@ struct RouteCardView: View {
                 state: isLoading ? .loading : .default,
                 type: .favorite
             ) {
+                guard isAuthorized else {
+                    showAlert = true
+                    return
+                }
                 onFavoriteAction?()
             }
             .foregroundColor(route.isFavorite ? WFColor.errorSoft : WFColor.iconInverted)
             .padding([.top, .trailing], Grid.pt12)
+            .notAuthorizedAlert(isPresented: $showAlert)
         }
     }
     
@@ -52,7 +60,7 @@ struct RouteCardView: View {
                 ratingContainerView
             }
             
-            Text("\(String(format: "%.2f", route.distance)) км • \(formatExtendedTravelTime()) • \(Int.random(in: 1 ... 12)) мест")
+            Text("\(String(format: "%.2f", route.distance)) км • \(formatExtendedTravelTime()) • \(route.placesCount) мест")
                 .foregroundStyle(WFColor.foregroundSoft)
 
             Text(route.shortDescription ?? "")

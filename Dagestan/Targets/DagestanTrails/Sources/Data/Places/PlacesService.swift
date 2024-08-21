@@ -39,7 +39,6 @@ final class PlacesService: IPlacesService {
                 endpoint,
                 expecting: PlaceDetailDTO.self
             )
-            
             return place.asDomain()
         } catch {
             throw error
@@ -68,8 +67,18 @@ final class PlacesService: IPlacesService {
 
         do {
             let placeFeedbackList = try await networkService.execute(endpoint, expecting: PlaceFeedbackListDTO.self)
-
             return placeFeedbackList.asDomain()
+        } catch {
+            throw error
+        }
+    }
+    
+    func getPromocode(by id: Int) async throws -> [Promocode] {
+        let endpoint = PlacesEndpoint.promocode(id: id)
+
+        do {
+            let promocode = try await networkService.execute(endpoint, expecting: [PromocodeDTO].self)
+            return promocode.map { $0.asDomain() }
         } catch {
             throw error
         }

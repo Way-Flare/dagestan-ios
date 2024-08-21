@@ -36,11 +36,10 @@ struct NumberPhoneMaskView: View {
                 Image(systemName: !text.isEmpty ? "multiply.circle.fill" : "person.fill")
                     .frame(width: Grid.pt20, height: Grid.pt20)
                     .foregroundStyle(WFColor.iconSoft)
+                    .frame(width: Grid.pt44, height: Grid.pt44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .padding([.trailing], Grid.pt12)
-            .padding([.leading, .vertical], Grid.pt24)
-            .contentShape(Rectangle())
         }
     }
 }

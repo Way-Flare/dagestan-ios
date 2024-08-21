@@ -59,6 +59,13 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
                     .foregroundStyle(WFColor.errorPrimary)
                     .font(.manropeRegular(size: Grid.pt14))
             }
+            // Чекбокс для согласия на обработку персональных данных
+            Toggle(isOn: $viewModel.isPrivacyPolicyAccepted) {
+                Text("Я подтверждаю согласие на [Политику обработки персональных данных](https://dagestan-trails.ru)")
+                    .font(.manropeRegular(size: Grid.pt12))
+            }
+            .toggleStyle(CheckboxToggleStyle())
+            .padding(.horizontal, Grid.pt8)
         }
         .padding(.bottom, Grid.pt16)
         .padding(.top, Grid.pt44)
@@ -69,7 +76,7 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
             WFButton(
                 title: "Зарегистрироваться",
                 size: .l,
-                state: viewModel.registrationState.isLoading ? .loading : viewModel.phoneNumber.count >= 11 ? .default : .disabled,
+                state: buttonState(),
                 type: .primary
             ) {
                 Task {
@@ -93,9 +100,30 @@ struct RegisterView<RegisterViewModel: IRegisterViewModel>: View {
         }
         .padding(.bottom, Grid.pt8)
     }
+
+    private func buttonState() -> WFButtonState {
+        if viewModel.registrationState.isLoading {
+            return .loading
+        }
+        if viewModel.isPrivacyPolicyAccepted, viewModel.phoneNumber.count >= 11 {
+            return .default
+        }
+
+        return .disabled
+    }
 }
 
-#Preview {
-    ContentView(networkService: DTNetworkService())
-        .environmentObject(TimerViewModel())
+struct CheckboxToggleStyle: ToggleStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        HStack {
+            configuration.label
+            Spacer()
+            Image(systemName: configuration.isOn ? "checkmark.square" : "square")
+                .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(WFColor.iconAccent)
+                .frame(width: Grid.pt24, height: Grid.pt24)
+                .onTapGesture { configuration.isOn.toggle() }
+        }
+    }
 }

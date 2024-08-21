@@ -18,6 +18,7 @@ struct RouteDTO: Decodable {
     let travelTime: String
     let feedbackCount: Int
     let rating: Double
+    let placesCount: Int
     let isFavorite: Bool
 }
 
@@ -34,6 +35,7 @@ extension RouteDTO: Domainable {
             travelTime: travelTime,
             feedbackCount: feedbackCount,
             rating: rating,
+            placesCount: placesCount,
             isFavorite: isFavorite
         )
     }

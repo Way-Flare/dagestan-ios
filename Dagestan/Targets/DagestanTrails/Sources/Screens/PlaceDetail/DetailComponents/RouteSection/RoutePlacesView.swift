@@ -16,31 +16,6 @@ struct RoutePlacesView: View {
     let routeService: IRouteService?
     let placeService: IPlacesService?
     let onFavoriteAction: (() -> Void)?
-    
-    @ViewBuilder
-    private func view(for item: RoutePlaceModel) -> some View {
-        if isRoutes {
-            if let routeService, let placeService {
-                PlaceDetailView(
-                    viewModel: PlaceDetailViewModel(
-                        service: placeService,
-                        placeId: item.id,
-                        isFavorite: item.isFavorite
-                    ),
-                    routeService: routeService,
-                    onFavoriteAction: onFavoriteAction
-                )
-            }
-        } else {
-            if let routeService, let placeService {
-                RouteDetailView(
-                    viewModel: RouteDetailViewModel(service: routeService, id: item.id),
-                    placeService: placeService,
-                    onFavoriteAction: onFavoriteAction
-                )
-            }
-        }
-    }
 
     var body: some View {
         ScrollView {
@@ -63,7 +38,7 @@ struct RoutePlacesView: View {
                         }
                     }
                 }
-                .buttonStyle(DSPressedButtonStyle())
+                .buttonStyle(.plain)
             }
         }
     }
@@ -92,6 +67,31 @@ struct RoutePlacesView: View {
             .fill(WFColor.accentMuted)
             .frame(width: Grid.pt1, height: Grid.pt12)
             .padding(.leading, Grid.pt8)
+    }
+
+    @ViewBuilder
+    private func view(for item: RoutePlaceModel) -> some View {
+        if isRoutes {
+            if let routeService, let placeService {
+                PlaceDetailView(
+                    viewModel: PlaceDetailViewModel(
+                        service: placeService,
+                        placeId: item.id,
+                        isFavorite: item.isFavorite
+                    ),
+                    routeService: routeService,
+                    onFavoriteAction: onFavoriteAction
+                )
+            }
+        } else {
+            if let routeService, let placeService {
+                RouteDetailView(
+                    viewModel: RouteDetailViewModel(service: routeService, id: item.id),
+                    placeService: placeService,
+                    onFavoriteAction: onFavoriteAction
+                )
+            }
+        }
     }
 
     private func numberedItemView(index: Int, item: (String, String?)) -> some View {

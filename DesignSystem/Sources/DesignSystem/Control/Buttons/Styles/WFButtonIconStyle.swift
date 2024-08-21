@@ -6,13 +6,13 @@
 
 import SwiftUI
 
-struct WFButtonVisualStyle: ButtonStyle {
-    let style: WFButtonStyle
-    let appearance: WFButtonAppearance
-    let cornerRadius: CGFloat
-    let foregroundColor: Color?
-
-    func makeBody(configuration: Configuration) -> some View {
+public struct WFButtonVisualStyle: ButtonStyle {
+    public let style: WFButtonStyle
+    public let appearance: WFButtonAppearance
+    public let cornerRadius: CGFloat
+    public let foregroundColor: Color?
+    
+    public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .foregroundStyle(configureForegroundColor(isPressed: configuration.isPressed))
             .background(configureBackgroundColor(isPressed: configuration.isPressed))
@@ -28,7 +28,7 @@ struct WFButtonVisualStyle: ButtonStyle {
     }
 }
 
-extension View {
+public extension View {
     func buttonVisualStyle(
         style: WFButtonStyle,
         appearance: WFButtonAppearance,

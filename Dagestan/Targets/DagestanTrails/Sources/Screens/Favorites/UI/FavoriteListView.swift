@@ -33,7 +33,7 @@ struct FavoriteListView: View {
             Text("Избранное")
                 .foregroundStyle(WFColor.foregroundPrimary)
                 .font(.manropeExtrabold(size: Grid.pt20))
-            WFCounter(style: .nature, size: .m, number: 5)
+            WFCounter(style: .nature, size: .m, number: viewModel.favoriteCount)
             Spacer()
         }
         .padding(.horizontal, Grid.pt12)

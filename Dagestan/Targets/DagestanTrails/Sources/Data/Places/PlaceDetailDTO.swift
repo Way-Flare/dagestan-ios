@@ -78,14 +78,11 @@ extension PlaceDetailDTO: Domainable {
             contacts: contacts.map { $0.asDomain() },
             routes: routes.map { $0.asDomain() },
             isFavorite: isFavorite,
-            feedbackCount: feedbackCount
+            feedbackCount: feedbackCount,
+            isPromocode: isPromocode
         )
-
-//        return PlaceDetail(id: 0, coordinate: coordinate, name: "", address: nil, tags: [], shortDescription: nil, description: "", images: [], workTime: nil, rating: 0, placeWays: [], contacts: [], routes: [], isFavorite: false, feedbackCount: 0)
     }
 }
-
-
 
 extension PlaceDetailDTO.PlaceWayDTO: Domainable {
     typealias DomainType = PlaceDetail.PlaceWay
@@ -94,7 +91,7 @@ extension PlaceDetailDTO.PlaceWayDTO: Domainable {
         PlaceDetail.PlaceWay(
             id: id,
             info: info,
-            images: images.compactMap { $0.asDomain() }
+            images: images
         )
     }
 }

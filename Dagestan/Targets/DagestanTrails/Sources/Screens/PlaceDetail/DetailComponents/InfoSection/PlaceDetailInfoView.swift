@@ -53,10 +53,10 @@ struct PlaceDetailInfoView: View {
     
     @ViewBuilder private var operatingHoursView: some View {
         Group {
-            Text(formatter.operatingStatus)
-                .foregroundColor(formatter.operatingStatusColor)
+            Text(formatter.operatingStatus.description)
+                .foregroundColor(formatter.operatingStatus.descriptionColor)
             +
-            Text(formatter.operatingStatusSuffix)
+            Text(formatter.operatingStatus.suffix)
         }
         .font(.manropeRegular(size: Grid.pt14))
         .foregroundStyle(WFColor.foregroundSoft)

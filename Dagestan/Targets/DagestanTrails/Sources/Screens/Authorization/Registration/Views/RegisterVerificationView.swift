@@ -38,6 +38,12 @@ struct RegisterVerificationView<RegisterViewModel: IRegisterViewModel>: View {
                 buttonContainerView
                 Spacer()
             }
+            .onViewDidLoad {
+                timerViewModel.startTimer()
+                Task {
+                    await registerViewModel.performAuthRequest()
+                }
+            }
             .foregroundStyle(WFColor.foregroundSoft)
             .font(.manropeSemibold(size: Grid.pt16))
             .padding(.horizontal, Grid.pt16)
@@ -73,7 +79,7 @@ struct RegisterVerificationView<RegisterViewModel: IRegisterViewModel>: View {
 
     private var buttonContainerView: some View {
         WFButton(
-            title: "Запросить СМС-код",
+            title: "Запросить звонок",
             size: .l,
             state: timerViewModel.timerIsActive ? .disabled : .default,
             type: .primary,

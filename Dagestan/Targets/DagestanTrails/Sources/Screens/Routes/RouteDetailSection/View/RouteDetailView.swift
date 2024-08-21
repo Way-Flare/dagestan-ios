@@ -8,12 +8,11 @@
 
 import DesignSystem
 import SwiftUI
-@_spi(Experimental)
 import MapboxMaps
 
 struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
-    @State private var scrollViewOffset: CGFloat = 0
     @StateObject var viewModel: ViewModel
+
     let placeService: IPlacesService
     let onFavoriteAction: (() -> Void)?
 
@@ -62,12 +61,12 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @ViewBuilder
     func getContentView() -> some View {
         if let route = viewModel.state.data {
-            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible, scrollViewOffset: $scrollViewOffset) {
+            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
                 if let images = viewModel.state.data?.images {
                     SliderView(images: images)
                 }
             } content: {
-                VStack(alignment: .leading, spacing: Grid.pt16) {
+               LazyVStack(alignment: .leading, spacing: Grid.pt16) {
                     routeInfoContainerView
                     expandableTextContainerView
 
@@ -82,14 +81,18 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                         onFavoriteAction: onFavoriteAction
                     )
                     mapContainerView
-                    PlaceSendErrorView()
+                    SendErrorButton()
                     if let route = viewModel.state.data {
-                        PlaceReviewAndRatingView(review: route.asDomain(), isPlaces: false) {
+                        PlaceReviewAndRatingView(
+                            review: route.asDomain(),
+                            feedback: viewModel.routeFeedbacks.data?.results.first,
+                            isPlaces: false
+                        ) {
                             viewModel.loadRouteDetail()
                             viewModel.loadRouteFeedbacks()
                         }
                     }
-                    
+
                     reviewContainerView
                 }
                 .padding(.horizontal, Grid.pt12)
@@ -97,7 +100,11 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             }
             .overlay(alignment: .bottom) {
                 if let isFavorite = viewModel.state.data?.isFavorite {
-                    PlaceMakeRouteBottomView(isFavorite: isFavorite, onFavoriteAction: onFavoriteAction).isHidden(viewModel.state.isLoading)
+                    PlaceMakeRouteBottomView(
+                        isFavorite: isFavorite,
+                        onFavoriteAction: onFavoriteAction,
+                        shareUrl: viewModel.shareUrl
+                    ).isHidden(viewModel.state.isLoading)
                 }
             }
             .edgesIgnoringSafeArea(.top)
@@ -110,17 +117,16 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
             ShimmerRouteDetailView()
         }
     }
-    
+
     @ViewBuilder private var reviewContainerView: some View {
-        if let feedbacks = viewModel.routeFeedbacks.data?.results {
+        if !viewModel.userFeedbacks.isEmpty {
             VStack(alignment: .leading, spacing: Grid.pt24) {
-                ForEach(feedbacks, id: \.id) { feedback in
+                ForEach(viewModel.userFeedbacks, id: \.id) { feedback in
                     UserReviewView(feedback: feedback)
                 }
             }
         }
     }
-
     private var mapContainerView: some View {
         let camera = viewModel.calculateCenterAndApproximateZoom()
 

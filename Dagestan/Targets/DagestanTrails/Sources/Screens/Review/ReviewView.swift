@@ -52,7 +52,7 @@ class ReviewViewModel: ObservableObject {
                     images: photos
                 )
 
-                let response = try await service.addFeedback(review: review, isPlace: value)
+                let _ = try await service.addFeedback(review: review, isPlace: value)
                 sendStatus = .loaded(true)
             } catch {
                 showAlert = true
@@ -91,6 +91,7 @@ struct ReviewView: View {
     @Environment(\.dismiss) var dismiss
     @State private var editorHeight: CGFloat = 100
     @Binding var rating: Int
+    @State private var keyboardOffset: CGFloat = 0
     var onSuccessSaveButton: (() -> Void)?
     let isPlaces: Bool
 
@@ -110,130 +111,139 @@ struct ReviewView: View {
     let review: ReviewModel
 
     var body: some View {
-        VStack(spacing: 14) {
-            VStack(spacing: 22) {
-                Rectangle()
-                    .fill()
-                    .foregroundStyle(WFColor.surfaceFivefold)
-                    .frame(width: 36, height: 4)
-                    .cornerStyle(.constant(5))
-
-                Text("Оставьте отзыв")
-                    .font(.manropeExtrabold(size: 20))
-                    .foregroundStyle(WFColor.foregroundPrimary)
-                    .frame(maxWidth: .infinity)
-                    .overlay(alignment: .trailing) { CloseButton() }
-            }
-            .padding(.top, 8)
-            .padding(.horizontal, 12)
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                    LazyImage(url: review.image) { state in
-                        if let image = state.image {
-                            image
-                                .resizable()
-                                .frame(height: 207)
-                                .frame(maxWidth: .infinity)
-                                .cornerStyle(.constant(12))
-                                .padding(.top, 8)
-                        } else {
-                            DagestanTrailsAsset.notAvaibleImage.swiftUIImage
-                                .resizable()
-                                .frame(height: 207)
-                                .frame(maxWidth: .infinity)
-                                .cornerStyle(.constant(12))
-                                .padding(.top, 8)
-                        }
-                    }
-                    .padding(.horizontal, 12)
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(review.name)
-                            .font(.manropeSemibold(size: 18))
-                            .foregroundStyle(WFColor.foregroundPrimary)
-                        if let address = review.address {
-                            Text(address)
-                                .font(.manropeRegular(size: 14))
-                                .foregroundStyle(WFColor.foregroundSoft)
-                                .lineLimit(nil)
-                        }
-                    }
-                    .padding(.horizontal, 12)
-
-                    if viewModel.pickerItems.isEmpty {
-                        getMaxWidthPhotoPickerView()
-                            .padding(.horizontal, 12)
-                    } else {
-                        getPhotoPickerViewWithPhotos()
-                            .padding(.horizontal, 12)
-                    }
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        VStack(spacing: 16) {
-                            Text("Поставьте оценку месту")
-                                .font(.manropeRegular(size: 14))
-                                .foregroundStyle(WFColor.foregroundPrimary)
-                            StarsView(amount: rating, size: .l) { rating in
-                                self.rating = rating
-                                viewModel.rating = rating
-                            }
-                        }
-                        .frame(height: 102)
+        ScrollViewReader { proxy in
+            VStack(spacing: 14) {
+                VStack(spacing: 22) {
+                    Rectangle()
+                        .fill()
+                        .foregroundStyle(WFColor.surfaceFivefold)
+                        .frame(width: 36, height: 4)
+                        .cornerStyle(.constant(5))
+                    
+                    Text("Оставьте отзыв")
+                        .font(.manropeExtrabold(size: 20))
+                        .foregroundStyle(WFColor.foregroundPrimary)
                         .frame(maxWidth: .infinity)
-                        .background(WFColor.surfacePrimary)
-                        .cornerStyle(.constant(12))
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Расскажите о месте подробнее")
-                                .font(.manropeRegular(size: 14))
-                                .foregroundStyle(WFColor.foregroundSoft)
-                            ExpandingTextView(text: $viewModel.text)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 12)
-
-                    VStack(spacing: .zero) {
-                        Divider()
-                            .background(WFColor.borderMuted)
-                        WFButton(
-                            title: "Сохранить",
-                            size: .m,
-                            state: viewModel.sendStatus.isLoading ? .loading : .default,
-                            type: .primary
-                        ) {
-                            viewModel.sendReview(by: review.id, fromPlace: isPlaces)
-                        }
-                        .onChange(of: viewModel.sendStatus) { status in
-                            if let _ = status.data  {
-                                dismiss()
-                                onSuccessSaveButton?()
+                        .overlay(alignment: .trailing) { CloseButton() }
+                }
+                .padding(.top, 8)
+                .padding(.horizontal, 12)
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 8) {
+                        LazyImage(url: review.image) { state in
+                            if let image = state.image {
+                                image
+                                    .resizable()
+                                    .frame(height: 207)
+                                    .frame(maxWidth: .infinity)
+                                    .cornerStyle(.constant(12))
+                                    .padding(.top, 8)
+                            } else {
+                                DagestanTrailsAsset.notAvaibleImage.swiftUIImage
+                                    .resizable()
+                                    .frame(height: 207)
+                                    .frame(maxWidth: .infinity)
+                                    .cornerStyle(.constant(12))
+                                    .padding(.top, 8)
                             }
                         }
-                        .padding(12)
+                        .padding(.horizontal, 12)
+                        
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(review.name)
+                                .font(.manropeSemibold(size: 18))
+                                .foregroundStyle(WFColor.foregroundPrimary)
+                            if let address = review.address {
+                                Text(address)
+                                    .font(.manropeRegular(size: 14))
+                                    .foregroundStyle(WFColor.foregroundSoft)
+                                    .lineLimit(nil)
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                        
+                        if viewModel.pickerItems.isEmpty {
+                            getMaxWidthPhotoPickerView()
+                                .padding(.horizontal, 12)
+                        } else {
+                            getPhotoPickerViewWithPhotos()
+                                .padding(.horizontal, 12)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            VStack(spacing: 16) {
+                                Text("Поставьте оценку месту")
+                                    .font(.manropeRegular(size: 14))
+                                    .foregroundStyle(WFColor.foregroundPrimary)
+                                StarsView(amount: rating, size: .l) { rating in
+                                    self.rating = rating
+                                    viewModel.rating = rating
+                                }
+                            }
+                            .frame(height: 102)
+                            .frame(maxWidth: .infinity)
+                            .background(WFColor.surfacePrimary)
+                            .cornerStyle(.constant(12))
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Расскажите о месте подробнее")
+                                    .font(.manropeRegular(size: 14))
+                                    .foregroundStyle(WFColor.foregroundSoft)
+                                ExpandingTextView(text: $viewModel.text)
+                                    .onTapGesture {
+                                        withAnimation {
+                                            proxy.scrollTo(3, anchor: .top)
+                                        }
+                                    }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 12)
+                        
+                        VStack(spacing: .zero) {
+                            Divider()
+                                .background(WFColor.borderMuted)
+                            WFButton(
+                                title: "Сохранить",
+                                size: .m,
+                                state: viewModel.sendStatus.isLoading ? .loading : .default,
+                                type: .primary
+                            ) {
+                                viewModel.sendReview(by: review.id, fromPlace: isPlaces)
+                            }
+                            .onChange(of: viewModel.sendStatus) { status in
+                                if status.data != nil {
+                                    dismiss()
+                                    onSuccessSaveButton?()
+                                }
+                            }
+                            .padding(12)
+                        }
+                        .frame(height: 68)
+                        .background(WFColor.surfaceSecondary)
+                        .tag(3)
                     }
-                    .frame(height: 68)
-                    .background(WFColor.surfaceSecondary)
                 }
             }
-        }
-        .scrollIndicators(.hidden)
-        .alert("Ошибка", isPresented: $viewModel.showAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            if let error = viewModel.sendStatus.error {
-                Text(error)
-                    .foregroundStyle(WFColor.foregroundPrimary)
-                    .font(.manropeRegular(size: Grid.pt20))
-                    .multilineTextAlignment(.center)
+            .scrollIndicators(.hidden)
+            .alert("Ошибка", isPresented: $viewModel.showAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                if let error = viewModel.sendStatus.error {
+                    Text(error)
+                        .foregroundStyle(WFColor.foregroundPrimary)
+                        .font(.manropeRegular(size: Grid.pt20))
+                        .multilineTextAlignment(.center)
+                }
             }
+            .onChange(of: viewModel.pickerItems) { _ in
+                viewModel.loadImages()
+            }
+            .frame(width: 400)
+            .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
+            .endEditingOnTap()
         }
-        .onChange(of: viewModel.pickerItems) { _ in
-            viewModel.loadImages()
-        }
-        .frame(width: 400)
-        .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
     }
 
     private func getMaxWidthPhotoPickerView() -> some View {
@@ -318,7 +328,6 @@ struct ExpandingTextView: View {
                 .background(WFColor.surfacePrimary)
                 .setBorder()
                 .cornerStyle(.constant(8))
-
                 .onAppear {
                     UITextView.appearance().backgroundColor = .clear
                 }

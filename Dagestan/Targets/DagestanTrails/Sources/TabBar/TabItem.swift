@@ -35,5 +35,4 @@ enum TabItem: Int, CaseIterable {
                 DagestanTrailsAsset.tabProfileCircle.swiftUIImage
         }
     }
-
 }

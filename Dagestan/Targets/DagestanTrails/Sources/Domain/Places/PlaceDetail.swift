@@ -24,13 +24,14 @@ struct PlaceDetail {
     let routes: [Route]
     let isFavorite: Bool
     let feedbackCount: Int
+    let isPromocode: Bool
 }
 
 extension PlaceDetail {
-    struct PlaceWay {
+    struct PlaceWay: Identifiable {
         let id: Int
         let info: String?
-        let images: [URL]
+        let images: [ImageDTO]
     }
 
     struct Contact {
@@ -80,8 +81,16 @@ extension PlaceDetail: Domainable {
     }
 }
 
+// MARK: - Equatable
+
 extension PlaceDetail: Equatable {
     static func == (lhs: PlaceDetail, rhs: PlaceDetail) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+extension PlaceDetail.PlaceWay: Equatable {
+    static func == (lhs: PlaceDetail.PlaceWay, rhs: PlaceDetail.PlaceWay) -> Bool {
         lhs.id == rhs.id
     }
 }

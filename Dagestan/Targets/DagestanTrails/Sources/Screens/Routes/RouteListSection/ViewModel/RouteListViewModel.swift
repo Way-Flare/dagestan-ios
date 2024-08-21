@@ -13,6 +13,7 @@ protocol IRouteListViewModel: ObservableObject {
     var routeState: LoadingState<[Route]> { get }
     var favoriteState: LoadingState<Bool> { get }
     var routeService: IRouteService { get }
+    var isFavoriteRoutesLoading: [Int: Bool] { get }
 
     func fetchRoutes()
     func setFavorite(by id: Int)
@@ -22,6 +23,7 @@ class RouteListViewModel: IRouteListViewModel {
     @Published var path = NavigationPath()
     @Published var routeState: LoadingState<[Route]> = .idle
     @Published var favoriteState: LoadingState<Bool> = .idle
+    @Published var isFavoriteRoutesLoading: [Int: Bool] = [:]
 
     let routeService: IRouteService
     let favoriteService: IFavoriteService
@@ -56,16 +58,19 @@ class RouteListViewModel: IRouteListViewModel {
 
     func setFavorite(by id: Int) {
         favoriteState = .loading
+        updateFavoriteLoadingState(with: id, isLoading: true)
 
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
                 let status = try await favoriteService.setFavorite(by: id, fromPlace: false)
                 self.updateFavoriteStatus(for: id, to: status)
+                updateFavoriteLoadingState(with: id, isLoading: false)
                 favoriteState = .loaded(status)
             } catch {
                 favoriteState = .failed(error.localizedDescription)
                 print("Failed to set favorite: \(error.localizedDescription)")
+                updateFavoriteLoadingState(with: id, isLoading: false)
             }
         }
     }
@@ -80,6 +85,10 @@ class RouteListViewModel: IRouteListViewModel {
                 routeState = .loaded(updatedRoutes)
             }
         }
+    }
+
+    private func updateFavoriteLoadingState(with id: Int, isLoading: Bool) {
+        isFavoriteRoutesLoading[id] = isLoading
     }
 
     @objc private func handleFavoriteUpdate(_ notification: Notification) {

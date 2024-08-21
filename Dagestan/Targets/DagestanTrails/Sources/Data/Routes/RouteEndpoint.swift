@@ -20,7 +20,7 @@ public enum RouteEndpoint: ApiEndpoint {
             case .route(let id):
                 "routes/\(id)/"
             case .routeFeedbacks(let parameters):
-                "places/\(parameters.id)/feedbacks/"
+                "routes/\(parameters.id)/feedbacks/"
         }
     }
     

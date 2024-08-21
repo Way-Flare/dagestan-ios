@@ -13,14 +13,18 @@ import SwiftUI
 struct ProfileView: View {
     @AppStorage("isAuthorized") var isAuthorized = false
     @State private var showingAlert = false
-    @ObservedObject var viewModel: ProfileViewModel
-    @ObservedObject var feedbackViewModel: MyReviewsViewModel
+    @StateObject var viewModel = ProfileViewModel()
+    @StateObject var feedbackViewModel: MyReviewsViewModel
+    
+    init(feedbackService: IFeedbackService) {
+        self._feedbackViewModel = StateObject(wrappedValue: MyReviewsViewModel(feedbackService: feedbackService))
+    }
 
     var body: some View {
         NavigationStack {
             ScrollViewWithScrollOffset(scrollOffset: $viewModel.offset) {
                 VStack(spacing: .zero) {
-                    ProfileImageView(offset: $viewModel.offset)
+                    ProfileImageView(offset: $viewModel.offset, image: $viewModel.backgroundImage)
                     menuSection
                         .overlay(
                             profileCircle,
@@ -35,6 +39,10 @@ struct ProfileView: View {
             .onAppear {
                 if viewModel.profileState.data == nil {
                     viewModel.loadProfile()
+                }
+                
+                if let image = FileManagerHelper.loadImage(withName: "background_profile") {
+                    viewModel.backgroundImage = Image(uiImage: image)
                 }
             }
         }
@@ -82,11 +90,11 @@ struct ProfileView: View {
                 NavigationLink(destination: getDestination(for: item)) {
                     getMenuView(for: item)
                 }
-                .buttonStyle(DSPressedButtonStyle(isCancellable: false))
+                .buttonStyle(.plain)
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, Grid.pt108)
+        .padding(.top, viewModel.profileState.data?.email == nil ? Grid.pt80 : Grid.pt108)
         .padding(.horizontal, Grid.pt12)
         .background(WFColor.surfaceSecondary)
         .cornerRadius(Grid.pt24)
@@ -99,8 +107,11 @@ extension ProfileView {
     @ViewBuilder
     func getDestination(for item: MenuItemType) -> some View {
         switch item {
-            case .reviews: MyReviewsView(profile: viewModel.profileState.data).environmentObject(feedbackViewModel)
-            case .account: AccountManagerView(avatar: viewModel.profileState.data?.avatar).environmentObject(viewModel)
+            case .reviews: MyReviewsView(viewModel: feedbackViewModel, profile: viewModel.profileState.data)
+            case .account:
+                if let profile = viewModel.profileState.data {
+                    AccountManagerView(viewModel: viewModel, profile: profile)
+                }
             case .logout: EmptyView()
         }
     }
@@ -202,44 +213,12 @@ extension ProfileView {
             .bold()
     }
 
-    var person: some View {
-        Image(systemName: "person")
-            .resizable()
-            .frame(width: Grid.pt28, height: Grid.pt28)
-            .foregroundStyle(WFColor.iconSoft)
-    }
-
     @ViewBuilder
     func getUserPhotoImageView() -> some View {
         if viewModel.profileState.isLoading {
             ShimmerCircleView()
         } else {
-            if let url = viewModel.profileState.data?.avatar {
-                LazyImage(url: url) { state in
-                    if state.isLoading {
-                        ShimmerCircleView()
-                    } else if let image = state.image {
-                        state.image?
-                            .resizable()
-                            .frame(width: Grid.pt96, height: Grid.pt96)
-                            .overlay(
-                                Circle()
-                                    .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
-                            )
-                            .clipShape(Circle())
-                            .shadow(radius: Grid.pt10)
-                    }
-                }
-            } else {
-                Circle()
-                    .fill(WFColor.surfacePrimary)
-                    .frame(width: Grid.pt96, height: Grid.pt96)
-                    .overlay(person)
-                    .overlay(
-                        Circle()
-                            .strokeBorder(WFColor.surfaceSecondary, lineWidth: Grid.pt2)
-                    )
-            }
+            UserPhotoImageView(url: viewModel.profileState.data?.avatar)
         }
     }
 }

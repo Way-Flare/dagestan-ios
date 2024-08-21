@@ -12,6 +12,8 @@ public struct WFButtonSecondary: WFButtonStyle {
     public var active: WFButtonAppearance = WFButtonSecondaryActive()
     public var disabled: WFButtonAppearance = WFButtonSecondaryDisabled()
     public var loading: WFButtonAppearance = WFButtonSecondaryLoading()
+    
+    public init() {}
 }
 
 private struct WFButtonSecondaryDefault: WFButtonAppearance {

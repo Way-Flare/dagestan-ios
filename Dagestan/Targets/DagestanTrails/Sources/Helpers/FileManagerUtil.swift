@@ -11,6 +11,7 @@ import UIKit
 struct FileManagerHelper {
     static let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
 
+    @discardableResult
     static func saveImage(_ data: Data, withName name: String) -> Bool {
         let filePath = cacheDirectory.appendingPathComponent(name)
         do {
