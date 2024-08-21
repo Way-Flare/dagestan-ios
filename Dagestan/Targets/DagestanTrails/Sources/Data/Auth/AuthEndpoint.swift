@@ -8,16 +8,20 @@
 import CoreKit
 
 enum AuthEndpoint {
+    /// Авторизация v2 по номеру телефона + смс, без пароля
+    case authV2(phone: String)
+    /// Подтверждения 4х значного кода для авторизации v2
+    case confirmVerificationSmsV2(phone: String, code: Int)
     case login(phone: String, password: String)
-    case loginV2(phone: String)
     case refreshToken(token: String)
     case register(phone: String, password: String, repeated: String)
     case registerConfirmVerification(phone: String, code: Int)
+    /// Отправить код по звонку для регистрации
     case registerSendVerification(phone: String)
-    case sendVerificationSmsV2(phone: String)
+    /// Отправить код по смс для регистрации (v1)
+    case registerSendVerificationSms(phone: String)
     case resetPassword(phone: String, password: String, repeated: String)
     case resetPasswordConfirmVerification(phone: String, code: Int)
-    case confirmVerificationSmsV2(phone: String, code: Int)
     case resetPasswordSendVerification(phone: String)
 }
 
@@ -26,7 +30,7 @@ extension AuthEndpoint: ApiEndpoint {
         switch self {
             case .login:
                 return "auth/login/phone/"
-            case .loginV2:
+            case .authV2:
                 return "auth/login/phone/"
             case .refreshToken:
                 return "auth/refresh-token/"
@@ -42,7 +46,7 @@ extension AuthEndpoint: ApiEndpoint {
                 return "auth/reset-password/phone/confirm-verification-code/"
             case .resetPasswordSendVerification:
                 return "auth/reset-password/phone/send-verification-code/"
-            case .sendVerificationSmsV2:
+            case .registerSendVerificationSms:
                 return "auth/register/phone/sms/send-verif-code/"
             case .confirmVerificationSmsV2:
                 return "auth/login/phone/confirm-verif-code/"
@@ -65,7 +69,7 @@ extension AuthEndpoint: ApiEndpoint {
 
     var version: Version {
         switch self {
-            case .loginV2, .confirmVerificationSmsV2: .v2
+            case .authV2, .confirmVerificationSmsV2: .v2
             default: .v1
         }
     }
@@ -79,11 +83,11 @@ extension AuthEndpoint: ApiEndpoint {
                     "phone": phone,
                     "password": password
                 ]
-            case let .loginV2(phone):
+            case let .authV2(phone):
                 parameters = [
                     "phone": phone
                 ]
-            case let .sendVerificationSmsV2(phone):
+            case let .registerSendVerificationSms(phone):
                 parameters = [
                     "phone": phone
                 ]

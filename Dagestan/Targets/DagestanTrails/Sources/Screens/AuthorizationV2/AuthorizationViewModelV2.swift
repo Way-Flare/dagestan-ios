@@ -16,7 +16,7 @@ protocol IAuthorizationViewModelV2: ObservableObject {
     var confirmVerification: LoadingState<Void> { get }
     var loginState: LoadingState<Void> { get }
 
-    func login() async
+    func auth() async
     func sendSmsVerification() async
     func confirmSmsVerification() async
 }
@@ -36,11 +36,11 @@ final class AuthorizationViewModelV2: IAuthorizationViewModelV2 {
     }
     
     @MainActor
-    func login() async {
+    func auth() async {
         withAnimation { loginState = .loading }
         do {
             try await Task.sleep(nanoseconds: 750_000_000)
-            let _ = try await authService.loginV2(phone: phoneNumber)
+            let _ = try await authService.authV2(phone: phoneNumber)
             withAnimation { loginState = .loaded(()) }
         } catch let requestError as RequestError {
             withAnimation { loginState = .failed(requestError.message) }
@@ -48,21 +48,7 @@ final class AuthorizationViewModelV2: IAuthorizationViewModelV2 {
             withAnimation { loginState = .failed("Произошла ошибка: \(error.localizedDescription)") }
         }
     }
-    
-    @MainActor
-    func sendSmsVerification() async {
-        withAnimation { confirmVerification = .loading }
-        do {
-            try await Task.sleep(nanoseconds: 750_000_000)
-            let _ = try await authService.sendVerificationSmsV2(phone: phoneNumber)
-            withAnimation { sendVerification = .loaded(()) }
-        } catch let requestError as RequestError {
-            withAnimation { sendVerification = .failed(requestError.message) }
-        } catch {
-            withAnimation { sendVerification = .failed("Произошла ошибка: \(error.localizedDescription)") }
-        }
-    }    
-    
+
     @MainActor
     func confirmSmsVerification() async {
         guard let code = Int(code) else { return }
@@ -79,7 +65,21 @@ final class AuthorizationViewModelV2: IAuthorizationViewModelV2 {
             withAnimation { confirmVerification = .failed("Произошла ошибка: \(error.localizedDescription)") }
         }
     }
-    
+
+    @MainActor
+    func sendSmsVerification() async {
+        withAnimation { confirmVerification = .loading }
+        do {
+            try await Task.sleep(nanoseconds: 750_000_000)
+            let _ = try await authService.registerSendVerificationSms(phone: phoneNumber)
+            withAnimation { sendVerification = .loaded(()) }
+        } catch let requestError as RequestError {
+            withAnimation { sendVerification = .failed(requestError.message) }
+        } catch {
+            withAnimation { sendVerification = .failed("Произошла ошибка: \(error.localizedDescription)") }
+        }
+    }    
+
     private func handleTokenWithKeychain(using token: AuthToken) {
         if let accessData = token.access.data(using: .utf8),
            let refreshData = token.refresh.data(using: .utf8) {

@@ -23,11 +23,16 @@ protocol IMapViewModel: ObservableObject {
     func selectPlace(by feature: Feature)
     func selectPlace(by id: Int)
     func updateFilteredPlaces()
+    /// Вкл/выкл фильтр/тэг
     func toggleTag(_ tag: TagPlace)
+    /// Установить камеру на начальную позицию - Дагестан
     func moveToDagestan()
+    /// Получить точки в GeoJson
     func placesAsGeoJSON() -> Data?
+    /// Добавить в избранное место по id
     func setFavorite(by id: Int)
-    func deselectAllTags () -> Void
+    /// Отменить выбор всех фильтров/тегов
+    func deselectAllTags() -> Void
 }
 
 final class MapViewModel: IMapViewModel {

@@ -83,7 +83,7 @@ struct AuthorizationViewV2: View {
                 type: .primary
             ) {
                 Task {
-                    await authViewModel.login()
+                    await authViewModel.auth()
                 }
             }
             Spacer()

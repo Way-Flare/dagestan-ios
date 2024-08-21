@@ -40,7 +40,7 @@ struct VerificationViewV2<AuthViewModel: IAuthorizationViewModelV2>: View {
             .onAppear {
                 timerViewModel.startTimer()
                 Task {
-                    await authViewModel.sendSmsVerification()
+                    await authViewModel.auth()
                 }
             }
 
@@ -76,7 +76,7 @@ struct VerificationViewV2<AuthViewModel: IAuthorizationViewModelV2>: View {
         ) {
             timerViewModel.startTimer()
             Task {
-                await authViewModel.sendSmsVerification()
+                await authViewModel.auth()
             }
         }
         .padding(.top, Grid.pt4)
