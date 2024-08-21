@@ -30,18 +30,18 @@ struct UsernameChangeView: View {
 extension UsernameChangeView {
     func getUsernameTextField() -> some View {
         TextField("", text: isUserChange ? $viewModel.username : $viewModel.email)
-            .background(WFColor.surfacePrimary)
-            .cornerRadius(8)
-            .font(.manropeRegular(size: 16))
+            .font(.manropeRegular(size: Grid.pt16))
             .foregroundColor(WFColor.foregroundPrimary)
             .placeholder(
                 when: isUserChange ? viewModel.username.isEmpty : viewModel.email.isEmpty,
                 with: placeholder
             )
-            .padding(12)
+            .padding(Grid.pt12)
             .setBorder()
             .overlay(eraseButton)
-            .padding(.top, 12)
+            .background(WFColor.surfacePrimary)
+            .cornerRadius(Grid.pt8)
+            .padding(.top, Grid.pt12)
 
     }
 

@@ -73,13 +73,10 @@ struct PlaceView: View {
     @ViewBuilder private var imageView: some View {
         if let place {
             ZStack(alignment: .topTrailing) {
-                SliderView(images: place.images)
-                    .frame(height: 164)
-                    .disabled(true)
+                ImageSliderView(images: place.images)
                 buttonsView
             }
             .cornerStyle(.constant(Grid.pt4, .bottomCorners))
-            .frame(height: 164)
         }
     }
 

@@ -22,18 +22,17 @@ struct RouteCardView: View {
             imageContainerView
             contentContainerView
         }
-        .background(.white)
+        .background(WFColor.surfacePrimary)
         .cornerStyle(.constant(Grid.pt12))
         .font(.manropeRegular(size: Grid.pt14))
     }
     
     private var imageContainerView: some View {
         ZStack(alignment: .topTrailing) {
-            SliderView(images: route.images)
-                .frame(height: Grid.pt174)
+            ImageSliderView(images: route.images)
+                .frame(minHeight: Grid.pt174)
                 .clipped()
-                .disabled(true)
-                
+
             WFButtonIcon(
                 icon: route.isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
                 size: .m,

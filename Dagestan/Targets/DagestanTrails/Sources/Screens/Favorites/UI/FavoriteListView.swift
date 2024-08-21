@@ -20,7 +20,7 @@ struct FavoriteListView: View {
                     contentView(for: section)
                 }
             }
-            .background(WFColor.surfacePrimary, ignoresSafeAreaEdges: .all)
+            .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
             .onAppear {
                 viewModel.loadPlaces()
                 viewModel.loadRoutes()

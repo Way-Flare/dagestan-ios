@@ -7,6 +7,7 @@
 
 import DesignSystem
 import MapboxMaps
+import MapboxCommon
 import SwiftUI
 
 private enum ItemId {
@@ -59,7 +60,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                 .overlay(alignment: .top) { searchBar.padding(.top, safeAreaInsets.top) }
                 .overlay(alignment: .bottom) { bottomContentContainerView }
                 .overlay(alignment: .trailing) {
-                    VStack(spacing: Grid.pt16) {
+                    VStack(alignment: .center, spacing: Grid.pt16) {
                         WFButtonIcon(
                             icon: Image(systemName: "square.3.layers.3d.middle.filled"),
                             size: .m,
@@ -74,6 +75,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         ) {
                             viewModel.moveToDagestan()
                         }
+                        LocateMeButton(viewport:  $viewModel.viewport)
                     }
                     .padding(.trailing, Grid.pt12)
                 }
