@@ -15,7 +15,7 @@ struct PlaceView: View {
     @State var showAlert = false
     @AppStorage("isAuthorized") var isAuthorized = false
     private let isLoading: Bool
-
+    private let needClose: Bool
     private let placeDetailViewModel: PlaceDetailViewModel
     private let routeService: IRouteService
 
@@ -30,6 +30,7 @@ struct PlaceView: View {
         isLoading: Bool,
         placeService: IPlacesService,
         routeService: IRouteService,
+        needClose: Bool = true,
         favoriteAction: (() -> Void)?
     ) {
         self._place = place
@@ -39,6 +40,7 @@ struct PlaceView: View {
             placeId: place.wrappedValue?.id ?? .zero,
             isFavorite: place.wrappedValue?.isFavorite ?? false
         )
+        self.needClose = needClose
         self.isLoading = isLoading
         self.onFavoriteAction = favoriteAction
     }
@@ -53,7 +55,7 @@ struct PlaceView: View {
                     .padding(.horizontal, Grid.pt12)
                     .shadow(radius: Grid.pt4)
             }
-            .buttonStyle(DSPressedButtonStyle())
+            .buttonStyle(.plain)
             .frame(height: 292)
             .notAuthorizedAlert(isPresented: $showAlert)
         }
@@ -96,12 +98,14 @@ struct PlaceView: View {
                 onFavoriteAction?()
             }
             .foregroundColor(place?.isFavorite == true ? WFColor.errorSoft : WFColor.iconInverted)
-            WFButtonIcon(
-                icon: DagestanTrailsAsset.close.swiftUIImage,
-                size: .l,
-                type: .favorite
-            ) {
-                place = nil
+            if needClose {
+                WFButtonIcon(
+                    icon: DagestanTrailsAsset.close.swiftUIImage,
+                    size: .l,
+                    type: .favorite
+                ) {
+                    place = nil
+                }
             }
         }
         .padding([.top, .trailing], Grid.pt12)
