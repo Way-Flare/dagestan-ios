@@ -86,7 +86,7 @@ struct FavoriteListView: View {
                                                 viewModel.setFavorite(by: place.id)
                                             }
                                         }
-                                        .buttonStyle(DSPressedButtonStyle())
+                                        .buttonStyle(.plain)
                                     }
                                 }
                             } else {
@@ -117,7 +117,7 @@ struct FavoriteListView: View {
                                                 viewModel.setFavorite(by: route.id)
                                             }
                                         }
-                                        .buttonStyle(DSPressedButtonStyle())
+                                        .buttonStyle(.plain)
                                     }
                                 }
                             } else {

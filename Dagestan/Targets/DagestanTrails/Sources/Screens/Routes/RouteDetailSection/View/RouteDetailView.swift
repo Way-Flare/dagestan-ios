@@ -66,7 +66,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                     SliderView(images: images)
                 }
             } content: {
-               LazyVStack(alignment: .leading, spacing: Grid.pt16) {
+               VStack(alignment: .leading, spacing: Grid.pt16) {
                     routeInfoContainerView
                     expandableTextContainerView
 
