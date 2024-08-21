@@ -82,6 +82,7 @@ extension Project {
             "NSAppTransportSecurity": .dictionary(["NSAllowsArbitraryLoads": .boolean(true)]),
             "NSLocationAlwaysUsageDescription": .string("Your location is required for cool benefits for you"),
             "NSLocationWhenInUseUsageDescription": .string("Your location is required for cool benefits for you"),
+            "NSPhotoLibraryUsageDescription": .string("Мы используем ваши фотографии, чтобы вы могли загружать изображения и делиться ими в приложении."),
             "ITSAppUsesNonExemptEncryption": .boolean(false)
         ]
 
