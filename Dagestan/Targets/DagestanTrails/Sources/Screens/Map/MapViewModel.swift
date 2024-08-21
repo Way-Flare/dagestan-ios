@@ -12,9 +12,11 @@ protocol IMapViewModel: ObservableObject {
     var isShowAlert: Bool { get set }
     var isLoading: Bool { get set }
     var selectedTags: Set<TagPlace> { get set }
-    var placeService: IPlacesService { get }
+    var placeService: IPlacesService { get } 
+    var favoriteService: IFavoriteService { get }
     var favoriteState: LoadingState<Bool> { get set }
     var showFavoriteAlert: Bool { get set }
+    var searchOpen: Bool { get set }
 
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat)
     func loadPlaces()
@@ -36,6 +38,7 @@ final class MapViewModel: IMapViewModel {
     }
 
     @Published var isShowAlert = false
+    @Published var searchOpen = false
     @Published var showFavoriteAlert = false
     @Published var isLoading = false
     @Published var filteredPlaces: [Place] = []
@@ -43,6 +46,7 @@ final class MapViewModel: IMapViewModel {
     @Published var isPlaceViewVisible = true
     @Published var selectedTags: Set<TagPlace> = []
     @Published var favoriteState: LoadingState<Bool> = .idle
+    
 
     let placeService: IPlacesService
     let favoriteService: IFavoriteService
@@ -230,8 +234,4 @@ extension MapViewModel {
     enum Location {
         static let makhachkala = CLLocationCoordinate2D(latitude: 42.9824, longitude: 47.5049)
     }
-}
-
-extension Notification.Name {
-    static let didUpdateFavorites = Notification.Name("didUpdateFavorites")
 }
