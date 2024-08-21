@@ -67,10 +67,11 @@ struct AuthorizationViewV2: View {
                     .foregroundStyle(WFColor.errorPrimary)
                     .font(.manropeRegular(size: Grid.pt12))
             }
-            Text("Нажимая кнопку войти, я подтверждаю согласие на [Политику обработки персональных данных](https://dagestan-trails.ru/policyOfConfidentiality)")
+            Text("Нажимая кнопку войти, вы подтверждаете согласие на [Политику обработки персональных данных](https://dagestan-trails.ru/policyOfConfidentiality)")
                 .font(.manropeRegular(size: Grid.pt12))
         }
         .padding(.bottom, Grid.pt16)
+        .padding(.top, Grid.pt60)
     }
 
     private var buttonContainerView: some View {
