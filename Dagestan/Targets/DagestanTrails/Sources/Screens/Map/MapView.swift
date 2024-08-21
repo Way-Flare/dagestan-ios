@@ -7,6 +7,7 @@
 
 import DesignSystem
 import MapboxMaps
+import MapboxCommon
 import SwiftUI
 
 private enum ItemId {
@@ -21,6 +22,10 @@ struct MapView<ViewModel: IMapViewModel>: View {
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     let routeService: IRouteService
 
+    @State private var mapStyle: MapStyle = .streets
+    @State private var isShowMapStyleSelection = false
+    @State private var layersTextColor: StyleColor = .init(UIColor(WFColor.foregroundPrimary))
+
     var body: some View {
         NavigationStack {
             MapReader { proxy in
@@ -28,7 +33,16 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     Map(viewport: $viewModel.viewport) {
                         Puck2D(bearing: .heading)
                     }
-                    .mapStyle(.streets)
+                    .onMapLoaded { _ in
+                        updatePlaces(proxy)
+                    }
+                    .mapStyle(mapStyle)
+                    .ornamentOptions(OrnamentOptions(
+                        compass: CompassViewOptions(
+                            position: .bottomTrailing,
+                            margins: .init(x: Grid.pt8, y: Grid.pt56)
+                        )
+                    ))
                     .onStyleLoaded { _ in setupMap(proxy) }
                     .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
                         handleTap(proxy: proxy, feature: feature, context: context)
@@ -46,16 +60,52 @@ struct MapView<ViewModel: IMapViewModel>: View {
                 .overlay(alignment: .top) { searchBar.padding(.top, safeAreaInsets.top) }
                 .overlay(alignment: .bottom) { bottomContentContainerView }
                 .overlay(alignment: .trailing) {
-                    WFButtonIcon(
-                        icon: DagestanTrailsAsset.location.swiftUIImage,
-                        size: .m,
-                        type: .nature
-                    ) {
-                        viewModel.moveToDagestan()
+                    VStack(alignment: .center, spacing: Grid.pt16) {
+                        WFButtonIcon(
+                            icon: Image(systemName: "square.3.layers.3d.middle.filled"),
+                            size: .m,
+                            type: .nature
+                        ) {
+                            isShowMapStyleSelection.toggle()
+                        }
+                        WFButtonIcon(
+                            icon: DagestanTrailsAsset.location.swiftUIImage,
+                            size: .m,
+                            type: .nature
+                        ) {
+                            viewModel.moveToDagestan()
+                        }
+                        LocateMeButton(viewport:  $viewModel.viewport)
                     }
                     .padding(.trailing, Grid.pt12)
                 }
                 .edgesIgnoringSafeArea(.top)
+                .sheet(isPresented: $isShowMapStyleSelection) {
+                    if #available(iOS 16.4, *) {
+                        MapStyleSelectionView(didSelectStyle: { selectedStyle in
+                            if selectedStyle == .dark || selectedStyle == .satelliteStreets {
+                                layersTextColor = .init(.white)
+                            } else {
+                                layersTextColor = .init(UIColor(WFColor.foregroundPrimary))
+                            }
+                            mapStyle = selectedStyle
+                            isShowMapStyleSelection.toggle()
+                        }, selectedStyle: mapStyle)
+                        .presentationCornerRadius(Grid.pt24)
+                        .presentationDetents([.height(Grid.pt216)])
+                    } else {
+                        MapStyleSelectionView(didSelectStyle: { selectedStyle in
+                            if selectedStyle == .dark || selectedStyle == .satelliteStreets {
+                                layersTextColor = .init(.white)
+                            } else {
+                                layersTextColor = .init(UIColor(WFColor.foregroundPrimary))
+                            }
+                            mapStyle = selectedStyle
+                            isShowMapStyleSelection.toggle()
+                        }, selectedStyle: mapStyle)
+                        .presentationDetents([.height(Grid.pt216)])
+                    }
+                }
                 .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
                     Button("Да", role: .cancel) {
                         viewModel.loadPlaces()
@@ -196,7 +246,7 @@ extension MapView {
 
         var source = GeoJSONSource(id: ItemId.source)
         source.cluster = true
-        source.clusterRadius = 50
+        source.clusterRadius = 30
 
         let clusteredLayer = createClusteredLayer()
         let unclusteredLayer = createUnclusteredLayer()
@@ -228,6 +278,8 @@ extension MapView {
     private func createUnclusteredLayer() -> SymbolLayer {
         var layer = SymbolLayer(id: ItemId.point, source: ItemId.source)
 
+        layer.textColor = .constant(layersTextColor)
+        layer.textSize = .constant(Grid.pt12)
         layer.textAnchor = .constant(.top)
         layer.iconAnchor = .constant(.bottom)
         layer.textField = .expression(Exp(.get) { "place_name" })
@@ -235,7 +287,6 @@ extension MapView {
 
         layer.textAllowOverlap = .constant(true)
         layer.iconAllowOverlap = .constant(true)
-        layer.textSize = .constant(12)
 
         layer.filter = Exp(.not) { Exp(.has) { "point_count" } }
         return layer

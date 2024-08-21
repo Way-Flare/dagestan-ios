@@ -23,7 +23,7 @@ struct FavoriteCardView: View {
             imageContainerView
             contentContainerView
         }
-        .background(.white)
+        .background(WFColor.surfacePrimary)
         .cornerStyle(.constant(Grid.pt12))
         .font(.manropeRegular(size: Grid.pt14))
     }
@@ -31,8 +31,8 @@ struct FavoriteCardView: View {
     @MainActor private var imageContainerView: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                SliderView(images: place.images)
-                    .frame(height: Grid.pt174)
+                ImageSliderView(images: place.images)
+                    .frame(minHeight: Grid.pt174)
                     .cornerStyle(.constant(Grid.pt12, .topCorners))
                     .cornerStyle(.constant(Grid.pt4, .bottomCorners))
                 

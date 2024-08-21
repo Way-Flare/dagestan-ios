@@ -75,14 +75,14 @@ extension Project {
                                    """
 
         let infoPlist: [String: Plist.Value] = [
-            "CFBundleShortVersionString": .string("0.1.3"),
+            "CFBundleShortVersionString": .string("0.2.0"),
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
             "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
-            "UIUserInterfaceStyle": .string("Light"),
             "NSAppTransportSecurity": .dictionary(["NSAllowsArbitraryLoads": .boolean(true)]),
             "NSLocationAlwaysUsageDescription": .string("Your location is required for cool benefits for you"),
             "NSLocationWhenInUseUsageDescription": .string("Your location is required for cool benefits for you"),
+            "NSPhotoLibraryUsageDescription": .string("Мы используем ваши фотографии, чтобы вы могли загружать изображения и делиться ими в приложении."),
             "ITSAppUsesNonExemptEncryption": .boolean(false)
         ]
 

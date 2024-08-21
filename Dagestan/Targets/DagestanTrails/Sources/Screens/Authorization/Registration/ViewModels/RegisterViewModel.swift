@@ -13,8 +13,9 @@ protocol IRegisterViewModel: ObservableObject {
     /// Согласен ли на обработку персональных данных
     var isPrivacyPolicyAccepted: Bool { get set }
     var code: String { get set }
-    var registrationState: LoadingState<Void> { get }
     var verificationState: LoadingState<Void> { get }
+    var registrationState: LoadingState<Void> { get }
+
 
     func performAuthRequest() async
     func performVerificationRequest() async

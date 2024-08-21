@@ -10,6 +10,7 @@ import CoreKit
 import DesignSystem
 import NukeUI
 import PhotosUI
+import Photos
 import SwiftUI
 
 public struct ReviewModel: Identifiable {
@@ -21,37 +22,69 @@ public struct ReviewModel: Identifiable {
     public let feedbackCount: Int
 }
 
-class ReviewViewModel: ObservableObject {
+final class ReviewViewModel: ObservableObject {
     @Published var text = ""
     @Published var pickerItems: [PhotosPickerItem] = []
     @Published var selectedImages: [UIImage] = []
     @Published var sendStatus: LoadingState<Bool> = .idle
     @Published var showAlert = false
-
     @Published var rating: Int
-
+    
     private let service: IFeedbackService
-
+    
     init(service: IFeedbackService = FeedbackService(networkService: DTNetworkService()), rating: Int) {
         self.service = service
         self.rating = rating
+        checkPhotoLibraryPermission()
     }
-
+    
+    private func checkPhotoLibraryPermission() {
+        let status = PHPhotoLibrary.authorizationStatus()
+        
+        switch status {
+            case .authorized, .limited:
+                // Пользователь уже предоставил доступ, ничего не делаем
+                break
+            case .notDetermined:
+                // Запрашиваем доступ к фотобиблиотеке
+                PHPhotoLibrary.requestAuthorization { newStatus in
+                    if newStatus == .authorized || newStatus == .limited {
+                        // Доступ предоставлен, можно загружать фотографии
+                    } else {
+                        // Доступ не предоставлен, нужно отобразить соответствующее сообщение
+                        DispatchQueue.main.async {
+                            self.showAlert = true
+                        }
+                    }
+                }
+            case .denied, .restricted:
+                // Доступ запрещен, нужно отобразить соответствующее сообщение
+                DispatchQueue.main.async {
+                    self.showAlert = true
+                }
+            @unknown default:
+                // Обработка неизвестных случаев
+                DispatchQueue.main.async {
+                    self.showAlert = true
+                }
+        }
+    }
+    
     @MainActor
     func sendReview(by id: Int, fromPlace value: Bool) {
         sendStatus = .loading
-
+        
         Task {
             do {
                 let photos = selectedImages.compactMap { $0.jpegData(compressionQuality: 1.0) }
-
+                
                 let review = FeedbackEndpoint.FeedbackReview(
                     id: id,
                     stars: rating,
                     comment: text,
                     images: photos
                 )
-
+                
                 let _ = try await service.addFeedback(review: review, isPlace: value)
                 sendStatus = .loaded(true)
             } catch {
@@ -63,23 +96,23 @@ class ReviewViewModel: ObservableObject {
             }
         }
     }
-
+    
     func loadImages() {
         selectedImages.removeAll()
-
+        
         for item in pickerItems {
             item.loadTransferable(type: Data.self) { result in
                 switch result {
-                case .success(let imageData):
-                    if let data = imageData,
-                       let image = UIImage(data: data)
-                    {
-                        DispatchQueue.main.async {
-                            self.selectedImages.append(image)
+                    case .success(let imageData):
+                        if let data = imageData,
+                           let image = UIImage(data: data)
+                        {
+                            DispatchQueue.main.async {
+                                self.selectedImages.append(image)
+                            }
                         }
-                    }
-                case .failure(let error):
-                    print("Error loading image data: \(error)")
+                    case .failure(let error):
+                        print("Error loading image data: \(error)")
                 }
             }
         }
@@ -94,7 +127,7 @@ struct ReviewView: View {
     @State private var keyboardOffset: CGFloat = 0
     var onSuccessSaveButton: (() -> Void)?
     let isPlaces: Bool
-
+    
     init(
         initialRating: Binding<Int>,
         review: ReviewModel,
@@ -107,9 +140,9 @@ struct ReviewView: View {
         self.onSuccessSaveButton = onSaveButton
         self.isPlaces = isPlaces
     }
-
+    
     let review: ReviewModel
-
+    
     var body: some View {
         ScrollViewReader { proxy in
             VStack(spacing: 14) {
@@ -245,7 +278,7 @@ struct ReviewView: View {
             .endEditingOnTap()
         }
     }
-
+    
     private func getMaxWidthPhotoPickerView() -> some View {
         PhotosPicker(
             selection: $viewModel.pickerItems,
@@ -267,7 +300,7 @@ struct ReviewView: View {
             .cornerStyle(.constant(12))
         }
     }
-
+    
     private func getPhotoPickerViewWithPhotos() -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
@@ -289,7 +322,7 @@ struct ReviewView: View {
         .background(WFColor.surfacePrimary)
         .cornerStyle(.constant(12))
     }
-
+    
     private func getAddPhotoView() -> some View {
         PhotosPicker(
             selection: $viewModel.pickerItems,
@@ -303,7 +336,7 @@ struct ReviewView: View {
                     .frame(width: 80, height: 80)
                     .cornerStyle(.constant(5))
                     .foregroundColor(.gray)
-
+                
                 Image(systemName: "plus")
                     .resizable()
                     .frame(width: 24, height: 24)
@@ -316,7 +349,7 @@ struct ReviewView: View {
 struct ExpandingTextView: View {
     @Binding var text: String
     @State private var textHeight: CGFloat = 44
-
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             TextEditor(text: $text)
@@ -334,7 +367,7 @@ struct ExpandingTextView: View {
                 .onChange(of: text) { _ in
                     self.updateTextHeight()
                 }
-
+            
             if text.isEmpty {
                 Text("Что было хорошо, а что не понравилось")
                     .foregroundColor(WFColor.foregroundSoft)
@@ -345,7 +378,7 @@ struct ExpandingTextView: View {
             }
         }
     }
-
+    
     private func updateTextHeight() {
         let textView = UITextView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: .greatestFiniteMagnitude))
         textView.text = text
@@ -354,40 +387,4 @@ struct ExpandingTextView: View {
         textView.sizeToFit()
         textHeight = textView.frame.height
     }
-}
-
-extension Color {
-    func uiColor() -> UIColor {
-        let components = self.components()
-        return UIColor(
-            red: components.red,
-            green: components.green,
-            blue: components.blue,
-            alpha: components.alpha
-        )
-    }
-
-    // swiftlint: disable large_tuple
-    private func components() -> (
-        red: CGFloat,
-        green: CGFloat,
-        blue: CGFloat,
-        alpha: CGFloat
-    ) {
-        let scanner = Scanner(string: description.trimmingCharacters(in: .alphanumerics))
-        var hexNumber: UInt64 = 0
-        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 1
-
-        var result = scanner.scanHexInt64(&hexNumber)
-        if result {
-            red = CGFloat((hexNumber & 0xff0000) >> 16) / 255
-            green = CGFloat((hexNumber & 0x00ff00) >> 8) / 255
-            blue = CGFloat(hexNumber & 0x0000ff) / 255
-            alpha = CGFloat(hexNumber & 0x000000ff) / 255
-        }
-
-        return (red, green, blue, alpha)
-    }
-
-    // swiftlint: enable large_tuple
 }

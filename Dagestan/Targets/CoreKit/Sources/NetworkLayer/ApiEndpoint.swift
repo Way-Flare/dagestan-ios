@@ -30,6 +30,7 @@ public enum Method: String {
 
 public enum Version: String {
     case v1
+    case v2
 }
 
 public extension ApiEndpoint {
