@@ -28,7 +28,8 @@ struct PlaceDetailInfoView: View {
                 HStack(spacing: Grid.pt8) {
                     tag.icon
                         .resizable()
-                        .frame(width: Grid.pt16, height: Grid.pt16)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Grid.pt18, height: Grid.pt18)
                     Text(tag.name)
                 }
                 .foregroundStyle(WFColor.foregroundSoft)

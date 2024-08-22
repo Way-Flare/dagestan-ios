@@ -63,7 +63,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
         if let route = viewModel.state.data {
             StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
                 if let images = viewModel.state.data?.images {
-                    SliderView(images: images)
+                    ImageSliderView(images: images)
                 }
             } content: {
                VStack(alignment: .leading, spacing: Grid.pt16) {

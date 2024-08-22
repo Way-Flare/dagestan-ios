@@ -10,10 +10,16 @@ import Foundation
 import CoreKit
 
 final class SearchViewModel: ObservableObject {
-    @Published var places: [Place] = []
+    @Published var places: [Place] = [] {
+        didSet {
+            filteredPlaces = places
+        }
+    }
+    @Published var filteredPlaces: [Place] = []
     @Published var favoriteState: LoadingState<Bool> = .idle
     @Published var showFavoriteAlert = false
     @Published var isFavoritePlacesLoading: [Int: Bool] = [:]
+    @Published var selectedTags: Set<TagPlace> = []
     @Published var searchText = "" {
         didSet {
             filterPlaces()
@@ -66,6 +72,7 @@ final class SearchViewModel: ObservableObject {
                 place.name.localizedCaseInsensitiveContains(searchText)
             }
         }
+        updateFilteredPlaces()
     }
 
     private func updateFavoriteStatus(for id: Int, to status: Bool) {
@@ -83,5 +90,24 @@ final class SearchViewModel: ObservableObject {
         if updater.type == .places {
             updateFavoriteStatus(for: updater.id, to: updater.status)
         }
+    }
+
+    func updateFilteredPlaces() {
+        if selectedTags.isEmpty {
+            filteredPlaces = places
+        } else {
+            filteredPlaces = places.filter { place in
+                !selectedTags.isDisjoint(with: place.tags ?? [])
+            }
+        }
+    }
+
+    func toggleTag(_ tag: TagPlace) {
+        if selectedTags.contains(tag) {
+            selectedTags.remove(tag)
+        } else {
+            selectedTags.insert(tag)
+        }
+        updateFilteredPlaces()
     }
 }

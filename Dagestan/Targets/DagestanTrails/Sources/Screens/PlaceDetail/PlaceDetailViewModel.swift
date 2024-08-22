@@ -13,6 +13,7 @@ protocol IPlaceDetailViewModel: ObservableObject {
     var promocodes: LoadingState<[Promocode]> { get }
     var isVisibleSnackbar: Bool { get set }
     var isBackdropVisible: Bool { get set }
+    var hasContactsData: Bool { get set }
     var formatter: TimeSuffixFormatter { get }
     var service: IPlacesService { get }
     var sharedUrl: URL? { get }
@@ -31,6 +32,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
     @Published var promocodes: LoadingState<[Promocode]> = .idle
     @Published var isVisibleSnackbar = false
     @Published var isBackdropVisible = false
+    @Published var hasContactsData = false
     @Published var isFavorite: Bool
     @Published var favoriteState: LoadingState<Bool> = .idle
     @AppStorage("isAuthorized") var isAuthorized = false
@@ -72,6 +74,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
             do {
                 let place = try await service.getPlace(id: placeId)
                 placeDetail = .loaded(place)
+                hasContactsData = isContactsData(place: place)
             } catch {
                 placeDetail = .failed(error.localizedDescription)
                 print("Failed to load place: \(error.localizedDescription)")
@@ -107,5 +110,10 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
                 promocodes = .failed(error.localizedDescription)
             }
         }
+    }
+
+    private func isContactsData(place: PlaceDetail) -> Bool {
+        guard let contacts = place.contacts.first else { return false }
+        return contacts.phoneNumber != nil || contacts.site != nil || contacts.email != nil
     }
 }

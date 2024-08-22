@@ -46,7 +46,7 @@ extension PlaceDetail {
         let title: String
         let shortDescription: String?
         let images: [URL]
-        let rating: Int
+        let rating: Double
         let distance: Double
         let travelTime: String
         let isFavorite: Bool

@@ -11,9 +11,12 @@ import SwiftUI
 public enum TagPlace: String, CaseIterable {
     case nature
     case food
+    case activity
     case landmark
+    case habitation
+    case shops
     case unknown
-    
+
     public init(rawValue: String) {
         self = TagPlace.allCases.first { $0.rawValue == rawValue } ?? .unknown
     }
@@ -25,11 +28,17 @@ extension TagPlace {
             case .nature:
                 return "Природа"
             case .landmark:
-                return "Достопримечательность"
+                return "Достопримечательности"
             case .food:
                 return "Еда"
+            case .activity:
+                return "Развелечения"
             case .unknown:
-                return "Неизвестно"
+                return rawValue
+            case .habitation:
+                return "Жилье"
+            case .shops:
+                return "Магазины"
         }
     }
 
@@ -41,7 +50,13 @@ extension TagPlace {
                 return Image(systemName: "building.columns")
             case .food:
                 return Image(systemName: "fork.knife")
-            case .unknown:
+            case .activity:
+                return Image(systemName: "theatermasks")
+            case .habitation:
+                return Image(systemName: "house")
+            case .shops:
+                return Image(systemName: "storefront")
+            default:
                 return Image(systemName: "eye")
         }
     }

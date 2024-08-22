@@ -12,11 +12,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FontManager.registerFonts()
         window = UIWindow(frame: UIScreen.main.bounds)
 
-        let viewController = UIViewController()
-        viewController.view.backgroundColor = .white
+        let viewController = VCClass()
         window?.rootViewController = viewController
         window?.makeKeyAndVisible()
 
         return true
+    }
+}
+
+final class VCClass: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.backgroundColor = .red
     }
 }

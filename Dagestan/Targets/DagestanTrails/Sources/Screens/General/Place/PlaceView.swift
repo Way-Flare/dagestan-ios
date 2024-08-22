@@ -73,7 +73,7 @@ struct PlaceView: View {
     @ViewBuilder private var imageView: some View {
         if let place {
             ZStack(alignment: .topTrailing) {
-                ImageSliderView(images: place.images)
+                ImageSliderView(images: place.images, canOpenFullscreen: false)
                 buttonsView
             }
             .cornerStyle(.constant(Grid.pt4, .bottomCorners))
@@ -161,7 +161,7 @@ extension PlaceView {
         if let shortDescription = place?.shortDescription {
             Text(shortDescription)
                 .font(.manropeRegular(size: Grid.pt14))
-                .lineLimit(3)
+                .lineLimit(5)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(WFColor.foregroundPrimary)

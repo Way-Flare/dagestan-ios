@@ -18,6 +18,7 @@ final class ProfileViewModel: ObservableObject {
     @Published var offset: CGFloat = .zero
     @Published var profileState: LoadingState<Profile> = .idle
     @Published var isShowAlert = false
+    @Published var isShouldChangeName = false
     @Published var username = ""
     @Published var email = ""
     @Published var backgroundImage: Image?
@@ -38,6 +39,9 @@ final class ProfileViewModel: ObservableObject {
             do {
                 let profile = try await service.getProfile()
                 profileState = .loaded(profile)
+                if profile.username?.lowercased() == "user" {
+                    isShouldChangeName = true
+                }
                 saveName(with: profile.username)
             } catch {
                 profileState = .failed(error.localizedDescription)
@@ -55,6 +59,9 @@ final class ProfileViewModel: ObservableObject {
             do {
                 let profile = try await service.patchProfile(request: request)
                 self.profileState = .loaded(profile)
+                if profile.username?.lowercased() != "user" {
+                    isShouldChangeName = false
+                }
             } catch {
                 self.profileState = .failed(error.localizedDescription)
             }

@@ -29,7 +29,7 @@ struct RouteCardView: View {
     
     private var imageContainerView: some View {
         ZStack(alignment: .topTrailing) {
-            ImageSliderView(images: route.images)
+            ImageSliderView(images: route.images, canOpenFullscreen: false)
                 .frame(minHeight: Grid.pt174)
                 .clipped()
 

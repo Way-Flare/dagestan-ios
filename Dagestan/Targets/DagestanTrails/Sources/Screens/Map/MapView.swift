@@ -93,6 +93,8 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         }, selectedStyle: mapStyle)
                         .presentationCornerRadius(Grid.pt24)
                         .presentationDetents([.height(Grid.pt216)])
+                        .background(WFColor.surfaceQuaternary)
+
                     } else {
                         MapStyleSelectionView(didSelectStyle: { selectedStyle in
                             if selectedStyle == .dark || selectedStyle == .satelliteStreets {
@@ -104,6 +106,8 @@ struct MapView<ViewModel: IMapViewModel>: View {
                             isShowMapStyleSelection.toggle()
                         }, selectedStyle: mapStyle)
                         .presentationDetents([.height(Grid.pt216)])
+                        .background(WFColor.surfaceQuaternary)
+
                     }
                 }
                 .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
@@ -127,28 +131,27 @@ struct MapView<ViewModel: IMapViewModel>: View {
 
     private var bottomContentContainerView: some View {
         Group {
-            if viewModel.selectedPlace == nil {
+            ZStack(alignment: .bottom) {
                 tagsContainerView
-            } else {
-                PlaceView(
-                    place: $viewModel.selectedPlace,
-                    isLoading: viewModel.favoriteState.isLoading,
-                    placeService: viewModel.placeService,
-                    routeService: routeService
-                ) {
-                    if let id = viewModel.selectedPlace?.id {
-                        viewModel.setFavorite(by: id)
+                    .disabled(viewModel.selectedPlace != nil)
+                if viewModel.selectedPlace != nil {
+                    PlaceView(
+                        place: $viewModel.selectedPlace,
+                        isLoading: viewModel.favoriteState.isLoading,
+                        placeService: viewModel.placeService,
+                        routeService: routeService
+                    ) {
+                        if let id = viewModel.selectedPlace?.id {
+                            viewModel.setFavorite(by: id)
+                        }
                     }
-                }
-                .onAppear {
-                    viewModel.deselectAllTags()
-                }
-                .padding(.bottom, Grid.pt8)
-                .alert("Произошла ошибка", isPresented: $viewModel.showFavoriteAlert) {
-                    Button("Понятно", role: .cancel) {}
-                } message: {
-                    if let error = viewModel.favoriteState.error {
-                        Text(error)
+                    .padding(.bottom, Grid.pt8)
+                    .alert("Произошла ошибка", isPresented: $viewModel.showFavoriteAlert) {
+                        Button("Понятно", role: .cancel) {}
+                    } message: {
+                        if let error = viewModel.favoriteState.error {
+                            Text(error)
+                        }
                     }
                 }
             }
@@ -246,7 +249,7 @@ extension MapView {
 
         var source = GeoJSONSource(id: ItemId.source)
         source.cluster = true
-        source.clusterRadius = 30
+        source.clusterRadius = 40
 
         let clusteredLayer = createClusteredLayer()
         let unclusteredLayer = createUnclusteredLayer()

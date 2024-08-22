@@ -47,6 +47,7 @@ struct UserChangePhotoView: View {
             Spacer()
         }
         .padding(.horizontal, Grid.pt16)
+        .background(WFColor.surfacePrimary)
         .onChange(of: viewModel.pickerItem) { _ in
             loadPhoto()
         }

@@ -19,7 +19,7 @@ struct ExpandableTextView<T: View>: View {
 
     init(
         text: String,
-        lineLimit: Int = 7,
+        lineLimit: Int = 80,
         labelButton: @escaping ((Bool) -> T)
     ) {
         self.text = text

@@ -12,10 +12,10 @@ import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("isAuthorized") var isAuthorized = false
-    @State private var showingAlert = false
     @StateObject var viewModel = ProfileViewModel()
     @StateObject var feedbackViewModel: MyReviewsViewModel
-    
+    @State private var showingAlert = false
+
     init(feedbackService: IFeedbackService) {
         self._feedbackViewModel = StateObject(wrappedValue: MyReviewsViewModel(feedbackService: feedbackService))
     }
@@ -36,11 +36,23 @@ struct ProfileView: View {
             .coordinateSpace(name: "pullToResize")
             .ignoresSafeArea()
             .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
+            .sheet(isPresented: $viewModel.isShouldChangeName) {
+                if #available(iOS 16.4, *) {
+                    ChangeNameSheet(placeholder: "Введите имя", viewModel: viewModel)
+                        .background(WFColor.surfaceQuaternary)
+                        .presentationCornerRadius(Grid.pt32)
+                        .presentationDetents([.height(Grid.pt244)])
+                } else {
+                    ChangeNameSheet(placeholder: "Введите имя", viewModel: viewModel)
+                        .background(WFColor.surfaceQuaternary)
+                        .presentationDetents([.height(Grid.pt244)])
+                }
+            }
             .onAppear {
                 if viewModel.profileState.data == nil {
                     viewModel.loadProfile()
                 }
-                
+
                 if let image = FileManagerHelper.loadImage(withName: "background_profile") {
                     viewModel.backgroundImage = Image(uiImage: image)
                 }
@@ -135,7 +147,7 @@ extension ProfileView {
                 .resizable()
                 .frame(width: Grid.pt28, height: Grid.pt28)
                 .padding(.trailing, Grid.pt10)
-                .foregroundColor(.green)
+                .foregroundColor(WFColor.iconAccent)
             Text("Мои отзывы")
                 .foregroundColor(WFColor.foregroundPrimary)
                 .font(.manropeRegular(size: Grid.pt16))
@@ -153,7 +165,8 @@ extension ProfileView {
             DagestanTrailsAsset.profileCircle.swiftUIImage
                 .resizable()
                 .frame(width: Grid.pt28, height: Grid.pt28)
-                .padding(.trailing, Grid.pt10).foregroundColor(.green)
+                .padding(.trailing, Grid.pt10)
+                .foregroundColor(WFColor.iconAccent)
             Text("Управление аккаунтом")
                 .foregroundColor(WFColor.foregroundPrimary)
                 .font(.manropeRegular(size: Grid.pt16))
@@ -174,7 +187,8 @@ extension ProfileView {
                 DagestanTrailsAsset.logout.swiftUIImage
                     .resizable()
                     .frame(width: Grid.pt28, height: Grid.pt28)
-                    .padding(.trailing, Grid.pt10).foregroundColor(.green)
+                    .padding(.trailing, Grid.pt10)
+                    .foregroundColor(WFColor.iconAccent)
                 Text("Выйти")
                     .foregroundColor(WFColor.foregroundPrimary)
                     .font(.manropeRegular(size: Grid.pt16))

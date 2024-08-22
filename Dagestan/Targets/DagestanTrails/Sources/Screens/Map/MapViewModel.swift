@@ -18,6 +18,8 @@ protocol IMapViewModel: ObservableObject {
     var showFavoriteAlert: Bool { get set }
     var searchOpen: Bool { get set }
 
+    var tags: [TagPlace] { get set }
+
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat)
     func loadPlaces()
     func selectPlace(by feature: Feature)
@@ -37,6 +39,7 @@ protocol IMapViewModel: ObservableObject {
 
 final class MapViewModel: IMapViewModel {
     @Published var viewport: Viewport = .camera(center: Location.makhachkala, zoom: 5.5)
+    @Published var tags: [TagPlace] = []
     @Published var places: [Place] = [] {
         didSet {
             filteredPlaces = places
@@ -95,6 +98,11 @@ final class MapViewModel: IMapViewModel {
             do {
                 let places = try await placeService.getAllPlaces()
                 self.places = places
+                for place in places {
+                    if let tag = place.tags?.first, !self.tags.contains(tag) {
+                        self.tags.append(tag)
+                    }
+                }
                 updateFilteredPlaces()
                 isLoading = false
             } catch {

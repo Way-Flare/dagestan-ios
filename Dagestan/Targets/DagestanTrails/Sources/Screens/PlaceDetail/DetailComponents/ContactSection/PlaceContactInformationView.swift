@@ -10,7 +10,8 @@ import CoreLocation
 import DesignSystem
 import SwiftUI
 
-struct PlaceContactInformationView: View {
+struct PlaceContactInformationView<ViewModel: IPlaceDetailViewModel>: View {
+    @ObservedObject var viewModel: ViewModel
     @Binding var isVisible: Bool
 
     let place: PlaceDetail?
@@ -18,33 +19,40 @@ struct PlaceContactInformationView: View {
     var body: some View {
         if let place {
             VStack(alignment: .leading, spacing: Grid.pt24) {
-                VStack(alignment: .leading, spacing: Grid.pt8) {
-                    Text("Контакты")
-                        .font(.manropeSemibold(size: Grid.pt18))
-                        .foregroundStyle(WFColor.foregroundPrimary)
-                    VStack(alignment: .leading, spacing: Grid.pt4) {
-                        ContactView(
-                            isVisible: $isVisible,
-                            type: .phone(with: place.contacts.first?.phoneNumber)
-                        ) {
-                            if let phone = place.contacts.first?.phoneNumber,
-                               let url = URL(string: "tel://\(phone)") {
-                                UIApplication.shared.open(url)
+                if viewModel.hasContactsData {
+                    VStack(alignment: .leading, spacing: Grid.pt8) {
+                        Text("Контакты")
+                            .font(.manropeSemibold(size: Grid.pt18))
+                            .foregroundStyle(WFColor.foregroundPrimary)
+                        VStack(alignment: .leading, spacing: Grid.pt4) {
+                            // Phone
+                            ContactView(
+                                isVisible: $isVisible,
+                                type: .phone(with: place.contacts.first?.phoneNumber)
+                            ) {
+                                if let phone = place.contacts.first?.phoneNumber,
+                                   let url = URL(string: "tel://\(phone)") {
+                                    UIApplication.shared.open(url)
+                                }
                             }
-                        }
-                        ContactView(
-                            isVisible: $isVisible,
-                            type: .email(with: place.contacts.first?.email)
-                        )
-                        
-                        ContactView(
-                            isVisible: $isVisible,
-                            type: .site(with: place.contacts.first?.site)
-                        ) {
-                            if let site = place.contacts.first?.site,
-                               let url = updatedUrl(with: site) {
-                                UIApplication.shared.open(url)
+                            .isHidden(place.contacts.first?.phoneNumber == nil)
+                            // Email
+                            ContactView(
+                                isVisible: $isVisible,
+                                type: .email(with: place.contacts.first?.email)
+                            )
+                            .isHidden(place.contacts.first?.email == nil)
+                            // Site
+                            ContactView(
+                                isVisible: $isVisible,
+                                type: .site(with: place.contacts.first?.site)
+                            ) {
+                                if let site = place.contacts.first?.site,
+                                   let url = updatedUrl(with: site) {
+                                    UIApplication.shared.open(url)
+                                }
                             }
+                            .isHidden(place.contacts.first?.site == nil)
                         }
                     }
                 }

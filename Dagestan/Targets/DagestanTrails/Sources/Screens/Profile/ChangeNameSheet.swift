@@ -1,48 +1,58 @@
 //
-//  UsernameChangeView.swift
+//  ChangeNameSheet.swift
 //  DagestanTrails
 //
-//  Created by Рассказов Глеб on 28.07.2024.
+//  Created by Ramazan Abdulaev on 27.08.2024.
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
 import DesignSystem
 import SwiftUI
 
-struct UsernameChangeView: View {
-    let isUserChange: Bool
+struct ChangeNameSheet: View {
     let placeholder: String
     @ObservedObject var viewModel: ProfileViewModel
 
     var body: some View {
         VStack(spacing: Grid.pt16) {
+            title
             getUsernameTextField()
+                .padding(.horizontal, Grid.pt16)
             getSaveButton()
+                .padding(.horizontal, Grid.pt16)
 
             Spacer()
         }
-        .padding(.horizontal, Grid.pt16)
-        .background(WFColor.surfacePrimary)
-        .setCustomBackButton()
-        .setCustomNavigationBarTitle(title: "Имя пользователя")
     }
 }
 
-extension UsernameChangeView {
+extension ChangeNameSheet {
+    /// Заголовок с крестиком
+    private var title: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text("Мой дорогой, как я могу к тебе обращаться?")
+                .font(.manropeSemibold(size: Grid.pt16))
+                .foregroundStyle(WFColor.foregroundPrimary)
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
+        }
+        .padding(.top, Grid.pt20)
+        .padding([.horizontal, .bottom], Grid.pt12)
+    }
+
     func getUsernameTextField() -> some View {
-        TextField("", text: isUserChange ? $viewModel.username : $viewModel.email)
+        TextField("", text:  $viewModel.username)
             .font(.manropeRegular(size: Grid.pt16))
             .foregroundColor(WFColor.foregroundPrimary)
             .placeholder(
-                when: isUserChange ? viewModel.username.isEmpty : viewModel.email.isEmpty,
+                when: viewModel.username.isEmpty,
                 with: placeholder
             )
             .padding(Grid.pt12)
             .setBorder()
             .overlay(eraseButton)
-            .background(WFColor.surfacePrimary)
+            .background(WFColor.surfaceSecondary)
             .cornerRadius(Grid.pt8)
-            .padding(.top, Grid.pt12)
 
     }
 
@@ -53,11 +63,7 @@ extension UsernameChangeView {
             state: viewModel.profileState.isLoading ? .loading : .default,
             type: .primary
         ) {
-            viewModel.patchProfile(
-                with: isUserChange
-                    ? .name(value: viewModel.username)
-                    : .email(value: viewModel.email)
-            )
+            viewModel.patchProfile(with: .name(value: viewModel.username))
         }
     }
 
@@ -65,13 +71,9 @@ extension UsernameChangeView {
         HStack {
             Spacer()
             Button {
-                if isUserChange {
-                    viewModel.username = !viewModel.username.isEmpty ? "" : viewModel.username
-                } else {
-                    viewModel.email = !viewModel.email.isEmpty ? "" : viewModel.email
-                }
+                viewModel.username = !viewModel.username.isEmpty ? "" : viewModel.username
             } label: {
-                if !(isUserChange ? viewModel.username.isEmpty : viewModel.email.isEmpty) {
+                if !viewModel.username.isEmpty {
                     Image(systemName: "multiply.circle.fill")
                         .frame(width: Grid.pt20, height: Grid.pt20)
                         .foregroundStyle(WFColor.iconSoft)

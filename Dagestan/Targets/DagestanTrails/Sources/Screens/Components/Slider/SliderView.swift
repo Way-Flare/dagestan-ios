@@ -15,12 +15,8 @@ import SwiftUI
 struct SliderView: View {
     @State private var timer = Timer.publish(every: 0.15, on: .main, in: .common).autoconnect()
     @State private var timerProgress: CGFloat = 0
-    @State private var selectedImageIndex: IdentifiableInt?
-
     private let images: [URL]
-    
-    /// Инициализатор
-    /// - Parameter images: Список урлов на картинки, которые надо отобразить в слайдере
+
     init(images: [URL]) {
         self.images = images
     }
@@ -47,12 +43,6 @@ struct SliderView: View {
                             .aspectRatio(contentMode: .fill)
                             .frame(width: geometry.size.width, height: geometry.size.height)
                             .clipped()
-                            .fullScreenCover(item: $selectedImageIndex) { selectedIndex in
-                                FullScreenImageGallery(
-                                    images: images,
-                                    selectedIndex: selectedIndex.id
-                                )
-                            }
                             .overlay(sliderView, alignment: .bottom)
                             .overlay(gestureOverlay)
                             .onReceive(timer) { _ in
@@ -133,7 +123,6 @@ extension SliderView {
     private var gestureOverlay: some View {
         HStack(spacing: .zero) {
             gestureRectangle(by: -1)
-            gestureRectangle(by: 0)
             gestureRectangle(by: 1)
         }
     }
@@ -142,11 +131,7 @@ extension SliderView {
         Rectangle()
             .fill(Color.black.opacity(0.01))
             .onTapGesture {
-                if increment == 0 {
-                    selectedImageIndex = IdentifiableInt(id: index)
-                } else {
-                    updateTimerProgress(increment: increment)
-                }
+                updateTimerProgress(increment: increment)
             }
     }
 
@@ -165,6 +150,6 @@ extension SliderView {
     }
 }
 
-#Preview {
-    SliderView(images: [])
-}
+//#Preview {
+//    SliderView(images: [])
+//}

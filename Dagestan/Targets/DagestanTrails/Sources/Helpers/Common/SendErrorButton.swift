@@ -20,12 +20,14 @@ struct SendErrorButton: View {
                         CompanyContactsView()
                             .presentationCornerRadius(Grid.pt32)
                             .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                            .background(WFColor.surfaceQuaternary)
                     }
             } else {
                 SendErrorView()
                     .sheet(isPresented: $showingContactsSheet) {
                         CompanyContactsView()
                             .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                            .background(WFColor.surfaceQuaternary)
                     }
             }
         }
@@ -64,6 +66,6 @@ private struct SendErrorView: View {
     }
 }
 
-#Preview {
-   SendErrorButton()
-}
+//#Preview {
+//   SendErrorButton()
+//}

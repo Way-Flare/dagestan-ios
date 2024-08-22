@@ -90,7 +90,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
         if let place = viewModel.placeDetail.data {
             ScrollViewReader { _ in
                 StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
-                    SliderView(images: place.images)
+                    ImageSliderView(images: place.images)
                 } content: {
                     VStack(alignment: .leading, spacing: Grid.pt16) {
                         PlaceDetailInfoView(
@@ -108,6 +108,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                                     }
                                     .sheet(isPresented: $showingPromocodeSheet) {
                                         PromocodeView(viewModel: viewModel)
+                                            .background(WFColor.surfaceQuaternary)
                                             .presentationCornerRadius(Grid.pt32)
                                             .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
                                     }
@@ -118,11 +119,13 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                                     }
                                     .sheet(isPresented: $showingPromocodeSheet) {
                                         PromocodeView(viewModel: viewModel)
+                                            .background(WFColor.surfaceQuaternary)
                                             .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
                                     }
                             }
                         }
                         PlaceContactInformationView(
+                            viewModel: viewModel, 
                             isVisible: $viewModel.isVisibleSnackbar,
                             place: viewModel.placeDetail.data
                         )

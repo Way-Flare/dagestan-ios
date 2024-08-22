@@ -31,7 +31,7 @@ struct FavoriteCardView: View {
     @MainActor private var imageContainerView: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
-                ImageSliderView(images: place.images)
+                ImageSliderView(images: place.images, canOpenFullscreen: false)
                     .frame(minHeight: Grid.pt174)
                     .cornerStyle(.constant(Grid.pt12, .topCorners))
                     .cornerStyle(.constant(Grid.pt4, .bottomCorners))
@@ -94,7 +94,7 @@ struct FavoriteCardView: View {
         if let shortDescription = place.shortDescription {
             Text(shortDescription)
                 .font(.manropeRegular(size: Grid.pt14))
-                .lineLimit(3)
+                .lineLimit(5)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundStyle(WFColor.foregroundPrimary)

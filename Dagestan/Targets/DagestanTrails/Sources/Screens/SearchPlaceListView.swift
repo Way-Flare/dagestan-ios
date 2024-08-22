@@ -29,11 +29,12 @@ struct SearchPlaceListView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                if searchViewModel.places.isEmpty && !searchViewModel.searchText.isEmpty {
+                tagsContainerView
+                if searchViewModel.filteredPlaces.isEmpty && !searchViewModel.searchText.isEmpty {
                     emptyStateView
                 } else {
                     LazyVStack(alignment: .leading) {
-                        ForEach(searchViewModel.places, id: \.id) { place in
+                        ForEach(searchViewModel.filteredPlaces, id: \.id) { place in
                             PlaceView(
                                 place: .constant(place),
                                 isLoading: searchViewModel.isFavoritePlacesLoading[place.id] == true,
@@ -62,6 +63,9 @@ struct SearchPlaceListView: View {
             .endEditingOnTap()
             .searchable(text: $searchViewModel.searchText, prompt: "Введите название места")
             .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
+            .onAppear {
+                searchViewModel.updateFilteredPlaces()
+            }
         }
     }
 }
@@ -75,6 +79,29 @@ extension SearchPlaceListView {
             Text("Ничего не найдено")
                 .font(.manropeExtrabold(size: Grid.pt16))
                 .foregroundStyle(WFColor.foregroundPrimary)
+        }
+    }
+
+    private var tagsContainerView: some View {
+        ScrollViewReader { value in
+            ScrollView(.horizontal) {
+                HStack(spacing: Grid.pt8) {
+                    Spacer()
+                    ForEach(TagPlace.allCases.dropLast(), id: \.name) { tag in
+                        WFChips(icon: tag.icon, name: tag.name) {
+                            searchViewModel.toggleTag(tag)
+                            if searchViewModel.selectedTags.contains(tag) {
+                                withAnimation {
+                                    value.scrollTo(tag.name, anchor: .center)
+                                }
+                            }
+                        }
+                    }
+                    Spacer()
+                }
+            }
+            .padding(.bottom, Grid.pt4)
+            .scrollIndicators(.hidden)
         }
     }
 }

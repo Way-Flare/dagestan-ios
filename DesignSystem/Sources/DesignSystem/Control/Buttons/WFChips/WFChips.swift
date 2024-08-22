@@ -31,10 +31,12 @@ public struct WFChips: View {
     public init(
         icon: Image,
         name: String,
+        isActive: Bool = false,
         action: (() -> Void)? = nil
     ) {
         self.icon = icon
         self.name = name
+        self.isActive = isActive
         self.action = action
     }
 
@@ -49,7 +51,8 @@ public struct WFChips: View {
                 HStack(spacing: Grid.pt4) {
                     icon
                         .resizable()
-                        .frame(width: Grid.pt16, height: Grid.pt16)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Grid.pt18, height: Grid.pt18)
                     Text(name)
                 }
 
