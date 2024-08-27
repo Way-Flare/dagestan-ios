@@ -1,11 +1,17 @@
 import CoreKit
 import DesignSystem
 import SwiftUI
+import AppMetricaCore
 
 @main
 struct EntryPoint: App {
     private let networkService = DTNetworkService()
     private let timerViewModel = TimerViewModel()
+    private let configuration = AppMetricaConfiguration(apiKey: "ca041ea3-c21d-4c43-84df-0ac1ab745f81")
+
+    init() {
+        AppMetrica.activate(with: configuration!)
+    }
 
     var body: some Scene {
         WindowGroup {

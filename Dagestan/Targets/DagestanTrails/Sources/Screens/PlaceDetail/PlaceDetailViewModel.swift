@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppMetricaCore
 
 protocol IPlaceDetailViewModel: ObservableObject {
     var placeDetail: LoadingState<PlaceDetail> { get }
@@ -75,6 +76,11 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
                 let place = try await service.getPlace(id: placeId)
                 placeDetail = .loaded(place)
                 hasContactsData = isContactsData(place: place)
+                let params: [AnyHashable : Any] = ["placeId": "\(place.id)", "placeName": "\(place.name)"]
+                AppMetrica.reportEvent(name: "Открыл детальную страницу места", parameters: params, onFailure: { (error) in
+                    print("DID FAIL REPORT EVENT: %@", "Блин")
+                    print("REPORT ERROR: %@", error.localizedDescription)
+                })
             } catch {
                 placeDetail = .failed(error.localizedDescription)
                 print("Failed to load place: \(error.localizedDescription)")

@@ -17,12 +17,19 @@ extension Project {
                 url: "https://github.com/kean/Nuke.git",
                 requirement: .upToNextMajor(from: "12.7")
             ),
+            .remote(
+                    url: "https://github.com/appmetrica/appmetrica-sdk-ios",
+                    requirement: .exact("5.7.0")
+            ),
+
             .local(path: "../DesignSystem")
         ]
         let packageDependencies: [TargetDependency] = [
             .package(product: "MapboxMaps"),
             .package(product: "Nuke"),
             .package(product: "NukeUI"),
+            .package(product: "AppMetricaCore"),
+            .package(product: "AppMetricaCrashes"),
             .package(product: "DesignSystem")
         ]
 

@@ -1,5 +1,6 @@
 import UIKit
 import DesignSystem
+import AppMetricaCore
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -10,7 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FontManager.registerFonts()
+        let configuration = AppMetricaConfiguration(apiKey: "ca041ea3-c21d-4c43-84df-0ac1ab745f81")
+        AppMetrica.activate(with: configuration!)
         window = UIWindow(frame: UIScreen.main.bounds)
+
 
         let viewController = VCClass()
         window?.rootViewController = viewController
@@ -18,6 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         return true
     }
+
 }
 
 final class VCClass: UIViewController {

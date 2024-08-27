@@ -96,6 +96,7 @@ struct MyReviewsView: View {
                     }
                 } else {
                     emptyFeedbacksView
+                        .background(WFColor.surfacePrimary)
                         .padding([.horizontal, .top], 12)
 
                 }

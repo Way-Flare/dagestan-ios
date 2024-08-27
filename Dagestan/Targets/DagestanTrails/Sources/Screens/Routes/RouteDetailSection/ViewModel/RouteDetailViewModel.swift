@@ -7,6 +7,7 @@
 //
 
 import CoreLocation
+import AppMetricaCore
 
 protocol IRouteDetailViewModel: ObservableObject {
     var state: LoadingState<RouteDetail> { get }
@@ -64,6 +65,11 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
             do {
                 let route = try await service.getRoute(id: id)
                 state = .loaded(route)
+                let params: [AnyHashable : Any] = ["routeId": "\(route.id)", "routeName": "\(route.title)"]
+                AppMetrica.reportEvent(name: "Открыл детальную страницу маршрута", parameters: params, onFailure: { (error) in
+                    print("DID FAIL REPORT EVENT: %@", "Блин")
+                    print("REPORT ERROR: %@", error.localizedDescription)
+                })
             } catch {
                 state = .failed(error.localizedDescription)
             }
