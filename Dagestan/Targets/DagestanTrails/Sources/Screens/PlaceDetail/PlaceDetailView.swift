@@ -66,7 +66,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     }
 
     @ViewBuilder private var bottomContentContainerView: some View {
-        if let isFavorite = viewModel.placeDetail.data?.isFavorite {
+        if let place = viewModel.placeDetail.data {
             VStack(spacing: .zero) {
                 if viewModel.isVisibleSnackbar {
                     WFSnackbar(status: .success(text: "Скопировано!"))
@@ -77,8 +77,10 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                         }
                         .padding(Grid.pt8)
                 }
+
                 PlaceMakeRouteBottomView(
-                    isFavorite: isFavorite,
+                    coordinates: [place.coordinate],
+                    isFavorite: place.isFavorite,
                     onFavoriteAction: onFavoriteAction,
                     shareUrl: viewModel.sharedUrl
                 )

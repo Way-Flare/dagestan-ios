@@ -18,13 +18,50 @@ private enum ItemId {
 }
 
 struct MapView<ViewModel: IMapViewModel>: View {
-    @ObservedObject var viewModel: ViewModel
     @Environment(\.safeAreaInsets) private var safeAreaInsets
-    let routeService: IRouteService
-
-    @State private var mapStyle: MapStyle = .streets
+    /// Модель данных, содержайщее визуальные настройки карты
+    @EnvironmentObject var mapStyleModel: StandardStyleLocationsModel
+    /// Вью модель для работы с экрном/модулем карт с местами
+    @ObservedObject var viewModel: ViewModel
+    /// Высота настроеек для выбора стиля карты
+    @State private var settingsHeight: CGFloat = 0
+    /// Отображать ли селектор типа карты
     @State private var isShowMapStyleSelection = false
+    /// Цвет текста под point'ом
     @State private var layersTextColor: StyleColor = .init(UIColor(WFColor.foregroundPrimary))
+    /// Стиль карты
+    var style: MapStyle {
+        if mapStyleModel.lightPreset == .dusk || mapStyleModel.lightPreset == .night || mapStyleModel.style == .standardSatellite {
+            layersTextColor = .init(.white)
+        } else {
+            layersTextColor = .init(UIColor(WFColor.foregroundPrimary))
+        }
+        switch mapStyleModel.style {
+            case .standard:
+                return .standard(
+                    theme: mapStyleModel.theme,
+                    lightPreset: mapStyleModel.lightPreset,
+                    showPointOfInterestLabels: mapStyleModel.poi,
+                    showTransitLabels: mapStyleModel.transitLabels,
+                    showPlaceLabels: mapStyleModel.placeLabels,
+                    showRoadLabels: mapStyleModel.roadLabels,
+                    show3dObjects: mapStyleModel.show3DObjects
+                )
+            case .standardSatellite:
+                return .standardSatellite(
+                    lightPreset: mapStyleModel.lightPreset,
+                    showPointOfInterestLabels: mapStyleModel.poi,
+                    showTransitLabels: mapStyleModel.transitLabels,
+                    showPlaceLabels: mapStyleModel.placeLabels,
+                    showRoadLabels: mapStyleModel.roadLabels,
+                    showRoadsAndTransit: mapStyleModel.showRoadsAndTransit,
+                    showPedestrianRoads: mapStyleModel.showPedestrianRoads
+                )
+        }
+    }
+
+    /// Сервис для работы с маршрутами
+    let routeService: IRouteService
 
     var body: some View {
         NavigationStack {
@@ -33,17 +70,20 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     Map(viewport: $viewModel.viewport) {
                         Puck2D(bearing: .heading)
                     }
-                    .onMapLoaded { _ in
-                        updatePlaces(proxy)
-                    }
-                    .mapStyle(mapStyle)
+                    .mapStyle(style)
+                    .additionalSafeAreaInsets(.bottom, settingsHeight)
                     .ornamentOptions(OrnamentOptions(
                         compass: CompassViewOptions(
                             position: .bottomTrailing,
                             margins: .init(x: Grid.pt8, y: Grid.pt56)
                         )
                     ))
-                    .onStyleLoaded { _ in setupMap(proxy) }
+                    .onMapLoaded { _ in
+                        updatePlaces(proxy)
+                    }
+                    .onStyleLoaded { payload in
+                        setupMap(proxy)
+                    }
                     .onLayerTapGesture(ItemId.clusterCircle) { feature, context in
                         handleTap(proxy: proxy, feature: feature, context: context)
                     }
@@ -52,13 +92,46 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         return true
                     }
                     .onChange(of: viewModel.filteredPlaces) { _ in updatePlaces(proxy) }
+                    .onChange(of: mapStyleModel.lightPreset) { _ in
+                        do {
+                            if let map = proxy.map {
+                                try map.updateLayer(withId: ItemId.point, type: SymbolLayer.self) { (layer: inout SymbolLayer) throws in
+                                    layer.textColor = .constant(layersTextColor)
+                                    layer.textSize = .constant(Grid.pt12)
+                                    layer.textAnchor = .constant(.top)
+                                    layer.iconAnchor = .constant(.bottom)
+                                    layer.textField = .expression(Exp(.get) { "place_name" })
+                                    layer.iconImage = .constant(.name("place-icon"))
+
+                                    layer.textAllowOverlap = .constant(true)
+                                    layer.iconAllowOverlap = .constant(true)
+
+                                    layer.filter = Exp(.not) { Exp(.has) { "point_count" } }
+                                }
+                            }
+                        } catch {
+                            print("Updating the layer failed: \(error.localizedDescription)")
+                        }
+                    }
                     if viewModel.isLoading {
                         ProgressView()
                             .progressViewStyle(.circular)
                     }
                 }
                 .overlay(alignment: .top) { searchBar.padding(.top, safeAreaInsets.top) }
-                .overlay(alignment: .bottom) { bottomContentContainerView }
+                .overlay(alignment: .bottom) {
+                    bottomContentContainerView
+                        .isHidden(isShowMapStyleSelection)
+                }
+                .overlay(alignment: .bottom) {
+                    MapStyleSelectionView(isPresented: $isShowMapStyleSelection)
+                        .floating(RoundedRectangle(cornerRadius: Grid.pt10))
+                        .limitPaneWidth()
+                        .background(GeometryReader { proxy in
+                            Color.clear.onAppear { settingsHeight = proxy.size.height }
+                        })
+                        .isHidden(!isShowMapStyleSelection)
+                }
                 .overlay(alignment: .trailing) {
                     VStack(alignment: .center, spacing: Grid.pt16) {
                         WFButtonIcon(
@@ -80,36 +153,6 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     .padding(.trailing, Grid.pt12)
                 }
                 .edgesIgnoringSafeArea(.top)
-                .sheet(isPresented: $isShowMapStyleSelection) {
-                    if #available(iOS 16.4, *) {
-                        MapStyleSelectionView(didSelectStyle: { selectedStyle in
-                            if selectedStyle == .dark || selectedStyle == .satelliteStreets {
-                                layersTextColor = .init(.white)
-                            } else {
-                                layersTextColor = .init(UIColor(WFColor.foregroundPrimary))
-                            }
-                            mapStyle = selectedStyle
-                            isShowMapStyleSelection.toggle()
-                        }, selectedStyle: mapStyle)
-                        .presentationCornerRadius(Grid.pt24)
-                        .presentationDetents([.height(Grid.pt216)])
-                        .background(WFColor.surfaceQuaternary)
-
-                    } else {
-                        MapStyleSelectionView(didSelectStyle: { selectedStyle in
-                            if selectedStyle == .dark || selectedStyle == .satelliteStreets {
-                                layersTextColor = .init(.white)
-                            } else {
-                                layersTextColor = .init(UIColor(WFColor.foregroundPrimary))
-                            }
-                            mapStyle = selectedStyle
-                            isShowMapStyleSelection.toggle()
-                        }, selectedStyle: mapStyle)
-                        .presentationDetents([.height(Grid.pt216)])
-                        .background(WFColor.surfaceQuaternary)
-
-                    }
-                }
                 .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
                     Button("Да", role: .cancel) {
                         viewModel.loadPlaces()
@@ -164,7 +207,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                 HStack(spacing: Grid.pt8) {
                     Spacer()
                     ForEach(TagPlace.allCases.dropLast(), id: \.name) { tag in
-                        WFChips(icon: tag.icon, name: tag.name) {
+                        WFChips(icon: tag.icon, name: tag.name, isActive: viewModel.selectedTags.contains(tag)) {
                             viewModel.toggleTag(tag)
                             if viewModel.selectedTags.contains(tag) {
                                 withAnimation {

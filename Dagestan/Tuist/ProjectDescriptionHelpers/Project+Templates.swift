@@ -11,7 +11,7 @@ extension Project {
         let packages: [ProjectDescription.Package] = [
             .remote(
                 url: "https://github.com/mapbox/mapbox-maps-ios.git",
-                requirement: .upToNextMinor(from: "11.6.0-rc.1")
+                requirement: .upToNextMinor(from: "11.6.0")
             ),
             .remote(
                 url: "https://github.com/kean/Nuke.git",

@@ -25,6 +25,7 @@ struct ContentView: View {
     @StateObject private var mapViewModel: MapViewModel
     @StateObject private var routeViewModel: RouteListViewModel
     @StateObject private var favoriteViewModel: FavoriteListViewModel
+    @StateObject var locationsModel = StandardStyleLocationsModel()
     private let authService: AuthService
     private let favoriteService: FavoriteService
     private let feedbackService: FeedbackService
@@ -102,6 +103,7 @@ private extension ContentView {
     func tabItemView(for item: TabItem) -> some View {
         switch item {
             case .places: MapView(viewModel: mapViewModel, routeService: routeViewModel.routeService)
+                    .environmentObject(locationsModel)
             case .profile: ProfileContainerView(authService: authService, feedbackService: feedbackService)
             case .favorite: FavoriteListView(viewModel: favoriteViewModel)
             case .routes: RouteListView(viewModel: routeViewModel, placeService: mapViewModel.placeService)

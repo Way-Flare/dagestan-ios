@@ -41,7 +41,7 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
             .init(latitude: 42.1167, longitude: 48.1936),
         ]
     }
-    
+
     var userFeedbacks: [PlaceFeedback] {
         guard let feedbacks = routeFeedbacks.data?.results, !feedbacks.isEmpty else {
             return []

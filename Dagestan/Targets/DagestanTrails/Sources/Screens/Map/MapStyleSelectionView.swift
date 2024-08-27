@@ -7,87 +7,109 @@
 //
 
 import MapboxMaps
+import MapboxCommon
 import DesignSystem
 import SwiftUI
 
-/// Энам содержащий поддерживаемые типы карты и названия для них
-enum MapType: CaseIterable {
-    case streets
-    case satelliteStreets
-    case dark
-    case outdoors
+@available(iOS 14.0, *)
+class StandardStyleLocationsModel: ObservableObject, Equatable {
 
-    var mapStyle: MapStyle {
-        switch self {
-            case .dark:
-                return .dark
-            case .streets:
-                return .streets
-            case .satelliteStreets:
-                return .satelliteStreets
-            case .outdoors:
-                return .outdoors
-        }
+    static func == (lhs: StandardStyleLocationsModel, rhs: StandardStyleLocationsModel) -> Bool {
+        return lhs.lightPreset == rhs.lightPreset &&
+        lhs.poi == rhs.poi &&
+        lhs.transitLabels == rhs.transitLabels &&
+        lhs.placeLabels == rhs.placeLabels &&
+        lhs.showRoadsAndTransit == rhs.showRoadsAndTransit &&
+        lhs.show3DObjects == rhs.show3DObjects &&
+        lhs.style == rhs.style &&
+        lhs.theme == rhs.theme
     }
 
-    var name: String {
-        switch self {
-            case .dark:
-                return "Темная карта"
-            case .streets:
-                return "Универсальная карта"
-            case .satelliteStreets:
-                return "Спутниковая карта"
-            case .outdoors:
-                return "Обычная светлая карта"
-        }
+    @Published var lightPreset: StandardLightPreset = .day
+    @Published var poi = true
+    @Published var transitLabels = true
+    @Published var placeLabels = true
+    @Published var roadLabels = true
+    @Published var showRoadsAndTransit = true
+    @Published var showPedestrianRoads = true
+    @Published var show3DObjects = true
+    @Published var style: Style = .standard
+    @Published var theme: StandardTheme = .default
+
+    enum Style {
+        case standard
+        case standardSatellite
     }
 }
 
-/// Вью модалка со списком стилей карт для выбора
+@available(iOS 14.0, *)
 struct MapStyleSelectionView: View {
+    @Binding var isPresented: Bool
+    @EnvironmentObject var model: StandardStyleLocationsModel
     /// Выбранный стиль карты
-    var didSelectStyle: ((MapStyle) -> Void)?
-    
-    // MARK: - Initializer
-
-    /// Текущий выбранный стиль
-    let selectedStyle: MapStyle
-
-    /// Заголовок с крестиком
-    private var title: some View {
-        HStack {
-            Text("Выберите тип карты")
-                .font(.manropeSemibold(size: Grid.pt24))
-                .foregroundStyle(WFColor.foregroundPrimary)
-
-            Spacer()
-
-            CloseButton()
-        }
-        .padding()
-    }
+    var didSelectStyle: ((StandardLightPreset) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading) {
-            title
-            ForEach(MapType.allCases, id: \.self) { type in
+            HStack {
+                Spacer()
                 Button {
-                    didSelectStyle?(type.mapStyle)
+                    isPresented.toggle()
                 } label: {
-                    HStack {
-                        Text(type.name)
-                            .font(.manropeRegular(size: Grid.pt16))
-                            .foregroundStyle(WFColor.foregroundPrimary)
-                            .padding(.leading, Grid.pt16)
-                            .padding(.bottom, Grid.pt8)
-                        if selectedStyle == type.mapStyle {
-                            Text("✅")
-                        }
-                    }
+                    Text("Закрыть")
                 }
             }
-            Spacer()
+
+            Picker("Style", selection: $model.style) {
+                Text("Стандарт").tag(StandardStyleLocationsModel.Style.standard)
+                Text("Спутник").tag(StandardStyleLocationsModel.Style.standardSatellite)
+            }.pickerStyle(.segmented)
+            HStack {
+                Text("Освещение")
+                Picker("Light", selection: $model.lightPreset) {
+                    Text("Рассвет").tag(StandardLightPreset.dawn)
+                    Text("День").tag(StandardLightPreset.day)
+                    Text("Сумерки").tag(StandardLightPreset.dusk)
+                    Text("Ночь").tag(StandardLightPreset.night)
+                }
+                .pickerStyle(.segmented)
+
+
+            }
+
+            if model.style == .standard {
+                HStack {
+                    Text("Тема")
+                    Picker("Theme", selection: $model.theme) {
+                        Text("Обычная").tag(StandardTheme.default)
+                        Text("Блеклый").tag(StandardTheme.faded)
+                        Text("Монохромный").tag(StandardTheme.monochrome)
+                    }.pickerStyle(.segmented)
+                }
+            }
+
+//            ScrollView(.horizontal, showsIndicators: false) {
+//                HStack {
+//                    Text("Labels")
+//                    Group {
+//                        Toggle("Пои", isOn: $model.poi)
+//                        Toggle("Транзит", isOn: $model.transitLabels)
+//                        Toggle("Places", isOn: $model.placeLabels)
+//                        Toggle("Дороги", isOn: $model.roadLabels)
+//                        switch model.style {
+//                            case .standard:
+//                                Toggle("3D-объекты", isOn: $model.show3DObjects)
+//                            case .standardSatellite:
+//                                Toggle("Roads&Transit", isOn: $model.showRoadsAndTransit)
+//                                Toggle("Pedestrian roads", isOn: $model.showPedestrianRoads)
+//                        }
+//                    }
+//                    .fixedSize()
+//                    .font(.footnote)
+//                }.toggleStyle(.button)
+//            }
         }
+        .padding(10)
     }
+
 }

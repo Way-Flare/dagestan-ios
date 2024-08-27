@@ -8,21 +8,26 @@
 
 import DesignSystem
 import SwiftUI
+import CoreLocation
 
 struct PlaceMakeRouteBottomView: View {
     @AppStorage("isAuthorized") var isAuthorized = false
     @State var isFavorite: Bool
     @State var showAlert = false
     @State var showNotAuthorizedAlert = false
-    
+    private let coordinates: [CLLocationCoordinate2D]
+
+
     var onFavoriteAction: (() -> Void)?
     let shareUrl: URL?
 
     init(
+        coordinates: [CLLocationCoordinate2D],
         isFavorite: Bool,
         onFavoriteAction: (() -> Void)? = nil,
         shareUrl: URL?
     ) {
+        self.coordinates = coordinates
         self._isFavorite = State(wrappedValue: isFavorite)
         self.onFavoriteAction = onFavoriteAction
         self.shareUrl = shareUrl
@@ -38,9 +43,12 @@ struct PlaceMakeRouteBottomView: View {
                     size: .m,
                     type: .primary
                 ) {
-                    showAlert = true
+                    let coordForUrl = coordinates.reduce("") { partialResult, coordinate in
+                        return partialResult + "&daddr=" + "\(coordinate.latitude),\(coordinate.longitude)"
+                    }
+                    guard let url = URL(string: "http://maps.apple.com/maps?\(coordForUrl)") else { return }
+                    UIApplication.shared.open(url)
                 }
-                .noFeatureAlert(isPresented: $showAlert)
 
                 WFButtonIcon(
                     icon: isFavorite ? DagestanTrailsAsset.heartFilled.swiftUIImage : DagestanTrailsAsset.tabHeart.swiftUIImage,
