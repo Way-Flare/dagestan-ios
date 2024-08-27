@@ -12,7 +12,10 @@ struct FilterNumberPhone {
         with mask: String = "+X (XXX)-XXX-XX-XX",
         phone: String
     ) -> String {
-        let numbers = phone.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+        var numbers = phone.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+        if numbers.first == "8" {
+            numbers.replaceSubrange(...numbers.startIndex, with: "7")
+        }
         var result = ""
         var index = numbers.startIndex
 
