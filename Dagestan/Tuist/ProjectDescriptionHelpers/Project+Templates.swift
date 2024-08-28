@@ -83,6 +83,7 @@ extension Project {
 
         let infoPlist: [String: Plist.Value] = [
             "CFBundleShortVersionString": .string("0.2.1"),
+            "CFBundleDisplayName": .string("Dag Travel"),
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
             "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
