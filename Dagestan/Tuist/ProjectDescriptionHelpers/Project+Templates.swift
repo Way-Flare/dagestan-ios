@@ -82,7 +82,7 @@ extension Project {
                                    """
 
         let infoPlist: [String: Plist.Value] = [
-            "CFBundleShortVersionString": .string("0.2.1"),
+            "CFBundleShortVersionString": .string("0.2.2"),
             "CFBundleDisplayName": .string("Dag Travel"),
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
