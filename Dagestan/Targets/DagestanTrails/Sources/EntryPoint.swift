@@ -70,7 +70,7 @@ struct ContentView: View {
 
     private var contentView: some View {
         TabView {
-            ForEach(TabItem.allCases, id: \.self) { tab in
+            ForEach(TabItem.visibleCases, id: \.self) { tab in
                 tabItemView(for: tab)
                     .tabItem {
                         VStack(spacing: Grid.pt4) {
@@ -107,6 +107,9 @@ private extension ContentView {
             case .profile: ProfileContainerView(authService: authService, feedbackService: feedbackService)
             case .favorite: FavoriteListView(viewModel: favoriteViewModel)
             case .routes: RouteListView(viewModel: routeViewModel, placeService: mapViewModel.placeService)
+            case .designSystem: MenuView<SwiftUIMenuItem, SwiftUIMenuRouter>()
+            case .navigationSanbox: DirectionsContentView(vm: DirectionsViewModel())
+
         }
     }
 }

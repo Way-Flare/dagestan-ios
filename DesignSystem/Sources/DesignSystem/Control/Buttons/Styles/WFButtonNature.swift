@@ -12,6 +12,8 @@ public struct WFButtonNature: WFButtonStyle {
     public var active: WFButtonAppearance = WFButtonNatureActive()
     public var disabled: WFButtonAppearance = WFButtonNatureDisabled()
     public var loading: WFButtonAppearance = WFButtonNatureLoading()
+
+    public init() {}
 }
 
 private struct WFButtonNatureDefault: WFButtonAppearance {

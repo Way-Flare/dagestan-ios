@@ -15,6 +15,8 @@ struct FilterNumberPhone {
         var numbers = phone.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
         if numbers.first == "8" {
             numbers.replaceSubrange(...numbers.startIndex, with: "7")
+        } else if numbers.first == "9" {
+            numbers.insert("7", at: numbers.startIndex)
         }
         var result = ""
         var index = numbers.startIndex

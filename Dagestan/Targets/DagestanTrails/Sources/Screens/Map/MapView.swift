@@ -72,6 +72,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     }
                     .mapStyle(style)
                     .additionalSafeAreaInsets(.bottom, settingsHeight)
+                    .additionalSafeAreaInsets(.bottom, 70)
                     .ornamentOptions(OrnamentOptions(
                         compass: CompassViewOptions(
                             position: .bottomTrailing,
@@ -152,6 +153,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                     }
                     .padding(.trailing, Grid.pt12)
                 }
+
                 .edgesIgnoringSafeArea(.top)
                 .alert("Не удалось загрузить данные", isPresented: $viewModel.isShowAlert) {
                     Button("Да", role: .cancel) {

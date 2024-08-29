@@ -13,6 +13,17 @@ enum TabItem: Int, CaseIterable {
     case routes
     case favorite
     case profile
+    case designSystem
+    case navigationSanbox
+
+    static var visibleCases: [Self] {
+        var defaultCases: [Self] = [.places, .routes, .favorite, .profile]
+        let debugCases: [Self] = [.designSystem, .navigationSanbox]
+        #if DEBUG
+        defaultCases.append(contentsOf: debugCases)
+        #endif
+        return defaultCases
+    }
 
     var title: String {
         switch self {
@@ -20,6 +31,8 @@ enum TabItem: Int, CaseIterable {
             case .favorite: return "tab.favorites"
             case .profile: return "tab.profile"
             case .routes: return "tab.routes"
+            case .designSystem: return "DesignSystem"
+            case .navigationSanbox : return "Navigator"
         }
     }
 
@@ -33,6 +46,10 @@ enum TabItem: Int, CaseIterable {
                 DagestanTrailsAsset.tabHeart.swiftUIImage
             case .profile:
                 DagestanTrailsAsset.tabProfileCircle.swiftUIImage
+            case .designSystem:
+                Image(systemName: "eye")
+            case .navigationSanbox:
+                Image(systemName: "location")
         }
     }
 }

@@ -25,11 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+/// Заглушка для LaunchScreen?
 final class VCClass: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .red
     }
 }

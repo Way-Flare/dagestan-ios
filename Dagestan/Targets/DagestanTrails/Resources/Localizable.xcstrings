@@ -24,22 +24,47 @@
         }
       }
     },
+    "%@. " : {
+
+    },
     "•" : {
 
     },
     "12-34" : {
 
     },
+    "Distance: " : {
+
+    },
     "Dsadsa" : {
 
     },
+    "ETA: " : {
+
+    },
+    "From '%@' to '%@'" : {
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "From '%1$@' to '%2$@'"
+          }
+        }
+      }
+    },
     "Labels" : {
+
+    },
+    "Route: " : {
 
     },
     "Size: %@" : {
 
     },
     "State: %@" : {
+
+    },
+    "Steps:" : {
 
     },
     "tab.favorites" : {
@@ -109,6 +134,9 @@
           }
         }
       }
+    },
+    "Typical travel time: " : {
+
     },
     "Адрес" : {
 

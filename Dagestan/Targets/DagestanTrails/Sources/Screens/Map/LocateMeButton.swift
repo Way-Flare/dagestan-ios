@@ -29,9 +29,16 @@ struct LocateMeButton: View {
             Image(systemName: imageName)
                 .transition(.scale.animation(.easeOut))
                 .foregroundStyle(WFColor.iconAccent)
-                .padding()
+                .frame(width: Grid.pt20, height: Grid.pt20)
+                .padding(Grid.pt10)
         }
         .safeContentTransition()
+        .buttonVisualStyle(
+            style: .nature,
+            appearance: WFButtonNature().default,
+            cornerRadius: Grid.pt12,
+            foregroundColor: nil
+        )
     }
 
     private var isFocusingUser: Bool {

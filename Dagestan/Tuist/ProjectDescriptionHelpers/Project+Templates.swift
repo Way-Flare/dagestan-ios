@@ -14,6 +14,10 @@ extension Project {
                 requirement: .upToNextMinor(from: "11.6.0")
             ),
             .remote(
+                url: "https://github.com/mapbox/mapbox-directions-swift.git",
+                requirement: .upToNextMinor(from: "2.14.0")
+            ),
+            .remote(
                 url: "https://github.com/kean/Nuke.git",
                 requirement: .upToNextMajor(from: "12.7")
             ),
@@ -26,6 +30,7 @@ extension Project {
         ]
         let packageDependencies: [TargetDependency] = [
             .package(product: "MapboxMaps"),
+            .package(product: "MapboxDirections"),
             .package(product: "Nuke"),
             .package(product: "NukeUI"),
             .package(product: "AppMetricaCore"),
@@ -83,7 +88,7 @@ extension Project {
 
         let infoPlist: [String: Plist.Value] = [
             "CFBundleShortVersionString": .string("0.2.2"),
-            "CFBundleDisplayName": .string("Dag Travel"),
+            "CFBundleDisplayName": .string("Dag Trails"),
             "UIMainStoryboardFile": "",
             "UILaunchStoryboardName": .string("LaunchScreen"),
             "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
