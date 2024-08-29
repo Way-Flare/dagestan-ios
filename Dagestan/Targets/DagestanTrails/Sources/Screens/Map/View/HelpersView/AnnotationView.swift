@@ -64,6 +64,6 @@ struct AnnotationView: View {
     }
 }
 
-#Preview {
-    AnnotationView(name: "Хинкальная", workingTime: "Закрыто до 9:00", tagPlace: .nature)
-}
+//#Preview {
+//    AnnotationView(name: "Хинкальная", workingTime: "Закрыто до 9:00", tagPlace: .nature)
+//}

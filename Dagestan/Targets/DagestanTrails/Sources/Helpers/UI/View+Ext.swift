@@ -38,6 +38,7 @@ struct FloatingStyle <S: Shape>: ViewModifier {
 @available(iOS 13.0, *)
 extension View {
     @ViewBuilder
+    /// Material фон
     func regularMaterialBackground() -> some View {
         if #available(iOS 15.0, *) {
             self.background(.regularMaterial)
@@ -68,5 +69,15 @@ extension View {
         } else {
             return AnyView(self)
         }
+    }
+}
+
+@available(iOS 13.0, *)
+extension View {
+    func safeContentTransition() -> some View {
+        if #available(iOS 17, *) {
+            return self.contentTransition(.symbolEffect(.replace))
+        }
+        return self
     }
 }

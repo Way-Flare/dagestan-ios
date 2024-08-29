@@ -11,7 +11,9 @@ import SwiftUI
 import DesignSystem
 
 @available(iOS 14.0, *)
+/// Кнопка навигации на себя
 struct LocateMeButton: View {
+    /// ViewPort - структура mapbox с данными о камере
     @Binding var viewport: Viewport
 
     var body: some View {
@@ -57,15 +59,5 @@ struct LocateMeButton: View {
         }
         return "location"
 
-    }
-}
-
-@available(iOS 13.0, *)
-private extension View {
-    func safeContentTransition() -> some View {
-        if #available(iOS 17, *) {
-            return self.contentTransition(.symbolEffect(.replace))
-        }
-        return self
     }
 }

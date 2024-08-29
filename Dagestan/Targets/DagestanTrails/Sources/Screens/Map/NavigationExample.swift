@@ -89,10 +89,10 @@ struct DirectionsContentView: View {
                         ForEach(0..<route.legs.count, id: \.self) { legIdx in
                             if let source = route.legs[legIdx].source?.name,
                                let destination = route.legs[legIdx].destination?.name {
-                                Text("From '\(source)' to '\(destination)'").font(.title2)
+                                Text("От '\(source)' к '\(destination)'").font(.title2)
                             }
                             else {
-                                Text("Steps:").font(.title2)
+                                Text("Шаги:").font(.title2)
                             }
                             stepsView(for: route.legs[legIdx])
                         }
@@ -108,20 +108,20 @@ struct DirectionsContentView: View {
     private func headerView(for route: MapboxDirections.Route) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Route: ").fontWeight(.bold)
+                Text("Маршрут: ").fontWeight(.bold)
                 Text(route.description)
                     .fixedSize(horizontal: false, vertical: true)
             }
             HStack {
-                Text("Distance: ").fontWeight(.bold)
+                Text("Расстояние: ").fontWeight(.bold)
                 Text(vm.formattedDistance(for:route))
             }
             HStack {
-                Text("ETA: ").fontWeight(.bold)
+                Text("Время в пути: ").fontWeight(.bold)
                 Text(vm.formattedTravelTime(for: route))
             }
             HStack {
-                Text("Typical travel time: ").fontWeight(.bold)
+                Text("Typical Время в пути: ").fontWeight(.bold)
                 Text(vm.formattedTypicalTravelTime(for: route))
             }
             Divider()

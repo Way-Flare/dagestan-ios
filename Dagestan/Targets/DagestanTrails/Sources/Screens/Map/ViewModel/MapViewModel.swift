@@ -3,27 +3,51 @@ import MapKit
 import SwiftUI
 import MapboxMaps
 
+/// Протокол вью модели для работы с картой
 protocol IMapViewModel: ObservableObject {
+    /// Viewport - структура mapbox с данными о камере
     var viewport: Viewport { get set }
+    /// Список всехт мест
     var places: [Place] { get set }
+    /// Список отфильтрованных мест
     var filteredPlaces: [Place] { get }
+    /// Выбранное место
     var selectedPlace: Place? { get set }
+    /// Видна ли карточка места
     var isPlaceViewVisible: Bool { get set }
+    /// Отображать ли алерт с ошибкой
     var isShowAlert: Bool { get set }
+    /// Идет ли сейчас загрузка мест
     var isLoading: Bool { get set }
+    /// Выбранные теги/фильтры
     var selectedTags: Set<TagPlace> { get set }
-    var placeService: IPlacesService { get } 
+    /// Сервис для работы с местами
+    var placeService: IPlacesService { get }
+    /// Сервис для работы с избранными
     var favoriteService: IFavoriteService { get }
+    /// Состояние загрузки добавления/удаления места из избранного
     var favoriteState: LoadingState<Bool> { get set }
+    /// Отображать ли ошибку связанную с избранными. Например, если пользователь не авторизован
     var showFavoriteAlert: Bool { get set }
+    /// Открыть ли экран с поиском мест
     var searchOpen: Bool { get set }
-
+    /// Список тегов/фильтров
     var tags: [TagPlace] { get set }
 
+    /// Устанвливает с анимацией viewPort с новыми координатами и зумом
+    /// - Parameters:
+    ///   - coordinate: Координаты
+    ///   - zoomLevel: Уровень зума
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat)
+    /// Загрузить все места
     func loadPlaces()
+    /// Выбирает место на основе переданного признака. (Нажали на точку, на карте)
+    /// - Parameter feature: Признак, который содержит свойства, необходимые для идентификации места.
     func selectPlace(by feature: Feature)
+    /// Выбирает место на основе переданного id. (Нажали на точку, на карте)
+    /// - Parameter id: Параметр необходимые для идентификации места.
     func selectPlace(by id: Int)
+    /// Обновить список отфильтрованных мест. Нужно при выборе какого то тэга
     func updateFilteredPlaces()
     /// Вкл/выкл фильтр/тэг
     func toggleTag(_ tag: TagPlace)
@@ -31,12 +55,11 @@ protocol IMapViewModel: ObservableObject {
     func moveToDagestan()
     /// Получить точки в GeoJson
     func placesAsGeoJSON() -> Data?
-    /// Добавить в избранное место по id
+    /// Добавить/удалить из избранного место по id
     func setFavorite(by id: Int)
-    /// Отменить выбор всех фильтров/тегов
-    func deselectAllTags() -> Void
 }
 
+/// Вьюмодель для работы с картой
 final class MapViewModel: IMapViewModel {
     @Published var viewport: Viewport = .camera(center: Location.makhachkala, zoom: 5.5)
     @Published var tags: [TagPlace] = []
@@ -55,13 +78,17 @@ final class MapViewModel: IMapViewModel {
     @Published var isPlaceViewVisible = true
     @Published var selectedTags: Set<TagPlace> = []
     @Published var favoriteState: LoadingState<Bool> = .idle
-    
+
+    // MARK: - Init
+
+    /// Сервис для работы с местами/точками
     let placeService: IPlacesService
+    /// Сервис для работы с избраными
     let favoriteService: IFavoriteService
-    private var task: Task<Void, Error>?
 
     /// Инициализатор
-    /// - Parameter service: Сервис для работы с местами/точками
+    /// - Parameter placeService: Сервис для работы с местами/точками
+    /// - Parameter favoriteService: Сервис для работы с избраными
     init(placeService: IPlacesService, favoriteService: IFavoriteService) {
         self.placeService = placeService
         self.favoriteService = favoriteService
@@ -75,14 +102,11 @@ final class MapViewModel: IMapViewModel {
         loadPlaces()
     }
 
-    deinit {
-        task?.cancel()
-    }
+}
 
-    /// Устанвливает с анимацией viewPort с новыми координатами и зумом
-    /// - Parameters:
-    ///   - coordinate: Координаты
-    ///   - zoomLevel: Уровень зума
+// MARK: - Public methods of IMapViewModel
+
+extension MapViewModel {
     func setupViewport(coordinate: CLLocationCoordinate2D, zoomLevel: CGFloat) {
         withViewportAnimation(.fly) {
             viewport = .camera(center: coordinate, zoom: zoomLevel)
@@ -113,8 +137,6 @@ final class MapViewModel: IMapViewModel {
         }
     }
 
-    /// Выбирает место на основе переданного признака.
-    /// - Parameter feature: Признак, который содержит свойства, необходимые для идентификации места.
     func selectPlace(by feature: Feature) {
         guard let id = (feature.properties?["id"] as? Turf.JSONValue)?.intValue,
               let selected = filteredPlaces.first(where: { $0.id == id }) else { return }
@@ -125,8 +147,6 @@ final class MapViewModel: IMapViewModel {
         }
     }
 
-    /// Выбирает место на основе переданного id.
-    /// - Parameter id: Параметр необходимые для идентификации места.
     func selectPlace(by id: Int) {
         withAnimation {
             selectedPlace = filteredPlaces.first { $0.id == id }
@@ -155,27 +175,6 @@ final class MapViewModel: IMapViewModel {
         }
     }
 
-    private func updateFavoriteStatus(for id: Int, to status: Bool) {
-        if let index = places.firstIndex(where: { $0.id == id }) {
-            var updatedPlace = places[index]
-            updatedPlace = updatedPlace.withFavoriteStatus(to: status)
-            places[index] = updatedPlace
-
-            if selectedPlace?.id == id {
-                selectedPlace = updatedPlace
-            }
-        }
-    }
-
-    @objc 
-    private func handleFavoriteUpdate(_ notification: Notification) {
-        guard let updater = notification.object as? FavoriteUpdater else { return }
-
-        if updater.type == .places {
-            updateFavoriteStatus(for: updater.id, to: updater.status)
-        }
-    }
-
     func updateFilteredPlaces() {
         if selectedTags.isEmpty {
             filteredPlaces = places
@@ -194,19 +193,41 @@ final class MapViewModel: IMapViewModel {
         }
         updateFilteredPlaces()
     }
-    
-    func deselectAllTags() {
-        selectedTags.removeAll()
-        updateFilteredPlaces()
-    }
 
     func moveToDagestan() {
         let dagestanCoordinates = CLLocationCoordinate2D(latitude: 43.0000, longitude: 47.5000)
 
         withViewportAnimation(.fly) {
-            viewport = .camera(center: dagestanCoordinates, zoom: 6.5)
+            viewport = .camera(center: dagestanCoordinates, zoom: 7.5)
         }
     }
+}
+
+// MARK: - Private methods
+
+extension MapViewModel {
+
+    private func updateFavoriteStatus(for id: Int, to status: Bool) {
+        if let index = places.firstIndex(where: { $0.id == id }) {
+            var updatedPlace = places[index]
+            updatedPlace = updatedPlace.withFavoriteStatus(to: status)
+            places[index] = updatedPlace
+
+            if selectedPlace?.id == id {
+                selectedPlace = updatedPlace
+            }
+        }
+    }
+
+    @objc
+    private func handleFavoriteUpdate(_ notification: Notification) {
+        guard let updater = notification.object as? FavoriteUpdater else { return }
+
+        if updater.type == .places {
+            updateFavoriteStatus(for: updater.id, to: updater.status)
+        }
+    }
+
 }
 
 // MARK: - Adapters

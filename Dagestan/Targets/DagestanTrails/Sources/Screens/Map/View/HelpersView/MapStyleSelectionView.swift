@@ -88,6 +88,7 @@ struct MapStyleSelectionView: View {
                 }
             }
 
+            // MARK: Доп настройка стиля карты. Позволяет вкл/выкл отображение разных деталей на карте. Нет нужды в релизе
 //            ScrollView(.horizontal, showsIndicators: false) {
 //                HStack {
 //                    Text("Labels")
@@ -109,7 +110,7 @@ struct MapStyleSelectionView: View {
 //                }.toggleStyle(.button)
 //            }
         }
-        .padding(10)
+        .padding(Grid.pt10)
     }
 
 }
