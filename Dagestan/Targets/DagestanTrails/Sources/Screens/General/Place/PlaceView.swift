@@ -47,17 +47,12 @@ struct PlaceView: View {
 
     var body: some View {
         if place != nil {
-            NavigationLink(
-                destination: PlaceDetailView(viewModel: placeDetailViewModel, routeService: routeService, onFavoriteAction: onFavoriteAction)
-            ) {
-                contentView
-                    .cornerStyle(.constant(Grid.pt16))
-                    .padding(.horizontal, Grid.pt12)
-                    .shadow(radius: Grid.pt4)
-            }
-            .buttonStyle(.plain)
-            .frame(height: 292)
-            .notAuthorizedAlert(isPresented: $showAlert)
+            contentView
+                .cornerStyle(.constant(Grid.pt16))
+                .padding(.horizontal, Grid.pt12)
+                .shadow(radius: Grid.pt4)
+                .frame(height: 292)
+                .notAuthorizedAlert(isPresented: $showAlert)
         }
     }
 

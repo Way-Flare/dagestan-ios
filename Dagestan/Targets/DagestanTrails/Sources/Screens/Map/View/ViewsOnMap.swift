@@ -88,6 +88,28 @@ extension MapView {
                             viewModel.setFavorite(by: id)
                         }
                     }
+                    .onTapGesture {
+                        viewModel.navigationPath.append(MapNavigationRoute.placeDetail(
+                            id: viewModel.selectedPlace?.id ?? .zero,
+                            isFavorite: viewModel.selectedPlace?.isFavorite ?? false
+                        ))
+                    }
+                    .navigationDestination(for: MapNavigationRoute.self) { route in
+                        switch route {
+                            case .placeDetail(let id, let isFavorite):
+                                let placeDetailViewModel = PlaceDetailViewModel(
+                                    service: viewModel.placeService,
+                                    placeId: id,
+                                    isFavorite: isFavorite
+                                )
+
+                                PlaceDetailView(viewModel: placeDetailViewModel, routeService: routeService) {
+                                    if let id = viewModel.selectedPlace?.id {
+                                        viewModel.setFavorite(by: id)
+                                    }
+                                }
+                        }
+                    }
                     .padding(.bottom, Grid.pt8)
                     .alert("Произошла ошибка", isPresented: $viewModel.showFavoriteAlert) {
                         Button("Понятно", role: .cancel) {}

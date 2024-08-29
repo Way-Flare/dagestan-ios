@@ -33,6 +33,8 @@ protocol IMapViewModel: ObservableObject {
     var searchOpen: Bool { get set }
     /// Список тегов/фильтров
     var tags: [TagPlace] { get set }
+    /// Путь для навигации
+    var navigationPath: NavigationPath { get set }
 
     /// Устанвливает с анимацией viewPort с новыми координатами и зумом
     /// - Parameters:
@@ -42,9 +44,12 @@ protocol IMapViewModel: ObservableObject {
     /// Загрузить все места
     func loadPlaces()
     /// Выбирает место на основе переданного признака. (Нажали на точку, на карте)
+    /// Метод также приблизит и наведет камеру к этой точке
     /// - Parameter feature: Признак, который содержит свойства, необходимые для идентификации места.
-    func selectPlace(by feature: Feature)
+    /// - Parameter zoom: Текущий зум карты
+    func selectPlace(by feature: Feature, zoom: CGFloat?)
     /// Выбирает место на основе переданного id. (Нажали на точку, на карте)
+    /// Метод также приблизит и наведет камеру к этой точке
     /// - Parameter id: Параметр необходимые для идентификации места.
     func selectPlace(by id: Int)
     /// Обновить список отфильтрованных мест. Нужно при выборе какого то тэга
@@ -78,6 +83,7 @@ final class MapViewModel: IMapViewModel {
     @Published var isPlaceViewVisible = true
     @Published var selectedTags: Set<TagPlace> = []
     @Published var favoriteState: LoadingState<Bool> = .idle
+    @Published var navigationPath = NavigationPath()
 
     // MARK: - Init
 
@@ -137,13 +143,21 @@ extension MapViewModel {
         }
     }
 
-    func selectPlace(by feature: Feature) {
+    func selectPlace(by feature: Feature, zoom: CGFloat?) {
         guard let id = (feature.properties?["id"] as? Turf.JSONValue)?.intValue,
               let selected = filteredPlaces.first(where: { $0.id == id }) else { return }
 
+        var toZoom = zoom ?? .zero
+        if toZoom < 10 {
+            toZoom += 2
+        } else if toZoom < 17 {
+            toZoom += 3
+        }
+        toZoom = min(toZoom, 16)
+
         selectedPlace = selected
-        withViewportAnimation(.easeIn(duration: 0.3)) {
-            viewport = .camera(center: selectedPlace?.coordinate)
+        withViewportAnimation(.fly(duration: 0.9)) {
+            viewport = .camera(center: selectedPlace?.coordinate, zoom: toZoom)
         }
     }
 

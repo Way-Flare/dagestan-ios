@@ -66,7 +66,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
     // MARK: - Content View
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $viewModel.navigationPath) {
             MapReader { proxy in
                 ZStack(alignment: .top) {
                     Map(viewport: $viewModel.viewport) {
@@ -88,7 +88,7 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         handleTap(proxy: proxy, feature: feature, context: context)
                     }
                     .onLayerTapGesture(MapLayerId.point) { feature, _ in // Отлавливаем нажатие на слой точек
-                        viewModel.selectPlace(by: feature.feature)
+                        viewModel.selectPlace(by: feature.feature, zoom: proxy.map?.cameraState.zoom)
                         return true
                     }
                     .onChange(of: viewModel.filteredPlaces) { _ in updatePlaces(proxy) } // При изменении фильтра мест обновить места
