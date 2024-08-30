@@ -36,7 +36,7 @@ extension MapView {
         }
         .padding()
     }
-    
+
     /// Набор кнопок справа: Выбор стиля карты; Навигация на Дагестан, Навигация на себя
     var rightContainerButtons: some View {
         VStack(alignment: .center, spacing: Grid.pt16) {
@@ -58,7 +58,7 @@ extension MapView {
         }
         .padding(.trailing, Grid.pt12)
     }
-    
+
     /// Вью с настройко стиля карты
     var mapStyleSelectionView: some View {
         MapStyleSelectionView(isPresented: $isShowMapStyleSelection)
@@ -80,9 +80,7 @@ extension MapView {
                 if viewModel.selectedPlace != nil {
                     PlaceView(
                         place: $viewModel.selectedPlace,
-                        isLoading: viewModel.favoriteState.isLoading,
-                        placeService: viewModel.placeService,
-                        routeService: routeService
+                        isLoading: viewModel.favoriteState.isLoading
                     ) {
                         if let id = viewModel.selectedPlace?.id {
                             viewModel.setFavorite(by: id)

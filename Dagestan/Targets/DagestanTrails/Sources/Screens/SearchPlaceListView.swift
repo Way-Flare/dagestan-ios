@@ -27,7 +27,7 @@ struct SearchPlaceListView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $searchViewModel.navigationPath) {
             ScrollView {
                 tagsContainerView
                 if searchViewModel.filteredPlaces.isEmpty && !searchViewModel.searchText.isEmpty {
@@ -38,13 +38,16 @@ struct SearchPlaceListView: View {
                             PlaceView(
                                 place: .constant(place),
                                 isLoading: searchViewModel.isFavoritePlacesLoading[place.id] == true,
-                                placeService: placeService,
-                                routeService: routeService,
                                 needClose: false
                             ) {
                                 searchViewModel.setFavorite(by: place.id)
                             }
-                            .buttonStyle(.plain)
+                            .onTapGesture {
+                                searchViewModel.navigationPath.append(SearchNavigationRoute.placeDetail(
+                                    id: place.id,
+                                    isFavorite: place.isFavorite
+                                ))
+                            }
                             .alert("Произошла ошибка", isPresented: $searchViewModel.showFavoriteAlert) {
                                 Button("Понятно", role: .cancel) {}
                             } message: {
@@ -65,6 +68,20 @@ struct SearchPlaceListView: View {
             .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
             .onAppear {
                 searchViewModel.updateFilteredPlaces()
+            }
+            .navigationDestination(for: SearchNavigationRoute.self) { route in
+                switch route {
+                    case .placeDetail(let id, let isFavorite):
+                        let placeDetailViewModel = PlaceDetailViewModel(
+                            service: placeService,
+                            placeId: id,
+                            isFavorite: isFavorite
+                        )
+
+                        PlaceDetailView(viewModel: placeDetailViewModel, routeService: routeService) {
+                            searchViewModel.setFavorite(by: id)
+                        }
+                }
             }
         }
     }

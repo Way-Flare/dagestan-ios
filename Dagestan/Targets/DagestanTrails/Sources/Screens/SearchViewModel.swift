@@ -6,13 +6,18 @@
 //  Copyright © 2024 WayFlare.com. All rights reserved.
 //
 
-import Foundation
 import CoreKit
+import SwiftUI
+
+enum SearchNavigationRoute: Hashable {
+    case placeDetail(id: Int, isFavorite: Bool)
+}
 
 final class SearchViewModel: ObservableObject {
     @Published var places: [Place] = [] {
         didSet {
             filteredPlaces = places
+            updateFilteredPlaces()
         }
     }
     @Published var filteredPlaces: [Place] = []
@@ -20,6 +25,7 @@ final class SearchViewModel: ObservableObject {
     @Published var showFavoriteAlert = false
     @Published var isFavoritePlacesLoading: [Int: Bool] = [:]
     @Published var selectedTags: Set<TagPlace> = []
+    @Published var navigationPath = NavigationPath()
     @Published var searchText = "" {
         didSet {
             filterPlaces()
@@ -28,6 +34,7 @@ final class SearchViewModel: ObservableObject {
 
     private var allPlaces: [Place] = []
     private let favoriteService: IFavoriteService
+
 
     init(places: [Place], favoriteService: IFavoriteService) {
         self.allPlaces = places

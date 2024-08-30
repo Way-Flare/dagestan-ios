@@ -150,10 +150,10 @@ extension MapViewModel {
         var toZoom = zoom ?? .zero
         if toZoom < 10 {
             toZoom += 2
-        } else if toZoom < 17 {
+        } else if toZoom < 16 {
             toZoom += 3
         }
-        toZoom = min(toZoom, 16)
+        toZoom = min(toZoom, 15)
 
         selectedPlace = selected
         withViewportAnimation(.fly(duration: 0.9)) {
