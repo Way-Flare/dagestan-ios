@@ -15,12 +15,14 @@ struct ImageSliderView: View {
     @State private var isOpenFullscreenImage = false
     private let images: [URL]
     private let canOpenFullscreen: Bool
+    private var didTapOnImage: (() -> Void)?
 
     /// Инициализатор
     /// - Parameter images: Список урлов на картинки, которые надо отобразить в слайдере
-    init(images: [URL], canOpenFullscreen: Bool = true) {
+    init(images: [URL], canOpenFullscreen: Bool = true, didTapOnImage: (() -> Void)? = nil) {
         self.images = images
         self.canOpenFullscreen = canOpenFullscreen
+        self.didTapOnImage = didTapOnImage
     }
 
     @ViewBuilder
@@ -74,6 +76,7 @@ struct ImageSliderView: View {
         }
         .ignoresSafeArea()
         .onTapGesture {
+            didTapOnImage?()
             guard canOpenFullscreen else { return }
             isOpenFullscreenImage.toggle()
         }

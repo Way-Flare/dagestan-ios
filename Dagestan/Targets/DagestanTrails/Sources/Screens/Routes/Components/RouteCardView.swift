@@ -16,7 +16,17 @@ struct RouteCardView: View {
     let route: Route
     let isLoading: Bool
     let onFavoriteAction: (() -> Void)?
-    
+    let didTapOnImage: (() -> Void)?
+
+    init(showAlert: Bool = false, isAuthorized: Bool = false, route: Route, isLoading: Bool, onFavoriteAction: (() -> Void)?, didTapOnImage: (() -> Void)? = nil) {
+        self.showAlert = showAlert
+        self.isAuthorized = isAuthorized
+        self.route = route
+        self.isLoading = isLoading
+        self.onFavoriteAction = onFavoriteAction
+        self.didTapOnImage = didTapOnImage
+    }
+
     var body: some View {
         VStack(alignment: .leading) {
             imageContainerView
@@ -29,7 +39,7 @@ struct RouteCardView: View {
     
     private var imageContainerView: some View {
         ZStack(alignment: .topTrailing) {
-            ImageSliderView(images: route.images, canOpenFullscreen: false)
+            ImageSliderView(images: route.images, canOpenFullscreen: false, didTapOnImage: didTapOnImage)
                 .frame(minHeight: Grid.pt174)
                 .clipped()
 

@@ -41,6 +41,11 @@ struct SearchPlaceListView: View {
                                 needClose: false
                             ) {
                                 searchViewModel.setFavorite(by: place.id)
+                            } didTapOnImage: {
+                                searchViewModel.navigationPath.append(SearchNavigationRoute.placeDetail(
+                                    id: place.id,
+                                    isFavorite: place.isFavorite
+                                ))
                             }
                             .onTapGesture {
                                 searchViewModel.navigationPath.append(SearchNavigationRoute.placeDetail(

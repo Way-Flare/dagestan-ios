@@ -22,17 +22,20 @@ struct PlaceView: View {
     }
 
     private let onFavoriteAction: (() -> Void)?
+    private let didTapOnImage: (() -> Void)?
 
     init(
         place: Binding<Place?>,
         isLoading: Bool,
         needClose: Bool = true,
-        favoriteAction: (() -> Void)?
+        favoriteAction: (() -> Void)?,
+        didTapOnImage: (() -> Void)? = nil
     ) {
         self._place = place
         self.needClose = needClose
         self.isLoading = isLoading
         self.onFavoriteAction = favoriteAction
+        self.didTapOnImage = didTapOnImage
     }
 
     var body: some View {
@@ -58,7 +61,7 @@ struct PlaceView: View {
     @ViewBuilder private var imageView: some View {
         if let place {
             ZStack(alignment: .topTrailing) {
-                ImageSliderView(images: place.images, canOpenFullscreen: false)
+                ImageSliderView(images: place.images, canOpenFullscreen: false, didTapOnImage: didTapOnImage)
                 buttonsView
             }
             .cornerStyle(.constant(Grid.pt4, .bottomCorners))

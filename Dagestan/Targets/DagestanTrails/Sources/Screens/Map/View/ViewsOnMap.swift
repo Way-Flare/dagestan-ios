@@ -85,6 +85,11 @@ extension MapView {
                         if let id = viewModel.selectedPlace?.id {
                             viewModel.setFavorite(by: id)
                         }
+                    } didTapOnImage: {
+                        viewModel.navigationPath.append(MapNavigationRoute.placeDetail(
+                            id: viewModel.selectedPlace?.id ?? .zero,
+                            isFavorite: viewModel.selectedPlace?.isFavorite ?? false
+                        ))
                     }
                     .onTapGesture {
                         viewModel.navigationPath.append(MapNavigationRoute.placeDetail(
