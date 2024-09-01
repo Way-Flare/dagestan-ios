@@ -140,7 +140,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                                 onFavoriteAction: onFavoriteAction
                             )
                         }
-                        mapContainerView
+//                        mapContainerView // TODO: Исправить карту
                         SendErrorButton()
                         if let place = viewModel.placeDetail.data {
                             PlaceReviewAndRatingView(

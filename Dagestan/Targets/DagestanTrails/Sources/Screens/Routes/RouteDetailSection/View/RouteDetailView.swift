@@ -80,7 +80,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
                         placeService: placeService,
                         onFavoriteAction: onFavoriteAction
                     )
-                    mapContainerView
+//                    mapContainerView TODO: Исправить карту
                     SendErrorButton()
                     if let route = viewModel.state.data {
                         PlaceReviewAndRatingView(

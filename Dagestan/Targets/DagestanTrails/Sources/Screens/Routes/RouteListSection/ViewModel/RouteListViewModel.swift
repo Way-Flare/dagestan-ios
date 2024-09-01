@@ -19,7 +19,7 @@ protocol IRouteListViewModel: ObservableObject {
     func setFavorite(by id: Int)
 }
 
-class RouteListViewModel: IRouteListViewModel {
+final class RouteListViewModel: IRouteListViewModel {
     @Published var path = NavigationPath()
     @Published var routeState: LoadingState<[Route]> = .idle
     @Published var favoriteState: LoadingState<Bool> = .idle

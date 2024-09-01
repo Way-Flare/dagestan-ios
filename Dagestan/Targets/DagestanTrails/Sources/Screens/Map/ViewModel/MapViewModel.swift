@@ -66,7 +66,7 @@ protocol IMapViewModel: ObservableObject {
 
 /// Вьюмодель для работы с картой
 final class MapViewModel: IMapViewModel {
-    @Published var viewport: Viewport = .camera(center: Location.makhachkala, zoom: 5.5)
+    @Published var viewport: Viewport = .camera(center: Location.dagestan, zoom: 7.5)
     @Published var tags: [TagPlace] = []
     @Published var places: [Place] = [] {
         didSet {
@@ -212,7 +212,7 @@ extension MapViewModel {
         let dagestanCoordinates = CLLocationCoordinate2D(latitude: 43.0000, longitude: 47.5000)
 
         withViewportAnimation(.fly) {
-            viewport = .camera(center: dagestanCoordinates, zoom: 7.5)
+            viewport = .camera(center: Location.dagestan, zoom: 7.5)
         }
     }
 }
@@ -285,6 +285,6 @@ extension MapViewModel {
 
 extension MapViewModel {
     enum Location {
-        static let makhachkala = CLLocationCoordinate2D(latitude: 42.9824, longitude: 47.5049)
+        static let dagestan = CLLocationCoordinate2D(latitude: 43.0000, longitude: 47.5000)
     }
 }

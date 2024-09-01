@@ -97,7 +97,7 @@ extension MapView {
                             case .placeDetail(let id, let isFavorite):
                                 let placeDetailViewModel = PlaceDetailViewModel(
                                     service: viewModel.placeService,
-                                    placeId: id,
+                                    placeInfo: .init(id: id, name: nil, coordinate: nil),
                                     isFavorite: isFavorite
                                 )
 

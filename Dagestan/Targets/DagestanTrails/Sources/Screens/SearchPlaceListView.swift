@@ -74,7 +74,7 @@ struct SearchPlaceListView: View {
                     case .placeDetail(let id, let isFavorite):
                         let placeDetailViewModel = PlaceDetailViewModel(
                             service: placeService,
-                            placeId: id,
+                            placeInfo: .init(id: id, name: nil, coordinate: nil),
                             isFavorite: isFavorite
                         )
 

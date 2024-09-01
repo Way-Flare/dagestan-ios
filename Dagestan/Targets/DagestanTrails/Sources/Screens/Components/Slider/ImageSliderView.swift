@@ -33,7 +33,7 @@ struct ImageSliderView: View {
                     DagestanTrailsAsset.notAvaibleImage.swiftUIImage
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 200)
+                        .frame(height: Grid.pt200)
                         .allowsHitTesting(false)
                         .ignoresSafeArea()
                 } else {
@@ -47,12 +47,14 @@ struct ImageSliderView: View {
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
+                                    .frame(maxWidth: UIScreen.main.bounds.width)
+                                    .clipped()
                                     .skeleton(show: state.isLoading)
                             } else {
                                 DagestanTrailsAsset.notAvaibleImage.swiftUIImage
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(height: 200)
+                                    .frame(height: Grid.pt200)
                                     .allowsHitTesting(false)
                             }
                         }

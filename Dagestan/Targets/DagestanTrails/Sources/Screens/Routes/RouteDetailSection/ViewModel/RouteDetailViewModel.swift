@@ -27,8 +27,8 @@ protocol IRouteDetailViewModel: ObservableObject {
 final class RouteDetailViewModel: IRouteDetailViewModel {
     let service: IRouteService
     let shareUrl: URL?
-    
-    private let id: Int
+
+    private var routeInfo: RouteAnalyticEventInfo
 
     @Published var state: LoadingState<RouteDetail> = .idle
     @Published var isBackdropVisible = false
@@ -52,10 +52,10 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
         return feedbacks
     }
 
-    init(service: IRouteService, id: Int) {
+    init(service: IRouteService, id: Int, title: String? = nil) {
         self.service = service
-        self.id = id
-        self.shareUrl = URL(string: "https://dagestan-trails.ru/route/\(id)")
+        self.routeInfo = .init(id: id, name: title)
+        self.shareUrl = URL(string: "https://dagestan-trails.ru/route/\(routeInfo.id)")
     }
 
     @MainActor
@@ -63,30 +63,35 @@ final class RouteDetailViewModel: IRouteDetailViewModel {
         state = .loading
         Task {
             do {
-                let route = try await service.getRoute(id: id)
+                let route = try await service.getRoute(id: routeInfo.id)
                 state = .loaded(route)
-                let params: [AnyHashable : Any] = ["routeId": "\(route.id)", "routeName": "\(route.title)"]
-                AppMetrica.reportEvent(name: "Открыл детальную страницу маршрута", parameters: params, onFailure: { (error) in
-                    print("DID FAIL REPORT EVENT: %@", "Блин")
-                    print("REPORT ERROR: %@", error.localizedDescription)
-                })
+                routeInfo = route.asAnalyticsData()
+                Analytics.shared.report(event: RouteAnalytics.loadedRouteDetailInfo(route: routeInfo))
             } catch {
                 state = .failed(error.localizedDescription)
+                Analytics.shared.report(event: RouteAnalytics.failed(
+                    route: routeInfo,
+                    error: "Произошла ошибка при загрузке маршрута: \(error.localizedDescription)"
+                ))
             }
         }
     }
-    
+
     @MainActor
     func loadRouteFeedbacks() {
         routeFeedbacks = .loading
 
         Task {
             do {
-                let parameters = PlaceFeedbackParametersDTO(id: id, pageSize: nil, pages: nil)
+                let parameters = PlaceFeedbackParametersDTO(id: routeInfo.id, pageSize: nil, pages: nil)
                 let feedbacks = try await service.getRouteFeedbacks(parameters: parameters)
                 routeFeedbacks = .loaded(feedbacks)
             } catch {
                 routeFeedbacks = .failed(error.localizedDescription)
+                Analytics.shared.report(event: RouteAnalytics.failed(
+                    route: routeInfo,
+                    error: "Произошла ошибка при загрузке отзывов маршрута: \(error.localizedDescription)"
+                ))
                 print("Failed to load place: \(error.localizedDescription)")
             }
         }

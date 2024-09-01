@@ -24,6 +24,7 @@ struct RouteDetailDTO: Decodable {
 }
 
 extension RouteDetailDTO {
+    /// Модель данных о "Месте", приходящая при получении детальной информации о маршруте
     struct PlaceInRouteDTO: Decodable {
         let id: Int
         let name: String
@@ -32,6 +33,9 @@ extension RouteDetailDTO {
         let mainTag: TagPlaceDTO
         let sequence: Int
         let isFavorite: Bool
+        let rating: Int // TODO: Поменять на бэкенде и после и тут
+        let longitude: Double
+        let latitude: Double
     }
 }
 

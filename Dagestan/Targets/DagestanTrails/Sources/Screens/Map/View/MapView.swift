@@ -82,7 +82,6 @@ struct MapView<ViewModel: IMapViewModel>: View {
                         )
                     ))
                     .onMapLoaded { _ in updatePlaces(proxy) } // Обновить места на карте, когда завершилась полность прогрузка карты
-                    .onMapLoadingError { _ in viewModel.isShowAlert.toggle() }
                     .onStyleLoaded { _ in setupMap(proxy) } // Настраиваем карту по новой при изменении стиля карты
                     .onLayerTapGesture(MapLayerId.clusterCircle) { feature, context in // Отлавливаем нажатие на слой кластера
                         handleTap(proxy: proxy, feature: feature, context: context)

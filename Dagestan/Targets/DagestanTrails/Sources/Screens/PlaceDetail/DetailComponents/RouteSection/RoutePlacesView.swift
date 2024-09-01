@@ -76,7 +76,7 @@ struct RoutePlacesView: View {
                 PlaceDetailView(
                     viewModel: PlaceDetailViewModel(
                         service: placeService,
-                        placeId: item.id,
+                        placeInfo: item.asAnalyticsData(),
                         isFavorite: item.isFavorite
                     ),
                     routeService: routeService,
@@ -86,7 +86,7 @@ struct RoutePlacesView: View {
         } else {
             if let routeService, let placeService {
                 RouteDetailView(
-                    viewModel: RouteDetailViewModel(service: routeService, id: item.id),
+                    viewModel: RouteDetailViewModel(service: routeService, id: item.id, title: item.title),
                     placeService: placeService,
                     onFavoriteAction: onFavoriteAction
                 )

@@ -70,7 +70,7 @@ struct FavoriteListView: View {
                                             destination: PlaceDetailView(
                                                 viewModel: PlaceDetailViewModel(
                                                     service: viewModel.placeService,
-                                                    placeId: place.id,
+                                                    placeInfo: place.asAnalyticsData(),
                                                     isFavorite: place.isFavorite
                                                 ),
                                                 routeService: viewModel.routeService,

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AppMetricaCore
 
 protocol IPlaceDetailViewModel: ObservableObject {
     var placeDetail: LoadingState<PlaceDetail> { get }
@@ -42,7 +41,7 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
 
     private var isLoadingMoreCharacters = false
     let service: IPlacesService
-    private let placeId: Int
+    private var placeInfo: PlaceAnalyticEventInfo
     let sharedUrl: URL?
 
     var userFeedbacks: [PlaceFeedback] {
@@ -55,15 +54,14 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
         return feedbacks
     }
 
-
     /// Инициализатор
     /// - Parameter service: Сервис для работы с местами/точками
-    /// - Parameter placeId: Id - для получения детальной информации о месте.
-    init(service: IPlacesService, placeId: Int, isFavorite: Bool) {
+    /// - Parameter placeInfo: Краткая информация о месте
+    init(service: IPlacesService, placeInfo: PlaceAnalyticEventInfo, isFavorite: Bool) {
         self.service = service
-        self.placeId = placeId
+        self.placeInfo = placeInfo
         self.isFavorite = isFavorite
-        self.sharedUrl = URL(string: "https://dagestan-trails.ru/place/\(placeId)")
+        self.sharedUrl = URL(string: "https://dagestan-trails.ru/place/\(placeInfo.id)")
     }
 
     func loadPlaceDetail() {
@@ -73,16 +71,19 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
             self.placeDetail = .loading
 
             do {
-                let place = try await service.getPlace(id: placeId)
+                let place = try await service.getPlace(id: placeInfo.id)
                 placeDetail = .loaded(place)
                 hasContactsData = isContactsData(place: place)
-                let params: [AnyHashable : Any] = ["placeId": "\(place.id)", "placeName": "\(place.name)"]
-                AppMetrica.reportEvent(name: "Открыл детальную страницу места", parameters: params, onFailure: { (error) in
-                    print("DID FAIL REPORT EVENT: %@", "Блин")
-                    print("REPORT ERROR: %@", error.localizedDescription)
-                })
+                placeInfo = place.asAnalyticsData()
+                Analytics.shared.report(event: PlaceAnalytics.loadedPlaceDetailInfo(place: placeInfo))
             } catch {
                 placeDetail = .failed(error.localizedDescription)
+                Analytics.shared.report(
+                    event: PlaceAnalytics.failed(
+                        place: placeInfo,
+                        error: "Произошла ошибка при загрузке места: \(error.localizedDescription)"
+                    )
+                )
                 print("Failed to load place: \(error.localizedDescription)")
             }
         }
@@ -94,26 +95,39 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
 
         Task {
             do {
-                let parameters = PlaceFeedbackParametersDTO(id: placeId, pageSize: nil, pages: nil)
+                let parameters = PlaceFeedbackParametersDTO(id: placeInfo.id, pageSize: nil, pages: nil)
                 let feedbacks = try await service.getPlaceFeedbacks(parameters: parameters)
                 placeFeedbacks = .loaded(feedbacks)
             } catch {
                 placeFeedbacks = .failed(error.localizedDescription)
+                Analytics.shared.report(
+                    event: PlaceAnalytics.failed(
+                        place: placeInfo,
+                        error: "Произошла ошибка при отзывов к месту: \(error.localizedDescription)"
+                    )
+                )
                 print("Failed to load place: \(error.localizedDescription)")
             }
         }
     }
-    
+
     @MainActor
     func loadPromocode() {
         promocodes = .loading
-        
+
         Task {
             do {
-                let loadedPromocodes = try await service.getPromocode(by: placeId)
+                let loadedPromocodes = try await service.getPromocode(by: placeInfo.id)
                 promocodes = .loaded(loadedPromocodes)
+                Analytics.shared.report(event: PlaceAnalytics.loadedPromocode(place: placeInfo))
             } catch {
                 promocodes = .failed(error.localizedDescription)
+                Analytics.shared.report(
+                    event: PlaceAnalytics.failed(
+                        place: placeInfo,
+                        error: "Произошла ошибка при загрузке промокода: \(error.localizedDescription)"
+                    )
+                )
             }
         }
     }
@@ -122,4 +136,5 @@ final class PlaceDetailViewModel: IPlaceDetailViewModel {
         guard let contacts = place.contacts.first else { return false }
         return contacts.phoneNumber != nil || contacts.site != nil || contacts.email != nil
     }
+
 }

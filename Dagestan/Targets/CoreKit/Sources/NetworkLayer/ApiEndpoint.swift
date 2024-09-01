@@ -22,10 +22,10 @@ public protocol ApiEndpoint {
 }
 
 public enum Method: String {
-    case get
-    case post
-    case patch
-    case delete
+    case get = "GET"
+    case post = "POST"
+    case patch = "PATCH"
+    case delete = "DELETE"
 }
 
 public enum Version: String {
