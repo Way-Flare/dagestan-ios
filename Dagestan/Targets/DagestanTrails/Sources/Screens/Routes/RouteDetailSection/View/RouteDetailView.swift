@@ -61,11 +61,7 @@ struct RouteDetailView<ViewModel: IRouteDetailViewModel>: View {
     @ViewBuilder
     func getContentView() -> some View {
         if let route = viewModel.state.data {
-            StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
-                if let images = viewModel.state.data?.images {
-                    ImageSliderView(images: images)
-                }
-            } content: {
+            StretchableImageSliderView(images: viewModel.state.data?.images  ?? [], showsBackdrop: $viewModel.isBackdropVisible) {
                VStack(alignment: .leading, spacing: Grid.pt16) {
                     routeInfoContainerView
                     expandableTextContainerView

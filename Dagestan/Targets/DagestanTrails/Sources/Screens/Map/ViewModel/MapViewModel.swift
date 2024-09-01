@@ -148,10 +148,8 @@ extension MapViewModel {
               let selected = filteredPlaces.first(where: { $0.id == id }) else { return }
 
         var toZoom = zoom ?? .zero
-        if toZoom < 10 {
+        if toZoom < 8 {
             toZoom += 2
-        } else if toZoom < 16 {
-            toZoom += 3
         }
         toZoom = min(toZoom, 15)
 

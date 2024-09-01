@@ -38,6 +38,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
             .setCustomBackButton()
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(viewModel.isBackdropVisible ? viewModel.placeDetail.data?.name ?? "" : "")
+            .scrollContentBackground(.hidden)
     }
 
     @ViewBuilder private var mapContainerView: some View {
@@ -91,9 +92,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
     @ViewBuilder func getContentView() -> some View {
         if let place = viewModel.placeDetail.data {
             ScrollViewReader { _ in
-                StretchableHeaderScrollView(showsBackdrop: $viewModel.isBackdropVisible) {
-                    ImageSliderView(images: place.images)
-                } content: {
+                StretchableImageSliderView(images: place.images, showsBackdrop: $viewModel.isBackdropVisible) {
                     VStack(alignment: .leading, spacing: Grid.pt16) {
                         PlaceDetailInfoView(
                             place: viewModel.placeDetail.data,

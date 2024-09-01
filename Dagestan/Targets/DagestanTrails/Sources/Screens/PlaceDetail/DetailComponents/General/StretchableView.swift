@@ -41,8 +41,6 @@ struct StretchableHeaderScrollView<Header: View, Content: View>: View {
                     .frame(height: geometry.size.width * sizeCof)
 
                     content()
-                        .cornerRadius(16, corners: [.topLeft, .topRight])
-                        .clipped()
                 }
             }
             .scrollIndicators(.hidden)

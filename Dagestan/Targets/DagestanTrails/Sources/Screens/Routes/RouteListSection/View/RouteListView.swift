@@ -60,7 +60,6 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal, Grid.pt12)
-
             }
         } else if viewModel.routeState.isError {
             FailedLoadingView {
