@@ -27,12 +27,12 @@ enum TabItem: Int, CaseIterable {
 
     var title: String {
         switch self {
-            case .places: return "tab.places"
-            case .favorite: return "tab.favorites"
-            case .profile: return "tab.profile"
-            case .routes: return "tab.routes"
-            case .designSystem: return "DesignSystem"
-            case .navigationSanbox : return "Navigator"
+            case .places: return "Места"
+            case .favorite: return "Избранные"
+            case .profile: return "Профиль"
+            case .routes: return "Маршруты"
+            case .designSystem: return "Дизайн система"
+            case .navigationSanbox : return "Навигатор"
         }
     }
 

@@ -93,9 +93,9 @@ extension Project {
             "UILaunchStoryboardName": .string("LaunchScreen"),
             "MBXAccessToken": .string("pk.eyJ1IjoidHhtaSIsImEiOiJjbG9vcHp5Z3IwMmlxMmtsOTJ5aWp5dW15In0.WLi2T_JmR50g3dTOJdPaGw"),
             "NSAppTransportSecurity": .dictionary(["NSAllowsArbitraryLoads": .boolean(true)]),
-            "NSLocationAlwaysUsageDescription": .string("Access to location services will allow you to view your position on the map and make route to places"),
-            "NSLocationWhenInUseUsageDescription": .string("Access to location services will allow you to view your position on the map and make route to places"),
-            "NSPhotoLibraryUsageDescription": .string("We use your photos so that you can upload images and share them in the app, in reviews of places and routes."),
+            "NSLocationAlwaysUsageDescription": .string("Доступ к геолокационным сервисам позволит вам просматривать свое местоположение на карте и прокладывать маршрут к нужным местам"),
+            "NSLocationWhenInUseUsageDescription": .string("Доступ к геолокационным сервисам позволит вам просматривать свое местоположение на карте и прокладывать маршрут к нужным местам"),
+            "NSPhotoLibraryUsageDescription": .string("Мы используем ваши фотографии, чтобы вы могли загружать изображения и делиться ими в приложении, в обзорах мест и маршрутов."),
             "ITSAppUsesNonExemptEncryption": .boolean(false)
         ]
 

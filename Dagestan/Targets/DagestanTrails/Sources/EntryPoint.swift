@@ -75,7 +75,7 @@ struct ContentView: View {
                     .tabItem {
                         VStack(spacing: Grid.pt4) {
                             tab.icon
-                            Text(NSLocalizedString(tab.title, comment: ""))
+                            Text(tab.title)
                         }
                         .font(.manropeRegular(size: Grid.pt12))
                     }
