@@ -41,7 +41,7 @@ struct ProfileView: View {
                     ChangeNameSheet(placeholder: "Введите имя", viewModel: viewModel)
                         .background(WFColor.surfaceQuaternary)
                         .presentationCornerRadius(Grid.pt32)
-                        .presentationDetents([.height(Grid.pt244)])
+                        .intrincsicHeightSheet()
                 } else {
                     ChangeNameSheet(placeholder: "Введите имя", viewModel: viewModel)
                         .background(WFColor.surfaceQuaternary)

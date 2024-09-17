@@ -111,7 +111,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                                         PromocodeView(viewModel: viewModel)
                                             .background(WFColor.surfaceQuaternary)
                                             .presentationCornerRadius(Grid.pt32)
-                                            .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                                            .intrincsicHeightSheet()
                                     }
                             } else {
                                 SlideButtonView()
@@ -121,7 +121,7 @@ struct PlaceDetailView<ViewModel: IPlaceDetailViewModel>: View {
                                     .sheet(isPresented: $showingPromocodeSheet) {
                                         PromocodeView(viewModel: viewModel)
                                             .background(WFColor.surfaceQuaternary)
-                                            .presentationDetents([.height(UIScreen.main.bounds.height / 4)])
+                                            .intrincsicHeightSheet()
                                     }
                             }
                         }
