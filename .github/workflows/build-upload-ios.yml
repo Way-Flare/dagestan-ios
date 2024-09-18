@@ -53,7 +53,7 @@ jobs:
          PROJECT_PATH: ${{ github.workspace }}/Dagestan
  
      - name: Upload app-store ipa and dsyms to artifacts
-       uses: actions/upload-artifact@v2
+       uses: actions/upload-artifact@v4
        with:
          name: app-store ipa & dsyms
          path: |
