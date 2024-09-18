@@ -14,7 +14,7 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
     let placeService: IPlacesService
 
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
+        NavigationStack {
             getContentView()
                 .scrollIndicators(.hidden)
                 .background(WFColor.surfaceSecondary, ignoresSafeAreaEdges: .all)
@@ -22,21 +22,21 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
                 .onViewDidLoad {
                     viewModel.fetchRoutes()
                 }
-                .navigationDestination(for: RouteListNavigation.self) { navPath in
-                    switch navPath {
-                        case .routeDetail(let id):
-                            RouteDetailView(
-                                viewModel: RouteDetailViewModel(
-                                    service: viewModel.routeService,
-                                    id: id
-                                ),
-                                placeService: placeService,
-                                onFavoriteAction: {
-                                    viewModel.setFavorite(by: id)
-                                }
-                            )
-                    }
-                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 
@@ -45,21 +45,30 @@ struct RouteListView<ViewModel: IRouteListViewModel>: View {
             ScrollView {
                 LazyVStack(spacing: Grid.pt12) {
                     ForEach(routes, id: \.id) { route in
-                        RouteCardView(
-                            route: route,
-                            isLoading: viewModel.isFavoriteRoutesLoading[route.id] ?? false
+                        NavigationLink(
+                            destination: RouteDetailView(
+                                viewModel: RouteDetailViewModel(
+                                    service: viewModel.routeService,
+                                    id: route.id
+                                ),
+                                placeService: placeService,
+                                onFavoriteAction: {
+                                    viewModel.setFavorite(by: route.id)
+                                }
+                            )
                         ) {
-                            viewModel.setFavorite(by: route.id)
-                        } didTapOnImage: {
-                            viewModel.path.append(RouteListNavigation.routeDetail(id: route.id))
-                        }
-                        .onTapGesture {
-                            viewModel.path.append(RouteListNavigation.routeDetail(id: route.id))
+                            RouteCardView(
+                                route: route,
+                                isLoading: viewModel.isFavoriteRoutesLoading[route.id] ?? false
+                            ) {
+                                viewModel.setFavorite(by: route.id)
+                            }
                         }
                     }
                 }
                 .buttonStyle(PlainButtonStyle())
                 .padding(.horizontal, Grid.pt12)
+
             }
         } else if viewModel.routeState.isError {
             FailedLoadingView {

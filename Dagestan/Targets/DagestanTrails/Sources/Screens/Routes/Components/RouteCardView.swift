@@ -16,16 +16,16 @@ struct RouteCardView: View {
     let route: Route
     let isLoading: Bool
     let onFavoriteAction: (() -> Void)?
-    let didTapOnImage: (() -> Void)?
 
-    init(showAlert: Bool = false, isAuthorized: Bool = false, route: Route, isLoading: Bool, onFavoriteAction: (() -> Void)?, didTapOnImage: (() -> Void)? = nil) {
-        self.showAlert = showAlert
-        self.isAuthorized = isAuthorized
-        self.route = route
-        self.isLoading = isLoading
-        self.onFavoriteAction = onFavoriteAction
-        self.didTapOnImage = didTapOnImage
-    }
+
+
+
+
+
+
+
+
+
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -36,10 +36,10 @@ struct RouteCardView: View {
         .cornerStyle(.constant(Grid.pt12))
         .font(.manropeRegular(size: Grid.pt14))
     }
-    
+
     private var imageContainerView: some View {
         ZStack(alignment: .topTrailing) {
-            ImageSliderView(images: route.images, canOpenFullscreen: false, didTapOnImage: didTapOnImage)
+            ImageSliderView(images: route.images, canOpenFullscreen: false)
                 .frame(minHeight: Grid.pt174)
                 .clipped()
 
@@ -60,7 +60,7 @@ struct RouteCardView: View {
             .notAuthorizedAlert(isPresented: $showAlert)
         }
     }
-    
+
     private var contentContainerView: some View {
         VStack(alignment: .leading, spacing: Grid.pt6) {
             HStack(spacing: Grid.pt12) {
@@ -68,7 +68,7 @@ struct RouteCardView: View {
                 Spacer()
                 ratingContainerView
             }
-            
+
             Text("\(String(format: "%.2f", route.distance)) км • \(formatExtendedTravelTime()) • \(route.placesCount) мест")
                 .foregroundStyle(WFColor.foregroundSoft)
 
@@ -79,14 +79,14 @@ struct RouteCardView: View {
         .padding([.top, .horizontal], Grid.pt8)
         .padding(.bottom, Grid.pt12)
     }
-    
+
     private var titleContainerView: some View {
         Text(route.title)
             .foregroundStyle(WFColor.foregroundPrimary)
             .font(.manropeSemibold(size: Grid.pt16))
             .lineLimit(1)
     }
-    
+
     private var ratingContainerView: some View {
         HStack(spacing: Grid.pt4) {
             StarsView(amount: 1, size: .s, type: .review)
@@ -94,17 +94,17 @@ struct RouteCardView: View {
                 .foregroundStyle(WFColor.foregroundSoft)
         }
     }
-    
+
     private func formatExtendedTravelTime() -> String {
         let components = route.travelTime.split(separator: ":").map { Int($0) ?? 0 }
-        
+
         if components.count == 3 {
             var hours = components[0]
             let minutes = components[1]
-            
+
             let days = hours / 24
             hours %= 24
-            
+
             var result = ""
             if days > 0 {
                 result += "\(days)дн "
@@ -113,10 +113,10 @@ struct RouteCardView: View {
                 result += "\(hours)ч "
             }
             result += "\(minutes)мин"
-            
+
             return result
         }
-        
+
         return ""
     }
 }

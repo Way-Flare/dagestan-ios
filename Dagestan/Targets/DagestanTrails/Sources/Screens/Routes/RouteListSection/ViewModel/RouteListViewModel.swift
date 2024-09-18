@@ -8,10 +8,6 @@
 
 import SwiftUI
 
-enum RouteListNavigation: Hashable {
-    case routeDetail(id: Int)
-}
-
 protocol IRouteListViewModel: ObservableObject {
     var path: NavigationPath { get set }
     var routeState: LoadingState<[Route]> { get }
